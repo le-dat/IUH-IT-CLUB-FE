@@ -178,7 +178,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
               <Label>Kỹ Năng</Label>
               <div className="flex gap-2 flex-wrap">
                 {member.skills.map((skill: string, index: number) => (
-                  <Badge key={index} variant="secondary">
+                  <Badge key={index} variant="secondary" className="shrink-0">
                     {skill}
                   </Badge>
                 ))}

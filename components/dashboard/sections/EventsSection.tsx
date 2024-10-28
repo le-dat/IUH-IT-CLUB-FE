@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import EventDetailsModal from "@/components/modals/EventDetailsModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
-import ApprovalModal from "@/components/modals/ApprovalModal";
 import EventsGrid from "./events/EventsGrid";
 import SearchInput from "@/components/common/SearchInput";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useFilter } from "@/hooks/useFilter";
 import { createSearchFilter } from "@/lib/utils/filters";
 import EventModal from "@/components/modals/CreateEventModal";
+import ApprovalModal from "@/components/modals/ApprovalModal";
 
 interface Event {
   id: number;

@@ -25,32 +25,32 @@ interface Team {
 const ITEMS_PER_PAGE = 6;
 
 const mockTeams: Team[] = [
-  {
-    id: 1,
-    name: "Phát triển Web",
-    members: 8,
-    projects: 3,
-    lead: "Alex Johnson",
-    status: "Đang hoạt động",
-    description: "Nhóm phát triển frontend và backend cho các dự án của câu lạc bộ.",
-  },
-  {
-    id: 2,
-    name: "Thiết kế UI/UX",
-    members: 6,
-    projects: 2,
-    lead: "Sarah Chen",
-    status: "Đang hoạt động",
-    description: "Nhóm thiết kế tập trung vào tạo trải nghiệm người dùng trực quan.",
-  },
+  // {
+  //   id: 1,
+  //   name: "Phát triển Web",
+  //   members: 8,
+  //   projects: 3,
+  //   lead: "Alex Johnson",
+  //   status: "Đang hoạt động",
+  //   description: "Nhóm phát triển frontend và backend cho các dự án của câu lạc bộ.",
+  // },
+  // {
+  //   id: 2,
+  //   name: "Thiết kế UI/UX",
+  //   members: 6,
+  //   projects: 2,
+  //   lead: "Sarah Chen",
+  //   status: "Đang hoạt động",
+  //   description: "Nhóm thiết kế tập trung vào tạo trải nghiệm người dùng trực quan.",
+  // },
   {
     id: 3,
-    name: "Tham gia ",
+    name: "Đội tuyển lập trình",
     members: 6,
     projects: 2,
-    lead: "Sarah Chen",
+    lead: "Le Dat",
     status: "Đang hoạt động",
-    description: "Nhóm thiết kế tập trung vào tạo trải nghiệm người dùng trực quan.",
+    description: "Tham gia các cuộc thi lập trình và giải thuật trên toàn quốc.",
   },
 ];
 

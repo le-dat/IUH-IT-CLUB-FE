@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Laptop, CheckCircle2 } from "lucide-react";
+import { conditionsMap, statusMap } from "@/constants/device";
 
 interface DeviceDetailsModalProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export default function DeviceDetailsModal({
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
+          <DialogTitle className="flex items-center justify-between gap-2 pr-6">
             <div className="flex items-center gap-2">
               <Laptop className="h-5 w-5" />
               <span>{device.name}</span>
@@ -58,8 +59,9 @@ export default function DeviceDetailsModal({
                   ? "secondary"
                   : "outline"
               }
+              className="shrink-0"
             >
-              {device.status}
+              {statusMap[device.status as keyof typeof statusMap] || "OutofService"}
             </Badge>
           </DialogTitle>
           <DialogDescription>Chi tiết và thông tin thiết bị</DialogDescription>
@@ -75,7 +77,9 @@ export default function DeviceDetailsModal({
               <h4 className="text-sm font-medium mb-1">Tình trạng</h4>
               <div className="flex items-center gap-1">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm">{device.condition}</span>
+                <span className="text-sm">
+                  {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]}
+                </span>
               </div>
             </div>
           </div>

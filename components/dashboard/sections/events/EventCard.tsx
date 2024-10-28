@@ -58,6 +58,7 @@ export default function EventCard({
                 ? "default"
                 : "destructive"
             }
+            className="shrink-0"
           >
             {event.status === "Pending Approval" ? "Chờ duyệt" : "Đã duyệt"}
           </Badge>

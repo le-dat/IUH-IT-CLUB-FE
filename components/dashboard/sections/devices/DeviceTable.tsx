@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Eye, Edit, Trash2 } from "lucide-react";
+import { conditionsMap, statusMap } from "@/constants/device";
 
 interface Device {
   id: number;
@@ -30,6 +31,8 @@ interface DeviceTableProps {
   onEdit: (device: Device) => void;
   onDelete: (device: Device) => void;
   onRequest: (device: Device) => void;
+  onApprove: (device: Device) => void;
+
 }
 
 export default function DeviceTable({
@@ -39,6 +42,7 @@ export default function DeviceTable({
   onEdit,
   onDelete,
   onRequest,
+  onApprove,
 }: DeviceTableProps) {
   return (
     <Table>
@@ -67,13 +71,16 @@ export default function DeviceTable({
                     ? "secondary"
                     : "outline"
                 }
+                className="shrink-0"
               >
-                {device.status}
+                {statusMap[device.status as keyof typeof statusMap] || "OutofService"}
               </Badge>
             </TableCell>
             <TableCell>{device.assignedTo}</TableCell>
             <TableCell>{device.lastChecked}</TableCell>
-            <TableCell>{device.condition}</TableCell>
+            <TableCell>
+              {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]}
+            </TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" onClick={() => onView(device)}>
@@ -82,8 +89,8 @@ export default function DeviceTable({
                 {isAdmin ? (
                   <>
                     {device.status === "Pending Approval" ? (
-                      <Button variant="ghost" size="sm" onClick={() => onView(device)}>
-                        Review
+                      <Button variant="ghost" size="sm" onClick={() => onApprove(device)}>
+                        Xem yêu cầu
                       </Button>
                     ) : (
                       <>
@@ -99,7 +106,7 @@ export default function DeviceTable({
                 ) : (
                   device.status === "Available" && (
                     <Button variant="ghost" size="sm" onClick={() => onRequest(device)}>
-                      Request
+                      Yêu cầu mượn
                     </Button>
                   )
                 )}

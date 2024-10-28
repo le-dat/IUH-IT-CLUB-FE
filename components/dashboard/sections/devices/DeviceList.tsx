@@ -57,6 +57,7 @@ export default function DeviceList({
                     ? "secondary"
                     : "outline"
                 }
+                className="shrink-0"
               >
                 {device.status}
               </Badge>
@@ -93,7 +94,7 @@ export default function DeviceList({
               ) : (
                 device.status === "Available" && (
                   <Button variant="default" size="sm" onClick={() => onRequest(device)}>
-                    Request
+                    Yêu cầu mượn
                   </Button>
                 )
               )}

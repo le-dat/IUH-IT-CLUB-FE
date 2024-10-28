@@ -8,7 +8,6 @@ import DeviceModal from "@/components/modals/DeviceModal";
 import DeviceRequestModal from "@/components/modals/DeviceRequestModal";
 import DeviceDetailsModal from "@/components/modals/DeviceDetailsModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
-import ApprovalModal from "@/components/modals/ApprovalModal";
 import DeviceTable from "./devices/DeviceTable";
 import Pagination from "@/components/common/Pagination";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -19,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ApprovalModal from "@/components/modals/ApprovalModal";
 
 interface DevicesSectionProps {
   isAdmin: boolean;
@@ -32,7 +32,7 @@ const devices = [
     status: "Available",
     assignedTo: "-",
     lastChecked: "2024-02-20",
-    condition: "Excellent",
+    condition: "Fair",
     specifications: '16" M1 Pro, 16GB RAM, 512GB SSD',
   },
   {
@@ -116,6 +116,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [selectedCondition, setSelectedCondition] = useState("All Conditions");
+  const [selectedType, setSelectedType] = useState("All Types");
 
   const filteredDevices = devices.filter((device) => {
     const matchesSearch =
@@ -124,8 +125,9 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
     const matchesStatus = selectedStatus === "All Statuses" || device.status === selectedStatus;
     const matchesCondition =
       selectedCondition === "All Conditions" || device.condition === selectedCondition;
+    const matchesType = selectedType === "All Types" || device.type === selectedType;
 
-    return matchesSearch && matchesStatus && matchesCondition;
+    return matchesSearch && matchesStatus && matchesCondition && matchesType;
   });
 
   const totalPages = Math.ceil(filteredDevices.length / ITEMS_PER_PAGE);
@@ -135,6 +137,11 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   const handleView = (device: any) => {
     setSelectedDevice(device);
     setIsDetailsModalOpen(true);
+  };
+
+  const handleApproval = (device: any) => {
+    setSelectedDevice(device);
+    setIsApprovalModalOpen(true);
   };
 
   const handleEdit = () => {
@@ -200,8 +207,23 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All Conditions">Tất cả tình trạng</SelectItem>
-              <SelectItem value="Excellent">Xuất sắc</SelectItem>
               <SelectItem value="Good">Tốt</SelectItem>
+              <SelectItem value="Fair">Khá</SelectItem>
+              <SelectItem value="Poor">Kém</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={selectedType} onValueChange={setSelectedType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Lọc theo loại thiết bị" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All Types">Tất cả loại thiết bị</SelectItem>
+              <SelectItem value="Laptop">Laptop</SelectItem>
+              <SelectItem value="Cable">Dây cáp</SelectItem>
+              <SelectItem value="Projector">Máy chiếu</SelectItem>
+              <SelectItem value="Mobile Device">Thiết Bị Di Động</SelectItem>
+              <SelectItem value="Orther">Khác</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -227,6 +249,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         }}
         onDelete={handleDelete}
         onRequest={handleRequest}
+        onApprove={handleApproval}
       />
 
       {selectedDevice && (
@@ -250,8 +273,8 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             isOpen={isDeleteModalOpen}
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={confirmDelete}
-            title="Delete Device"
-            description={`Are you sure you want to delete "${selectedDevice.name}"? This action cannot be undone.`}
+            title="Xóa Thiết Bị"
+            description={`Bạn có chắc chắn muốn xóa "${selectedDevice.name}"? Hành động này không thể hoàn tác.`}
           />
 
           <DeviceRequestModal

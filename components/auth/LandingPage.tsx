@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import ButtonGradient from "../common/ButtonGradient";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -84,10 +85,7 @@ export default function LandingPage() {
               className="flex items-center justify-center gap-4"
             >
               <Link href="/register">
-                <Button size="lg" className="gap-2 group">
-                  Tham gia Cộng đồng
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                <ButtonGradient>Tham gia Cộng đồng</ButtonGradient>
               </Link>
               <Link href="/login">
                 <Button size="lg" variant="outline">

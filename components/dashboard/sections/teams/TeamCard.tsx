@@ -1,8 +1,8 @@
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Users, Eye, Edit, Trash2, UserPlus } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Users, Eye, Edit, Trash2, UserPlus } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface TeamCardProps {
   team: {
@@ -45,9 +45,11 @@ export default function TeamCard({
             <h3 className="font-semibold text-lg">{team.name}</h3>
             <p className="text-sm text-muted-foreground">Trưởng nhóm: {team.lead}</p>
           </div>
-          <Badge variant="secondary">{team.status}</Badge>
+          <Badge variant="secondary" className="shrink-0">
+            {team.status}
+          </Badge>
         </div>
-        
+
         <div className="mt-4 space-y-2">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -56,9 +58,7 @@ export default function TeamCard({
           <div className="flex items-center gap-2">
             <span className="text-sm">{team.projects} dự án</span>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2">
-            {team.description}
-          </p>
+          <p className="text-sm text-muted-foreground line-clamp-2">{team.description}</p>
         </div>
 
         <div className="mt-6 flex gap-2">
@@ -70,30 +70,18 @@ export default function TeamCard({
               disabled={hasJoinRequest}
             >
               <UserPlus className="h-4 w-4 mr-2" />
-              {hasJoinRequest ? 'Đã gửi yêu cầu' : 'Tham gia nhóm'}
+              {hasJoinRequest ? "Đã gửi yêu cầu" : "Tham gia nhóm"}
             </Button>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onView}
-          >
+          {/* <Button variant="ghost" size="sm" onClick={onView}>
             <Eye className="h-4 w-4" />
-          </Button>
+          </Button> */}
           {isAdmin && (
             <>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onEdit}
-              >
+              <Button variant="ghost" size="sm" onClick={onEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onDelete}
-              >
+              <Button variant="ghost" size="sm" onClick={onDelete}>
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
             </>

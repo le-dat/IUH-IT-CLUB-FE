@@ -46,8 +46,8 @@ export default function EventDetailsModal({
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between mr-6">
-            <span>{event.title}</span>
+          <DialogTitle className="flex items-center justify-between gap-2 pr-6">
+            <span className="line-clamp-2">{event.title}</span>
             <Badge
               variant={
                 event.status === "Pending Approval"
@@ -56,6 +56,7 @@ export default function EventDetailsModal({
                   ? "default"
                   : "destructive"
               }
+              className="shrink-0"
             >
               {event.status}
             </Badge>

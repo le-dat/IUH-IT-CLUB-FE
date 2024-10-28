@@ -41,7 +41,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
     name: device?.name || "",
     type: device?.type || "",
     status: device?.status || "Available",
-    condition: device?.condition || "Excellent",
+    condition: device?.condition || "Good",
     notes: device?.notes || "",
   });
 
@@ -88,8 +88,8 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                 <SelectValue placeholder="Chọn loại thiết bị" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="Instrument">Thiết Bị Hỗ Trợ (dây cáp, máy chiếu)</SelectItem>
                 <SelectItem value="Laptop">Laptop</SelectItem>
-                <SelectItem value="Development Board">Bảng Phát Triển</SelectItem>
                 <SelectItem value="Mobile Device">Thiết Bị Di Động</SelectItem>
                 <SelectItem value="Other">Khác</SelectItem>
               </SelectContent>
@@ -122,10 +122,28 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   <SelectValue placeholder="Chọn tình trạng" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Excellent">Xuất Sắc</SelectItem>
                   <SelectItem value="Good">Tốt</SelectItem>
                   <SelectItem value="Fair">Khá</SelectItem>
                   <SelectItem value="Poor">Kém</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="type">Loại Thiết Bị</Label>
+              <Select
+                value={formData.type}
+                onValueChange={(value) => setFormData({ ...formData, type: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn loại thiết bị" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Laptop">Laptop</SelectItem>
+                  <SelectItem value="Cable">Dây cáp</SelectItem>
+                  <SelectItem value="Projector">Máy chiếu</SelectItem>
+                  <SelectItem value="Mobile Device">Thiết Bị Di Động</SelectItem>
+                  <SelectItem value="Orther">Khác</SelectItem>
                 </SelectContent>
               </Select>
             </div>

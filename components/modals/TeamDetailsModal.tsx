@@ -44,9 +44,11 @@ export default function TeamDetailsModal({
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />{" "}
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>{team.name}</span>
-            <Badge variant="secondary">{team.status}</Badge>
+          <DialogTitle className="flex items-center justify-between gap-2 pr-6">
+            <span className="line-clamp-2">{team.name}</span>
+            <Badge variant="secondary" className="shrink-0">
+              {team.status}
+            </Badge>
           </DialogTitle>
           <DialogDescription>Chi tiết và thông tin nhóm</DialogDescription>
         </DialogHeader>
