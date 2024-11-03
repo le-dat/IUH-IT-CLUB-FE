@@ -14,7 +14,7 @@ export function useFilter<T>({ items, filterFn }: UseFilterProps<T>) {
   }, [items, filters, searchTerm, filterFn]);
 
   const updateFilter = (key: string, value: any) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev:any) => ({ ...prev, [key]: value }));
   };
 
   return {

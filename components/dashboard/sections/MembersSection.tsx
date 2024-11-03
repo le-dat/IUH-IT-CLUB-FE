@@ -170,7 +170,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
             </Select> */}
 
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] focus-visible:outline-none">
                 <SelectValue placeholder="Lọc theo năm học" />
               </SelectTrigger>
               <SelectContent>

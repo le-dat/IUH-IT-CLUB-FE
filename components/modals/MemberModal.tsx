@@ -75,62 +75,87 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Họ và Tên</Label>
-            {isViewMode ? (
-              <p className="text-sm">{member?.name}</p>
-            ) : (
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Nhập họ và tên thành viên"
-                required
-              />
-            )}
-          </div>
+        <form onSubmit={handleSubmit} className=" space-y-4">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label htmlFor="name">Họ và Tên</Label>
+              {isViewMode ? (
+                <p className="text-sm">{member?.name}</p>
+              ) : (
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Nhập họ và tên thành viên"
+                  required
+                />
+              )}
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            {isViewMode ? (
-              <p>
-                <Link href={`mailto:${member?.email}`} target="_blank" className="text-sm">
-                  {member?.email}
-                </Link>
-              </p>
-            ) : (
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="Nhập địa chỉ email"
-                required
-              />
-            )}
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              {isViewMode ? (
+                <p>
+                  <Link href={`mailto:${member?.email}`} target="_blank" className="text-sm">
+                    {member?.email}
+                  </Link>
+                </p>
+              ) : (
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="Nhập địa chỉ email"
+                  required
+                />
+              )}
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone (Zalo)</Label>
-            {isViewMode ? (
-              <p>
-                <Link href={`https://zalo.me/${member?.phone}`} target="_blank" className="text-sm">
-                  {member?.phone}
-                </Link>
-              </p>
-            ) : (
-              <Input
-                id="phone"
-                type="string"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="Nhập số điện thoại"
-                required
-              />
-            )}
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Mã số sinh viên</Label>
+              {isViewMode ? (
+                <p>
+                  <Link href={`mailto:${member?.email}`} target="_blank" className="text-sm">
+                    {member?.email}
+                  </Link>
+                </p>
+              ) : (
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="Nhập địa chỉ email"
+                  required
+                />
+              )}
+            </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone (Zalo)</Label>
+              {isViewMode ? (
+                <p>
+                  <Link
+                    href={`https://zalo.me/${member?.phone}`}
+                    target="_blank"
+                    className="text-sm"
+                  >
+                    {member?.phone}
+                  </Link>
+                </p>
+              ) : (
+                <Input
+                  id="phone"
+                  type="string"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="Nhập số điện thoại"
+                  required
+                />
+              )}
+            </div>
+          </div>
           {/* <div className="space-y-2">
             <Label htmlFor="role">Vai Trò</Label>
             {isViewMode ? (
