@@ -35,6 +35,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
   const [formData, setFormData] = useState({
     name: member?.name || "",
     email: member?.email || "",
+    studentId: member?.studentId || "",
     phone: member?.phone || "",
     // role: member?.role || "",
     // team: member?.team || "",
@@ -115,11 +116,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
             <div className="space-y-2">
               <Label htmlFor="email">Mã số sinh viên</Label>
               {isViewMode ? (
-                <p>
-                  <Link href={`mailto:${member?.email}`} target="_blank" className="text-sm">
-                    {member?.email}
-                  </Link>
-                </p>
+                <p className="text-sm">{member?.studentId}</p>
               ) : (
                 <Input
                   id="email"

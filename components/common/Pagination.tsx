@@ -29,7 +29,7 @@ export default function Pagination({
       {/* <p className="text-sm text-muted-foreground whitespace-nowrap">
         {startIndex + 1}-{endIndex} of {totalItems} {itemName}
       </p> */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 shrink-0">
         <Button
           variant="outline"
           size="icon"

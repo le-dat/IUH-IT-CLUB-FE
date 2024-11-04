@@ -166,7 +166,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="relative w-72">

@@ -32,7 +32,6 @@ interface DeviceTableProps {
   onDelete: (device: Device) => void;
   onRequest: (device: Device) => void;
   onApprove: (device: Device) => void;
-
 }
 
 export default function DeviceTable({

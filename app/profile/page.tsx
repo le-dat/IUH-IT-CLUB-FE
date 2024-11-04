@@ -35,7 +35,7 @@ export default function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          {/* Profile Header */}
+          {/* Profile Title */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -53,8 +53,8 @@ export default function ProfilePage() {
                 </Button>
               </div>
               <div>
-                <h1 className="text-3xl font-bold">Alex Johnson</h1>
-                <p className="text-muted-foreground">Full Stack Developer</p>
+                <h1 className="text-3xl font-bold">Le Dat</h1>
+                <p className="text-muted-foreground">Full Stack developer</p>
               </div>
             </div>
             <Button
@@ -73,32 +73,42 @@ export default function ProfilePage() {
                 <h2 className="text-xl font-semibold">Personal Information</h2>
                 <div className="grid gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      defaultValue="Alex Johnson"
-                      disabled={!isEditing}
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                    />
+                    <Label htmlFor="name">Name</Label>
+                    {isEditing ? (
+                      <Input
+                        id="name"
+                        defaultValue="Le Dat"
+                        className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    ) : (
+                      <p>Le Dat</p>
+                    )}
                   </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      defaultValue="alex@example.com"
-                      disabled={!isEditing}
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                    />
+                    <Label htmlFor="studentId">Student ID</Label>
+                    {isEditing ? (
+                      <Input
+                        id="studentId"
+                        defaultValue="2022222"
+                        className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    ) : (
+                      <p>2022222</p>
+                    )}
                   </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="bio">Bio</Label>
-                    <Textarea
-                      id="bio"
-                      defaultValue="Full stack developer passionate about building great user experiences."
-                      disabled={!isEditing}
-                      className="min-h-[100px] transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                    />
+                    {isEditing ? (
+                      <Textarea
+                        id="bio"
+                        defaultValue="Full stack developer passionate about building great user experiences."
+                        className="min-h-[100px] transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    ) : (
+                      <p>Full stack developer passionate about building great user experiences.</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -126,7 +136,7 @@ export default function ProfilePage() {
                       <Input
                         value={newSkill}
                         onChange={(e) => setNewSkill(e.target.value)}
-                        placeholder="Add a skill"
+                        placeholder="Add skill"
                         className="max-w-[200px]"
                       />
                       <Button type="submit" size="icon">
@@ -138,28 +148,64 @@ export default function ProfilePage() {
               </div>
             </Card>
 
-            {/* Right Column - Social & Stats */}
+            {/* Right Column - Social Links & Activity */}
             <div className="space-y-6">
               <Card className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold">Social Links</h2>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start gap-2">
-                    <Github className="h-4 w-4" />
-                    GitHub
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start gap-2">
-                    <Linkedin className="h-4 w-4" />
-                    LinkedIn
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start gap-2">
-                    <Twitter className="h-4 w-4" />
-                    Twitter
-                  </Button>
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        type="email"
+                        defaultValue="alex@example.com"
+                        className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  ) : (
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Github className="h-4 w-4" />
+                      Email
+                    </Button>
+                  )}
+
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Điện thoại (Zalo)</Label>
+                      <Input
+                        id="phone"
+                        defaultValue="0123456789"
+                        className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  ) : (
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Github className="h-4 w-4" />
+                      Điện thoại (Zalo)
+                    </Button>
+                  )}
+
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <Label htmlFor="linkedin">LinkedIn</Label>
+                      <Input
+                        type="email"
+                        id="linkedin"
+                        defaultValue="alex@example.com"
+                        className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  ) : (
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Github className="h-4 w-4" />
+                      linkedin
+                    </Button>
+                  )}
                 </div>
               </Card>
 
               <Card className="p-6 space-y-4">
-                <h2 className="text-xl font-semibold">Activity</h2>
+                <h2 className="text-xl font-semibold">Hoạt động</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Projects</span>
@@ -170,7 +216,7 @@ export default function ProfilePage() {
                     <span className="font-medium">3</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Events</span>
+                    <span className="text-sm text-muted-foreground">Events Participated</span>
                     <span className="font-medium">8</span>
                   </div>
                 </div>
