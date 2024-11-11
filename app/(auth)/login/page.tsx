@@ -10,15 +10,61 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ButtonGradient from "@/components/common/ButtonGradient";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validationLoginSchema } from "@/lib/validate";
+import { useMutation } from "@tanstack/react-query";
+import authService from "@/services/auth-service";
+import { FORM_LOGIN_AUTH } from "@/constants/form";
 
 export default function LoginPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
+  const { mutate, isPending } = useMutation({ mutationFn: authService.login })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push("/dashboard");
-  };
+
+  const methods = useForm({
+    resolver: yupResolver(validationLoginSchema),
+  });
+
+  const {
+    watch,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = methods;
+
+  const isFormValid = watch(FORM_LOGIN_AUTH.email) && watch(FORM_LOGIN_AUTH.password)
+  const isSubmitDisabled = isPending || !isFormValid
+
+  const onSubmit = async (data: any) => {
+    if (isSubmitDisabled) return
+
+    // mutate(
+    //   { email: data.email, password: data.password },
+    //   {
+    //     onSuccess: (response) => {
+    //       toast.success(response?.message)
+    //       setIsAuthenticated(true)
+    //       setUser(response?.data?.user!)
+    //       setLocalStorage('user', response?.data?.user!)
+    //       TokenStorage.setToken(response?.data?.tokens?.access_token!)
+    //       TokenStorage.setRefreshToken(response?.data?.tokens?.refresh_token!)
+    //       router.push(ROUTES.HOME)
+    //       reset()
+    //     },
+    //     onError: (error) => {
+    //       console.error(error)
+    //       toast.error(error?.message || 'An error occurred during login')
+    //     },
+    //   }
+    // )
+  }
+
+  // const onSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   router.push("/dashboard");
+  // };
 
   return (
     <div className="min-h-screen flex">
@@ -41,7 +87,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

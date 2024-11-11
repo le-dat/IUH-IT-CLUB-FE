@@ -35,7 +35,7 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
             {isAdmin && (
               <Button variant="outline" size="sm">
                 <Settings className="h-4 w-4 mr-2" />
-                Trang Admin
+                Trang quản trị
               </Button>
             )}
 
