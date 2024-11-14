@@ -109,29 +109,30 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
     queryKey: [
       `user-manager-${debouncedSearchTerm}-${debouncedSelectedYear}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
     ],
-    queryFn: () => teamService.getTeams({ page: 1, limit: 10 }),
-    enabled: true,
+    queryFn: () => userService.getAllUser({ page: 1, limit: 10 }),
   });
-
-  console.log("data", data);
 
   const { mutate: handleDeleteById, isPending } = useMutation({
-    mutationFn: teamService.deleteTeamById,
+    mutationFn: userService.deleteUserById,
   });
 
-  const filteredMembers = members.filter((member) => {
-    const matchesSearch =
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesYear = selectedYear === "All Years" || member.schoolYear === selectedYear;
-    const matchesSkill = selectedSkill === "All Skills" || member.skills.includes(selectedSkill);
+  // const filteredMembers = members.filter((member) => {
+  //   const matchesSearch =
+  //     member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     member.email.toLowerCase().includes(searchTerm.toLowerCase());
+  //   const matchesYear = selectedYear === "All Years" || member.schoolYear === selectedYear;
+  //   const matchesSkill = selectedSkill === "All Skills" || member.skills.includes(selectedSkill);
 
-    return matchesSearch && matchesYear && matchesSkill;
-  });
+  //   return matchesSearch && matchesYear && matchesSkill;
+  // });
 
-  const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedMembers = filteredMembers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  // const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE);
+  // const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  // const paginatedMembers = filteredMembers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const totalPages = 3;
+  const paginatedMembers = 4
+
 
   const handleAction = (member: any, mode: "view" | "edit") => {
     setSelectedMember(member);
@@ -227,7 +228,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         </div>
       </div>
       <MemberTable
-        members={paginatedMembers}
+        members={data?.data?.users || []}
         isAdmin={isAdmin}
         onView={(member) => handleAction(member, "view")}
         onEdit={(member) => handleAction(member, "edit")}

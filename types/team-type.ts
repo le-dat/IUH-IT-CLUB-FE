@@ -9,9 +9,8 @@ export interface ICompetition extends IId {
   status: "champion" | "runner up" | "encourage" | null;
 }
 
-export interface ITeam extends ICommonMongodb {
-  name: string;
-  leader?: IUser;
+export interface ITeam extends ICommonMongodb, IUser {
+  // leader?: IUser;
   members: IUser[] | [];
   description: string;
   competition: ICompetition[];

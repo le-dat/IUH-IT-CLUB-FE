@@ -27,20 +27,23 @@ import userService from "@/services/user-service";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FORM_SIGN } from "@/constants/auth";
+import { FORM_USER } from "@/constants/user";
+import { validationUserSchema } from "@/lib/validate";
+import { IUser } from "@/types/user-type";
 
 interface MemberModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: "view" | "create" | "edit";
-  member?: any;
+  member?: IUser;
   isAdmin: boolean;
 }
 
 export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: MemberModalProps) {
   const [formData, setFormData] = useState({
-    name: member?.name || "",
+    username: member?.username || "",
     email: member?.email || "",
-    studentId: member?.studentId || "",
+    codeStudent: member?.codeStudent || "",
     phone: member?.phone || "",
     // role: member?.role || "",
     // team: member?.team || "",
@@ -52,13 +55,13 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`user-manager`],
-    queryFn: () => userService.getUserById({ id: member.id }),
+    queryFn: () => userService.getUserById({ id: member?._id as string }),
   });
 
   const { mutate, isPending } = useMutation({ mutationFn: userService.updateUserById });
 
   const methods = useForm({
-    // resolver: yupResolver(validationLoginSchema),
+    // resolver: yupResolver(validationUserSchema),
   });
 
   const {
@@ -85,7 +88,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
         // TokenStorage.setToken(response?.data?.tokens?.access_token!)
         // TokenStorage.setRefreshToken(response?.data?.tokens?.refresh_token!)
         // router.push(ROUTES.HOME)
-        // reset()
+        reset();
       },
       onError: (error) => {
         console.error(error);
@@ -94,18 +97,8 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
     });
   };
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   // Xử lý logic tạo/chỉnh sửa thành viên ở đây
-  //   console.log("Dữ liệu thành viên:", formData);
-  //   onClose();
-  // };
-
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
@@ -129,22 +122,26 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="name">Họ và Tên</Label>
+                <Label className="text-amber-900" htmlFor="name">Họ và Tên</Label>
                 {isViewMode ? (
-                  <p className="text-sm">{member?.name}</p>
+                  <p className="text-sm">{member?.username}</p>
                 ) : (
-                  <Input
-                    id={FORM_SIGN.username}
-                    {...register(FORM_SIGN.username)}
-                    errorMessage={errors[FORM_SIGN.username]?.message?.toString()}
-                    placeholder="Nhập họ và tên thành viên"
-                    required
-                  />
+                  <>
+                    <Input
+                      id={FORM_USER.username}
+                      {...register(FORM_SIGN.username)}
+                      placeholder="Nhập họ và tên thành viên"
+                      required
+                    />
+                    {errors[FORM_USER.username] && (
+                      <span>{errors?.[FORM_USER.username]?.message?.toString()}</span>
+                    )}
+                  </>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={FORM_SIGN.email}>Email</Label>
+                <Label className="text-amber-900" htmlFor={FORM_SIGN.email}>Email</Label>
                 {isViewMode ? (
                   <p>
                     <Link href={`mailto:${member?.email}`} target="_blank" className="text-sm">
@@ -152,37 +149,45 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
                     </Link>
                   </p>
                 ) : (
-                  <Input
-                    id={FORM_SIGN.email}
-                    {...register(FORM_SIGN.email)}
-                    errorMessage={errors[FORM_SIGN.email]?.message?.toString()}
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="Nhập địa chỉ email"
-                    required
-                  />
+                  <>
+                    <Input
+                      id={FORM_USER.email}
+                      {...register(FORM_USER.email)}
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="Nhập địa chỉ email"
+                      required
+                    />
+                    {errors[FORM_USER.email] && (
+                      <span>{errors?.[FORM_USER.email]?.message?.toString()}</span>
+                    )}
+                  </>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={FORM_SIGN.codeStudent}>Mã số sinh viên</Label>
+                <Label className="text-amber-900" htmlFor={FORM_SIGN.codeStudent}>Mã số sinh viên</Label>
                 {isViewMode ? (
-                  <p className="text-sm">{member?.studentId}</p>
+                  <p className="text-sm">{member?.codeStudent}</p>
                 ) : (
-                  <Input
-                    id={FORM_SIGN.codeStudent}
-                    {...register(FORM_SIGN.codeStudent)}
-                    errorMessage={errors[FORM_SIGN.codeStudent]?.message?.toString()}
-                    placeholder="20111111"
-                    required
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                  />
+                  <>
+                    <Input
+                      id={FORM_USER.codeStudent}
+                      {...register(FORM_USER.codeStudent)}
+                      placeholder="20111111"
+                      required
+                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                    />
+                    {errors[FORM_USER.codeStudent] && (
+                      <span>{errors?.[FORM_USER.codeStudent]?.message?.toString()}</span>
+                    )}
+                  </>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone (Zalo)</Label>
+                <Label className="text-amber-900" htmlFor="phone">Phone (Zalo)</Label>
                 {isViewMode ? (
                   <p>
                     <Link
@@ -194,14 +199,18 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
                     </Link>
                   </p>
                 ) : (
-                  <Input
-                    id={FORM_SIGN.phone}
-                    {...register(FORM_SIGN.phone)}
-                    errorMessage={errors[FORM_SIGN.phone]?.message?.toString()}
-                    placeholder="Nhập số điện thoại"
-                    required
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                  />
+                  <>
+                    <Input
+                      id={FORM_USER.phone}
+                      {...register(FORM_USER.phone)}
+                      placeholder="Nhập số điện thoại"
+                      required
+                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                    />
+                    {errors[FORM_USER.phone] && (
+                      <span>{errors?.[FORM_USER.phone]?.message?.toString()}</span>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -220,9 +229,6 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
             )}
 
             <DialogFooter>
-              {/* <Button type="button" variant="outline" onClick={onClose}>
-              {isViewMode ? "Đóng" : "Hủy"}
-            </Button> */}
               {canEdit && (
                 <Button type="submit">
                   {mode === "create" ? "Thêm Thành Viên" : "Lưu Thay Đổi"}

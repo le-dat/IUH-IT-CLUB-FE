@@ -53,10 +53,7 @@ export default function EventModal({ isOpen, onClose, isAdmin, event, mode }: Ev
   const buttonTitle = mode === "edit" ? "Lưu Thay Đổi" : isAdmin ? "Tạo Sự Kiện" : "Gửi Đề Xuất";
 
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
@@ -117,9 +114,6 @@ export default function EventModal({ isOpen, onClose, isAdmin, event, mode }: Ev
             />
           </div>
           <DialogFooter>
-            {/* <Button type="button" variant="outline" onClick={onClose}>
-              Hủy
-            </Button> */}
             <Button type="submit">{buttonTitle}</Button>
           </DialogFooter>
         </form>

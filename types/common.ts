@@ -9,3 +9,10 @@ export interface IId {
 }
 
 export interface ICommonMongodb extends IDateTime, IId {}
+
+export interface IDashboard {
+  totalUsers: number;
+  totalTeams: number;
+  upcomingEvents: number;
+  deviceAvailable: number;
+}

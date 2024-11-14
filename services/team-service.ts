@@ -5,7 +5,7 @@ import axiosClient from "./axios-client";
 const teamService = {
   getTeams: async ({ page, limit }: { page: number; limit: number }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<ITeam[]>>(`/teams`, {
+      const response = await axiosClient.get<SuccessResponse<ITeam[]>>(`/user/members`, {
         params: { page, limit },
       });
       return response.data;
@@ -15,7 +15,7 @@ const teamService = {
   },
   getTeamById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<ITeam>>(`/teams/${id}`);
+      const response = await axiosClient.get<SuccessResponse<ITeam>>(`/user/teams/${id}`);
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch team by id");
@@ -23,7 +23,7 @@ const teamService = {
   },
   createTeam: async (team: ITeam) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<ITeam>>("/teams", team);
+      const response = await axiosClient.post<SuccessResponse<ITeam>>("/user/teams", team);
       return response.data;
     } catch (error) {
       throw new Error("Failed to create team");

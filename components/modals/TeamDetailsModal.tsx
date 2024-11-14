@@ -37,10 +37,7 @@ export default function TeamDetailsModal({
   onEdit,
 }: TeamDetailsModalProps) {
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />{" "}
         <DialogHeader>
@@ -76,12 +73,7 @@ export default function TeamDetailsModal({
             </div>
           )}
         </div>
-        <DialogFooter>
-          {/* <Button variant="outline" onClick={onClose}>
-            Đóng
-          </Button> */}
-          {isAdmin && <Button onClick={onEdit}>Quản lý nhóm</Button>}
-        </DialogFooter>
+        <DialogFooter>{isAdmin && <Button onClick={onEdit}>Quản lý nhóm</Button>}</DialogFooter>
       </DialogContent>
     </Dialog>
   );

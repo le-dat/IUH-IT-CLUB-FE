@@ -1,8 +1,18 @@
 import { SuccessResponse } from "@/types/response-type";
 import { IUser } from "@/types/user-type";
 import axiosClient from "./axios-client";
+import { IDashboard } from "@/types/common";
 
 const userService = {
+  getDashboard: async () => {
+    try {
+      const response = await axiosClient.get("/user/dashboard");
+      return response.data as SuccessResponse<IDashboard>;
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error?.message ?? "Failed to get dashboard");
+    }
+  },
   getMe: async () => {
     try {
       const response = await axiosClient.get("/user/profile");
@@ -20,7 +30,7 @@ const userService = {
     limit = 10,
   }: { search?: string; year?: string; skill?: string; page?: number; limit?: number } = {}) => {
     try {
-      const response = await axiosClient.get("/users", {
+      const response = await axiosClient.get("/user/members", {
         params: { search, year, skill, page, limit },
       });
       return response.data as SuccessResponse<{ users: IUser[]; total: number }>;

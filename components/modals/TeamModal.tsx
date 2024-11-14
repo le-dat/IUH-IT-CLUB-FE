@@ -124,10 +124,12 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
               <Input
                 id={FORM_TEAM.name}
                 {...register(FORM_TEAM.name)}
-                errorMessage={errors[FORM_TEAM.name]?.message?.toString()}
                 placeholder="Nhập tên nhóm"
                 required
               />
+              {errors[FORM_TEAM.name] && (
+                <span>{errors?.[FORM_TEAM.name]?.message?.toString()}</span>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor={FORM_TEAM.leader}>Trưởng Nhóm</Label>

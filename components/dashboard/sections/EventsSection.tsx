@@ -12,6 +12,8 @@ import { useFilter } from "@/hooks/useFilter";
 import { createSearchFilter } from "@/lib/utils/filters";
 import EventModal from "@/components/modals/CreateEventModal";
 import ApprovalModal from "@/components/modals/ApprovalModal";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import eventService from "@/services/event-service";
 
 interface Event {
   id: number;
@@ -54,6 +56,11 @@ const mockEvents: Event[] = [
 
 export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
+
+  const [selectedTeam, setSelectedTeam] = useState<Event | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -62,23 +69,37 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   const [displayedItems, setDisplayedItems] = useState(ITEMS_PER_PAGE);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { searchTerm, setSearchTerm, filteredItems } = useFilter({
-    items: mockEvents,
-    filterFn: (event, { searchTerm }) =>
-      createSearchFilter(searchTerm, ["title", "location"])(event),
+  // const { searchTerm, setSearchTerm, filteredItems } = useFilter({
+  //   items: mockEvents,
+  //   filterFn: (event, { searchTerm }) =>
+  //     createSearchFilter(searchTerm, ["title", "location"])(event),
+  // });
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [`team-manager-${currentPage}`],
+    queryFn: () => eventService.getEvents({ page: 1, limit: 10 }),
+    enabled: true,
+  });
+
+  const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({
+    mutationFn: eventService.deleteEvent,
+  });
+
+  const { mutate: handleUpdateById, isPending: isUpdateDelete } = useMutation({
+    mutationFn: eventService.updateEvent,
   });
 
   const loadMore = async () => {
     if (isLoading) return;
-    setIsLoading(true);
+    // setIsLoading(true);
 
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    setDisplayedItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredItems.length));
-    setIsLoading(false);
+    setDisplayedItems((prev) => Math.min(prev + ITEMS_PER_PAGE, mockEvents.length));
+    // setIsLoading(false);
   };
 
   const handleView = (event: Event) => {
@@ -112,8 +133,8 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     setSelectedEvent(null);
   };
 
-  const displayedEvents = filteredItems.slice(0, displayedItems);
-  const hasMore = displayedItems < filteredItems.length;
+  const displayedEvents = mockEvents.slice(0, displayedItems);
+  const hasMore = displayedItems < mockEvents.length;
 
   return (
     <div className="space-y-6">

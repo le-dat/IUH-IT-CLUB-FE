@@ -18,6 +18,7 @@ import { AuthStorage } from "@/lib/local-storage";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import useAuthStore from "@/store/auth-store";
+import { ROUTES } from "@/constants/route";
 
 interface DashboardHeaderProps {
   isAdmin: boolean;
@@ -31,14 +32,13 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
     queryFn: () => userService.getMe(),
   });
 
-  console.log("data: ", data);
-
   const handleClick = (path: string) => {
     router.push(path);
   };
 
   const handleLogout = async () => {
     AuthStorage.clearToken();
+    router.push(ROUTES.LOGIN);
     refetch();
   };
 

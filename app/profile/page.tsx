@@ -23,9 +23,11 @@ export default function ProfilePage() {
     queryKey: [`user-profile`],
     queryFn: () => userService.getMe(),
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const [skills, setSkills] = useState(data?.data?.skills || ["React", "TypeScript", "Node.js"]);
-  const [newSkill, setNewSkill] = useState("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [skills, setSkills] = useState<string[]>(
+    data?.data?.skills || ["React", "TypeScript", "Node.js"]
+  );
+  const [newSkill, setNewSkill] = useState<string>("");
 
   const handleAddSkill = (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,16 +137,15 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="studentId">Mã sinh viên</Label>
-                        {isEditing ? (
-                          <Input
-                            id="studentId"
-                            defaultValue="2022222"
-                            className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                          />
-                        ) : (
-                          <p>2022222</p>
-                        )}
+                        <Label htmlFor={FORM_USER.codeStudent}>Mã sinh viên</Label>
+                        <Input
+                          id={FORM_USER.codeStudent}
+                          defaultValue="2022222"
+                          className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                        />
+                        {/* {errors[FORM_USER.codeStudent] && (
+                          <span>{errors[FORM_USER.codeStudent].message?.toString()}</span>
+                        )} */}
                       </div>
 
                       <div className="space-y-2">

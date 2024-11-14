@@ -1,7 +1,16 @@
 import { Card } from "@/components/ui/card";
+import userService from "@/services/user-service";
+import { useQuery } from "@tanstack/react-query";
 import { Users, Target, Laptop, Calendar } from "lucide-react";
 
 export default function DashboardStats() {
+  // const {} = 
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [`dashboard`],
+    queryFn: () => userService.getDashboard(),
+    enabled: true,
+  });
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       <Card className="p-4 flex items-center gap-4">
@@ -10,7 +19,7 @@ export default function DashboardStats() {
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Tổng số thành viên</p>
-          <h3 className="text-2xl font-bold">64</h3>
+          <h3 className="text-2xl font-bold">{data?.data?.totalUsers}</h3>
         </div>
       </Card>
 
@@ -20,7 +29,7 @@ export default function DashboardStats() {
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Đội nhóm</p>
-          <h3 className="text-2xl font-bold">3</h3>
+          <h3 className="text-2xl font-bold">{data?.data?.totalTeams}</h3>
         </div>
       </Card>
 
@@ -30,7 +39,7 @@ export default function DashboardStats() {
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Sự kiện sắp tới</p>
-          <h3 className="text-2xl font-bold">5</h3>
+          <h3 className="text-2xl font-bold">{data?.data?.upcomingEvents}</h3>
         </div>
       </Card>
 
@@ -40,7 +49,7 @@ export default function DashboardStats() {
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Thiết bị có sẵn</p>
-          <h3 className="text-2xl font-bold">10</h3>
+          <h3 className="text-2xl font-bold">{data?.data?.deviceAvailable}</h3>
         </div>
       </Card>
     </div>
