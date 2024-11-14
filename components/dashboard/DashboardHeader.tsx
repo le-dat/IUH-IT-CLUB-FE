@@ -26,7 +26,7 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
   const router = useRouter();
-  const { login: loginStore } = useAuthStore();
+  const { login: loginStore ,logout} = useAuthStore();
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`user-profile`],
     queryFn: () => userService.getMe(),
@@ -38,7 +38,9 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
 
   const handleLogout = async () => {
     AuthStorage.clearToken();
+    logout()
     router.push(ROUTES.LOGIN);
+    toast.success("Đăng xuất thành công");
     refetch();
   };
 

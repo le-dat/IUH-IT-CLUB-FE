@@ -1,4 +1,4 @@
-export const FORM_EVENT = {
+export const FORM_EVENT = Object.freeze({
   title: "title",
   description: "description",
   date: "date",
@@ -6,4 +6,4 @@ export const FORM_EVENT = {
   location: "location",
   attendees: "attendees",
   organizer: "organizer",
-};
+} as const);

@@ -136,7 +136,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   )}
                 />
                 {errors[FORM_DEVICE.type] && (
-                  <span>{errors?.[FORM_DEVICE.type]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_DEVICE.type]?.message?.toString()}
+                  </span>
                 )}
               </div>
 
@@ -161,7 +163,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   )}
                 />
                 {errors[FORM_DEVICE.status] && (
-                  <span>{errors?.[FORM_DEVICE.status]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_DEVICE.status]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -185,7 +189,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   )}
                 />
                 {errors[FORM_DEVICE.condition] && (
-                  <span>{errors?.[FORM_DEVICE.condition]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_DEVICE.condition]?.message?.toString()}
+                  </span>
                 )}
               </div>
             </div>

@@ -58,9 +58,9 @@ export const validationUserSchema = yup.object().shape({
     .string()
     .required("Số điện thoại là bắt buộc")
     .matches(/^[0-9]{10}$/, "Số điện thoại không hợp lệ, phải có 10 chữ số"),
-  role: yup.string().required("Vai trò là bắt buộc"),
-  skill: yup.string().required("Kỹ năng là bắt buộc"),
-  year: yup.string().required("Năm học là bắt buộc"),
+  role: yup.string(),
+  skill: yup.string(),
+  year: yup.string(),
 });
 
 export const validationTeamSchema = yup.object().shape({

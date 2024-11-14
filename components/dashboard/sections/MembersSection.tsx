@@ -21,71 +21,11 @@ import userService from "@/services/user-service";
 import { toast } from "sonner";
 import { useDebounce } from "@uidotdev/usehooks";
 import teamService from "@/services/team-service";
+import { IUser } from "@/types/user-type";
 
 interface MembersSectionProps {
   isAdmin: boolean;
 }
-
-const ITEMS_PER_PAGE = 10;
-
-const members = [
-  {
-    id: 1,
-    name: "Le Dat",
-    role: "Developer",
-    team: "Web Dev",
-    status: "Active",
-    joinDate: "2024-01-15",
-    email: "alex@example.com",
-    phone: "0123456789",
-    skills: ["React", "Node.js", "TypeScript"],
-    schoolYear: "Năm nhất",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=50&h=50&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    name: "Quang Thao",
-    role: "Developer",
-    team: "Web Dev",
-    status: "Active",
-    joinDate: "2024-01-15",
-    email: "alex@example.com",
-    phone: "0123456789",
-    skills: ["React", "Node.js", "TypeScript"],
-    schoolYear: "Năm nhất",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=50&h=50&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    name: "lex Johnson",
-    role: "Developer",
-    team: "Web Dev",
-    status: "Active",
-    joinDate: "2024-01-15",
-    email: "alex@example.com",
-    phone: "0123456789",
-    skills: ["React", "Node.js", "TypeScript"],
-    schoolYear: "Năm hai",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=50&h=50&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    name: "lex Johnson",
-    role: "Developer",
-    team: "Web Dev",
-    status: "Active",
-    joinDate: "2024-01-15",
-    email: "alex@example.com",
-    phone: "0123456789",
-    skills: ["React", "Node.js", "TypeScript"],
-    schoolYear: "Năm ba",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=50&h=50&auto=format&fit=crop",
-  },
-];
 
 export default function MembersSection({ isAdmin }: MembersSectionProps) {
   const { t } = useTranslation();
@@ -101,7 +41,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
   const debouncedCurrentPage = useDebounce(currentPage, 500);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [selectedMember, setSelectedMember] = useState<IUser | null>(null);
   const [modalMode, setModalMode] = useState<"view" | "create" | "edit">("view");
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
@@ -109,32 +49,21 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
     queryKey: [
       `user-manager-${debouncedSearchTerm}-${debouncedSelectedYear}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
     ],
-    queryFn: () => userService.getAllUser({ page: 1, limit: 10 }),
+    queryFn: () =>
+      userService.getAllUser({
+        search: debouncedSearchTerm,
+        page: debouncedCurrentPage,
+        limit: 10,
+      }),
   });
 
   const { mutate: handleDeleteById, isPending } = useMutation({
     mutationFn: userService.deleteUserById,
   });
 
-  // const filteredMembers = members.filter((member) => {
-  //   const matchesSearch =
-  //     member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     member.email.toLowerCase().includes(searchTerm.toLowerCase());
-  //   const matchesYear = selectedYear === "All Years" || member.schoolYear === selectedYear;
-  //   const matchesSkill = selectedSkill === "All Skills" || member.skills.includes(selectedSkill);
+  const totalPages = Math.ceil(Number(data?.data?.pagination?.totalPages));
 
-  //   return matchesSearch && matchesYear && matchesSkill;
-  // });
-
-  // const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE);
-  // const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  // const paginatedMembers = filteredMembers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-  const totalPages = 3;
-  const paginatedMembers = 4
-
-
-  const handleAction = (member: any, mode: "view" | "edit") => {
+  const handleAction = (member: IUser, mode: "view" | "edit") => {
     setSelectedMember(member);
     setModalMode(mode);
     setModalOpen(true);
@@ -152,14 +81,13 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
   };
 
   const confirmDelete = () => {
-    console.log("Deleting member:", selectedMember?.id);
-
     handleDeleteById(
-      { id: selectedMember?.id },
+      { id: selectedMember?._id as string },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
           setDeleteModalOpen(false);
+          refetch();
         },
         onError: (error) => {
           console.error(error);
@@ -184,12 +112,12 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
               />
             </div>
           </div>
-          {isAdmin && (
+          {/* {isAdmin && (
             <Button onClick={handleOpenModalAddMember}>
               <Plus className="h-4 w-4 mr-2" />
               Thêm thành viên
             </Button>
-          )}
+          )} */}
         </div>
 
         <div className="flex items-center justify-between">
@@ -239,7 +167,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         mode={modalMode}
-        member={selectedMember}
+        member={selectedMember!}
         isAdmin={isAdmin}
       />
       {selectedMember && (
@@ -248,7 +176,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
           onClose={() => setDeleteModalOpen(false)}
           onConfirm={confirmDelete}
           title="Xóa thành viên"
-          description={`Bạn có chắc chắn muốn xóa thành viên ${selectedMember.name} khỏi câu lạc bộ? Hành động này không thể hoàn tác.`}
+          description={`Bạn có chắc chắn muốn xóa thành viên ${selectedMember.username} khỏi câu lạc bộ? Hành động này không thể hoàn tác.`}
         />
       )}
     </div>

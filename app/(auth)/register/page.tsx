@@ -144,7 +144,9 @@ export default function RegisterPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_SIGN.username] && (
-                  <span>{errors?.[FORM_SIGN.username]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_SIGN.username]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -158,7 +160,9 @@ export default function RegisterPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_SIGN.email] && (
-                  <span>{errors?.[FORM_SIGN.email]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_SIGN.email]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -171,7 +175,9 @@ export default function RegisterPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_SIGN.codeStudent] && (
-                  <span>{errors?.[FORM_SIGN.codeStudent]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_SIGN.codeStudent]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -184,7 +190,9 @@ export default function RegisterPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_SIGN.phone] && (
-                  <span>{errors?.[FORM_SIGN.phone]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_SIGN.phone]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -197,7 +205,9 @@ export default function RegisterPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_SIGN.password] && (
-                  <span>{errors?.[FORM_SIGN.password]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_SIGN.password]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -210,7 +220,9 @@ export default function RegisterPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_SIGN.confirmPassword] && (
-                  <span>{errors?.[FORM_SIGN.confirmPassword]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_SIGN.confirmPassword]?.message?.toString()}
+                  </span>
                 )}
               </div>
 

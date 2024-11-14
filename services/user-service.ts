@@ -1,12 +1,12 @@
 import { SuccessResponse } from "@/types/response-type";
 import { IUser } from "@/types/user-type";
 import axiosClient from "./axios-client";
-import { IDashboard } from "@/types/common";
+import { IDashboard, IPagination } from "@/types/common";
 
 const userService = {
   getDashboard: async () => {
     try {
-      const response = await axiosClient.get("/user/dashboard");
+      const response = await axiosClient.get("/dashboard");
       return response.data as SuccessResponse<IDashboard>;
     } catch (error: any) {
       console.error(error);
@@ -31,9 +31,9 @@ const userService = {
   }: { search?: string; year?: string; skill?: string; page?: number; limit?: number } = {}) => {
     try {
       const response = await axiosClient.get("/user/members", {
-        params: { search, year, skill, page, limit },
+        params: { q: search,level: year, skill, page, limit },
       });
-      return response.data as SuccessResponse<{ users: IUser[]; total: number }>;
+      return response.data as SuccessResponse<{ users: IUser[]; pagination: IPagination }>;
     } catch (error: any) {
       console.error(error);
       throw new Error(error?.message ?? "Failed to get all users");
@@ -41,7 +41,7 @@ const userService = {
   },
   getUserById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.get(`/users/${id}`);
+      const response = await axiosClient.get(`/user/member/${id}`);
       return response.data as SuccessResponse<IUser>;
     } catch (error: any) {
       console.error(error);
@@ -51,7 +51,7 @@ const userService = {
 
   createUser: async ({ data }: { data: Partial<IUser> }) => {
     try {
-      const response = await axiosClient.post("/users", data);
+      const response = await axiosClient.post("/user", data);
       return response.data as SuccessResponse<IUser>;
     } catch (error: any) {
       console.error(error);
@@ -59,20 +59,10 @@ const userService = {
     }
   },
 
-  searchUsers: async ({ keyword }: { keyword: string }) => {
-    try {
-      const response = await axiosClient.get(`/users/search?keyword=${keyword}`);
-      return response.data as SuccessResponse<IUser[]>;
-    } catch (error: any) {
-      console.error(error);
-      throw new Error(error?.message ?? "Failed to search users");
-    }
-  },
-
   //  admin
   updateUserById: async ({ id, data }: { id: string; data: Partial<IUser> }) => {
     try {
-      const response = await axiosClient.put(`/users/${id}`, data);
+      const response = await axiosClient.put(`/user/member/${id}`, data);
       return response.data as SuccessResponse<IUser>;
     } catch (error: any) {
       console.error(error);
@@ -81,7 +71,7 @@ const userService = {
   },
   deleteUserById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.delete(`/users/${id}`);
+      const response = await axiosClient.delete(`/user/member/${id}`);
       return response.data as SuccessResponse<null>;
     } catch (error: any) {
       console.error(error);

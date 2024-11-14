@@ -11,8 +11,15 @@ export interface IId {
 export interface ICommonMongodb extends IDateTime, IId {}
 
 export interface IDashboard {
-  totalUsers: number;
-  totalTeams: number;
-  upcomingEvents: number;
-  deviceAvailable: number;
+  equipments: number;
+  events: number;
+  teams: number;
+  users: number;
+}
+
+export interface IPagination {
+  totalResults: string,
+  totalPages: string,
+  currentPage:  string,
+  limit: string,
 }

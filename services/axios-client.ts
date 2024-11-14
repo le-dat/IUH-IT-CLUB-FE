@@ -79,7 +79,7 @@ const handleErrorResponse = async (error: any) => {
       return axiosClient(originalRequest);
     } catch (err) {
       processQueue(err, null);
-      AuthStorage.clearToken(); // Clear local storage if refresh token request fails
+      // AuthStorage.clearToken(); // Clear local storage if refresh token request fails
       return Promise.reject(err);
     } finally {
       isRefreshing = false;

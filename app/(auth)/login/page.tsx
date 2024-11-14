@@ -147,7 +147,9 @@ export default function LoginPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_LOGIN.email] && (
-                  <span>{errors?.[FORM_LOGIN.email]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_LOGIN.email]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="space-y-2">
@@ -160,7 +162,9 @@ export default function LoginPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
                 {errors[FORM_LOGIN.password] && (
-                  <span>{errors?.[FORM_LOGIN.password]?.message?.toString()}</span>
+                  <span className="text-red-500 mt-2">
+                    {errors?.[FORM_LOGIN.password]?.message?.toString()}
+                  </span>
                 )}
               </div>
               <div className="flex items-center justify-between">

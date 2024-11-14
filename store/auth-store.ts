@@ -14,7 +14,10 @@ const useAuthStore = create<AuthState>((set: (partial: Partial<AuthState>) => vo
   isAuthenticated: !!AuthStorage.getAccessToken(),
   user: null,
   isAdmin: true,
-  login: (user: IUser) => set({ isAuthenticated: true, user, isAdmin: user?.role === "admin" }),
+  login: (user: IUser) => set({ isAuthenticated: true, user, isAdmin: 
+    // user?.role === "admin"
+    true
+   }),
   logout: () => set({ isAuthenticated: false, user: null }),
 }));
 

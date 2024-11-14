@@ -128,7 +128,9 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                 required
               />
               {errors[FORM_TEAM.name] && (
-                <span>{errors?.[FORM_TEAM.name]?.message?.toString()}</span>
+                <span className="text-red-500 mt-2">
+                  {errors?.[FORM_TEAM.name]?.message?.toString()}
+                </span>
               )}
             </div>
             <div className="space-y-2">
@@ -152,7 +154,9 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                 )}
               />
               {errors[FORM_TEAM.leader] && (
-                <span>{errors?.[FORM_TEAM.leader]?.message?.toString()}</span>
+                <span className="text-red-500 mt-2">
+                  {errors?.[FORM_TEAM.leader]?.message?.toString()}
+                </span>
               )}
             </div>
             <div className="space-y-2">
@@ -176,7 +180,9 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                 )}
               />
               {errors[FORM_TEAM.status] && (
-                <span>{errors?.[FORM_TEAM.status]?.message?.toString()}</span>
+                <span className="text-red-500 mt-2">
+                  {errors?.[FORM_TEAM.status]?.message?.toString()}
+                </span>
               )}
             </div>
             <div className="space-y-2">
@@ -189,7 +195,9 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                 required
               />
               {errors[FORM_TEAM.description] && (
-                <span>{errors?.[FORM_TEAM.description]?.message?.toString()}</span>
+                <span className="text-red-500 mt-2">
+                  {errors?.[FORM_TEAM.description]?.message?.toString()}
+                </span>
               )}
             </div>
             <DialogFooter>

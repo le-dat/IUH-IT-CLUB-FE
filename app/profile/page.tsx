@@ -127,9 +127,11 @@ export default function ProfilePage() {
                               defaultValue="Lê Đạt"
                               className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                             />
-                            {/* {errors[FORM_USER.username] && (
-                              <span>{errors?.[FORM_USER.username]?.message?.toString()}</span>
-                            )} */}
+                            {errors[FORM_USER.username] && (
+                              <span className="text-red-500 mt-2">
+                                {errors?.[FORM_USER.username]?.message?.toString()}
+                              </span>
+                            )}
                           </>
                         ) : (
                           <p>Lê Đạt</p>
@@ -143,9 +145,11 @@ export default function ProfilePage() {
                           defaultValue="2022222"
                           className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         />
-                        {/* {errors[FORM_USER.codeStudent] && (
-                          <span>{errors[FORM_USER.codeStudent].message?.toString()}</span>
-                        )} */}
+                        {errors[FORM_USER.codeStudent] && (
+                          <span className="text-red-500 mt-2">
+                            {errors[FORM_USER.codeStudent]?.message?.toString()}
+                          </span>
+                        )}
                       </div>
 
                       <div className="space-y-2">
