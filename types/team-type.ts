@@ -11,7 +11,7 @@ export interface ICompetition extends IId {
 
 export interface ITeam extends ICommonMongodb {
   name: string;
-  leader: IUser;
+  leader?: IUser;
   members: IUser[] | [];
   description: string;
   competition: ICompetition[];

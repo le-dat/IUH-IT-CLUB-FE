@@ -28,10 +28,7 @@ export default function DeleteConfirmationModal({
   description,
 }: DeleteConfirmationModalProps) {
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent>
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
@@ -42,9 +39,6 @@ export default function DeleteConfirmationModal({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-0">
-          {/* <Button variant="outline" onClick={onClose}>
-            Hủy
-          </Button> */}
           <Button variant="destructive" onClick={onConfirm}>
             Xóa
           </Button>

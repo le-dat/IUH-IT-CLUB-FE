@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import Pagination from "@/components/common/Pagination";
+import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
+import MemberModal from "@/components/modals/MemberModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
-import MemberTable from "./members/MemberTable";
-import MemberModal from "@/components/modals/MemberModal";
-import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
-import Pagination from "@/components/common/Pagination";
 import {
   Select,
   SelectContent,
@@ -16,12 +13,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "@/hooks/useTranslation";
+import { Plus, Search } from "lucide-react";
+import { useState } from "react";
+import MemberTable from "./members/MemberTable";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import userService from "@/services/user-service";
+import { toast } from "sonner";
+import { useDebounce } from "@uidotdev/usehooks";
+import teamService from "@/services/team-service";
 
 interface MembersSectionProps {
   isAdmin: boolean;
 }
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 10;
 
 const members = [
   {
@@ -85,21 +90,39 @@ const members = [
 export default function MembersSection({ isAdmin }: MembersSectionProps) {
   const { t } = useTranslation();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  // const [selectedRole, setSelectedRole] = useState("All Roles");
-  const [selectedYear, setSelectedYear] = useState("All Years");
-  const [selectedSkill, setSelectedSkill] = useState("All Skills");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState<string>("All Years");
+  const [selectedSkill, setSelectedSkill] = useState<string>("All Skills");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 700);
+  const debouncedSelectedYear = useDebounce(selectedYear, 500);
+  const debouncedSelectedSkill = useDebounce(selectedSkill, 500);
+  const debouncedCurrentPage = useDebounce(currentPage, 500);
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [modalMode, setModalMode] = useState<"view" | "create" | "edit">("view");
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [
+      `user-manager-${debouncedSearchTerm}-${debouncedSelectedYear}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
+    ],
+    queryFn: () => teamService.getTeams({ page: 1, limit: 10 }),
+    enabled: true,
+  });
+
+  console.log("data", data);
+
+  const { mutate: handleDeleteById, isPending } = useMutation({
+    mutationFn: teamService.deleteTeamById,
+  });
 
   const filteredMembers = members.filter((member) => {
     const matchesSearch =
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase());
-    // const matchesRole = selectedRole === "All Roles" || member.role === selectedRole;
     const matchesYear = selectedYear === "All Years" || member.schoolYear === selectedYear;
     const matchesSkill = selectedSkill === "All Skills" || member.skills.includes(selectedSkill);
 
@@ -116,20 +139,33 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
     setModalOpen(true);
   };
 
-  const handleAddMember = () => {
+  const handleOpenModalAddMember = () => {
     setSelectedMember(null);
     setModalMode("create");
     setModalOpen(true);
   };
 
-  const handleDelete = (member: any) => {
+  const handleOpenModalDelete = (member: any) => {
     setSelectedMember(member);
     setDeleteModalOpen(true);
   };
 
   const confirmDelete = () => {
     console.log("Deleting member:", selectedMember?.id);
-    setDeleteModalOpen(false);
+
+    handleDeleteById(
+      { id: selectedMember?.id },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          setDeleteModalOpen(false);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      }
+    );
   };
 
   return (
@@ -148,7 +184,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
             </div>
           </div>
           {isAdmin && (
-            <Button onClick={handleAddMember}>
+            <Button onClick={handleOpenModalAddMember}>
               <Plus className="h-4 w-4 mr-2" />
               Thêm thành viên
             </Button>
@@ -157,18 +193,6 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
 
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
-            {/* <Select value={selectedRole} onValueChange={setSelectedRole}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Lọc theo vai trò" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All Roles">Tất cả vai trò</SelectItem>
-                <SelectItem value="Developer">Lập trình viên</SelectItem>
-                <SelectItem value="Designer">Thiết kế viên</SelectItem>
-                <SelectItem value="Project Manager">Quản lý dự án</SelectItem>
-              </SelectContent>
-            </Select> */}
-
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger className="w-[180px] focus-visible:outline-none">
                 <SelectValue placeholder="Lọc theo năm học" />
@@ -178,7 +202,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
                 <SelectItem value="Freshman">Năm nhất</SelectItem>
                 <SelectItem value="Sophomore">Năm hai</SelectItem>
                 <SelectItem value="Junior">Năm ba</SelectItem>
-                <SelectItem value="Năm nhất">Năm tư</SelectItem>
+                <SelectItem value="Senior">Năm tư</SelectItem>
               </SelectContent>
             </Select>
 
@@ -198,10 +222,6 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            startIndex={startIndex}
-            endIndex={Math.min(startIndex + ITEMS_PER_PAGE, filteredMembers.length)}
-            totalItems={filteredMembers.length}
-            itemName="thành viên"
             onPageChange={setCurrentPage}
           />
         </div>
@@ -211,7 +231,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         isAdmin={isAdmin}
         onView={(member) => handleAction(member, "view")}
         onEdit={(member) => handleAction(member, "edit")}
-        onDelete={handleDelete}
+        onDelete={handleOpenModalDelete}
       />
 
       <MemberModal

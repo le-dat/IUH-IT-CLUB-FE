@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +10,14 @@ import {
 import { CircuitBoard, Settings, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useRouter } from "next/navigation";
+import ButtonGradient from "../common/ButtonGradient";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import authService from "@/services/auth-service";
+import userService from "@/services/user-service";
+import { AuthStorage } from "@/lib/local-storage";
+import { toast } from "sonner";
+import { useEffect } from "react";
+import useAuthStore from "@/store/auth-store";
 
 interface DashboardHeaderProps {
   isAdmin: boolean;
@@ -15,10 +25,26 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
   const router = useRouter();
+  const { login: loginStore } = useAuthStore();
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [`user-profile`],
+    queryFn: () => userService.getMe(),
+  });
+
+  console.log("data: ", data);
 
   const handleClick = (path: string) => {
     router.push(path);
   };
+
+  const handleLogout = async () => {
+    AuthStorage.clearToken();
+    refetch();
+  };
+
+  useEffect(() => {
+    loginStore(data?.data!);
+  }, [data, loginStore]);
 
   return (
     <header className="border-b">
@@ -33,10 +59,10 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
             <ThemeToggle />
 
             {isAdmin && (
-              <Button variant="outline" size="sm">
+              <ButtonGradient>
                 <Settings className="h-4 w-4 mr-2" />
                 Trang quản trị
-              </Button>
+              </ButtonGradient>
             )}
 
             <DropdownMenu>
@@ -53,7 +79,7 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
                 <DropdownMenuItem onClick={() => handleClick("/profile")}>
                   Trang cá nhân
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleClick("/")} className="text-red-600">
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                   <LogOut className="h-4 w-4 mr-2" />
                   Đăng xuất
                 </DropdownMenuItem>

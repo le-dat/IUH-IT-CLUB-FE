@@ -11,3 +11,11 @@ export const conditionsMap = {
   Fair: "Yếu",
   Poor: "Kém",
 };
+
+export const FORM_DEVICE = {
+  name: "name",
+  type: "type",
+  status: "status",
+  condition: "condition",
+  note: "note",
+};

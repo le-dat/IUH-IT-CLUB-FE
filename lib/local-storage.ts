@@ -1,6 +1,6 @@
 export const authStorageConstants = {
-    accessToken: 'access_token',
-    refreshToken: 'refresh_token',
+    accessToken: 'accessToken',
+    refreshToken: 'refreshToken',
   }
   
   const isBrowser = typeof window !== 'undefined'

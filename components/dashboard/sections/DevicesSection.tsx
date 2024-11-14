@@ -19,6 +19,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ApprovalModal from "@/components/modals/ApprovalModal";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import deviceService from "@/services/device-service";
+import { toast } from "sonner";
 
 interface DevicesSectionProps {
   isAdmin: boolean;
@@ -101,22 +105,42 @@ const devices = [
   },
 ];
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 10;
 
 export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   const { t } = useTranslation();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDevice, setSelectedDevice] = useState<any>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [selectedCondition, setSelectedCondition] = useState("All Conditions");
   const [selectedType, setSelectedType] = useState("All Types");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 700);
+  const debouncedSelectedYear = useDebounce(selectedStatus, 500);
+  const debouncedSelectedSkill = useDebounce(selectedCondition, 500);
+  const debouncedSelectedType = useDebounce(selectedType, 500);
+  const debouncedCurrentPage = useDebounce(currentPage, 500);
+
+  const [selectedDevice, setSelectedDevice] = useState<any>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false);
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [
+      `user-manager-${debouncedSearchTerm}-${debouncedSelectedYear}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
+    ],
+    queryFn: () => deviceService.getDevices({ page: 1, limit: 10 }),
+    enabled: true,
+  });
+
+  const { mutate: handleDeleteById, isPending } = useMutation({
+    mutationFn: deviceService.deleteDeviceById,
+  });
 
   const filteredDevices = devices.filter((device) => {
     const matchesSearch =
@@ -129,12 +153,11 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
 
     return matchesSearch && matchesStatus && matchesCondition && matchesType;
   });
-
   const totalPages = Math.ceil(filteredDevices.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedDevices = filteredDevices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  const handleView = (device: any) => {
+  const handleOpenModalView = (device: any) => {
     setSelectedDevice(device);
     setIsDetailsModalOpen(true);
   };
@@ -144,12 +167,12 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
     setIsApprovalModalOpen(true);
   };
 
-  const handleEdit = () => {
+  const handleOpenModalEdit = () => {
     setIsDetailsModalOpen(false);
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (device: any) => {
+  const handleOpenModalDelete = (device: any) => {
     setSelectedDevice(device);
     setIsDeleteModalOpen(true);
   };
@@ -160,9 +183,21 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   };
 
   const confirmDelete = () => {
-    // Handle delete logic here
     console.log("Deleting device:", selectedDevice?.id);
-    setIsDeleteModalOpen(false);
+
+    handleDeleteById(
+      { id: selectedDevice?.id },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          setIsDeleteModalOpen(false);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      }
+    );
   };
 
   return (
@@ -231,10 +266,6 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          startIndex={startIndex}
-          endIndex={Math.min(startIndex + ITEMS_PER_PAGE, filteredDevices.length)}
-          totalItems={filteredDevices.length}
-          itemName="devices"
           onPageChange={setCurrentPage}
         />
       </div>
@@ -242,12 +273,12 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
       <DeviceTable
         devices={paginatedDevices}
         isAdmin={isAdmin}
-        onView={handleView}
+        onView={handleOpenModalView}
         onEdit={(device) => {
           setSelectedDevice(device);
           setIsEditModalOpen(true);
         }}
-        onDelete={handleDelete}
+        onDelete={handleOpenModalDelete}
         onRequest={handleRequest}
         onApprove={handleApproval}
       />
@@ -259,7 +290,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             onClose={() => setIsDetailsModalOpen(false)}
             device={selectedDevice}
             isAdmin={isAdmin}
-            onEdit={handleEdit}
+            onEdit={handleOpenModalEdit}
           />
 
           <DeviceModal

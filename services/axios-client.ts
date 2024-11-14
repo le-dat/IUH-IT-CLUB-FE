@@ -43,7 +43,7 @@ axiosClient.interceptors.response.use(
 const handleErrorResponse = async (error: any) => {
   const originalRequest = error.config;
   const check =
-    originalRequest.url.includes("/auth/register") || originalRequest.url.includes("/auth/login");
+    originalRequest.url.includes("/user/register") || originalRequest.url.includes("/user/login");
   const isAuthError = [400, 401, 403].includes(error?.response?.status);
 
   if (isAuthError && !originalRequest._retry && !check) {
@@ -64,10 +64,10 @@ const handleErrorResponse = async (error: any) => {
     const refreshToken = AuthStorage.getRefreshToken();
     try {
       const { data } = await axios.post(`${baseURL}/auth/refresh-token`, {
-        refresh_token: refreshToken,
+        refreshToken: refreshToken,
       });
-      const _accessToken = data?.data?.access_token;
-      const _refreshToken = data?.data?.refresh_token;
+      const _accessToken = data?.data?.accessToken;
+      const _refreshToken = data?.data?.refreshToken;
 
       AuthStorage.setAccessToken(_accessToken);
       AuthStorage.setRefreshToken(_refreshToken);

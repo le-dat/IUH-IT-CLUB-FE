@@ -9,24 +9,26 @@ import MembersSection from "./sections/MembersSection";
 import TeamsSection from "./sections/TeamsSection";
 import EventsSection from "./sections/EventsSection";
 import DevicesSection from "./sections/DevicesSection";
+import useAuthStore from "@/store/auth-store";
 
 export default function TechClubDashboard() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { isAdmin } = useAuthStore();
+  // const [isAdmin, setIsAdmin] = useState(false);
 
-  const toggleRole = () => {
-    setIsAdmin(!isAdmin);
-  };
+  // const toggleRole = () => {
+  //   setIsAdmin(!isAdmin);
+  // };
 
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader isAdmin={isAdmin} />
 
-      <div className="container mx-auto p-6 space-y-8">
-        <div className="flex justify-end">
+      <div className="container mx-auto p-6 space-y-8 ">
+        {/* <div className="flex justify-end">
           <Button variant={isAdmin ? "destructive" : "default"} onClick={toggleRole}>
             Switch to {isAdmin ? "User" : "Admin"} Mode
           </Button>
-        </div>
+        </div> */}
 
         <DashboardStats />
 

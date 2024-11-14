@@ -1,27 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import ButtonGradient from "@/components/common/ButtonGradient";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { CircuitBoard, ArrowRight, Github, Users, Code2 } from "lucide-react";
+import { FORM_LOGIN } from "@/constants/auth";
+import { ROUTES } from "@/constants/route";
+import { AuthStorage } from "@/lib/local-storage";
+import { validationLoginSchema } from "@/lib/validate";
+import authService from "@/services/auth-service";
+import useAuthStore from "@/store/auth-store";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { CircuitBoard, Code2, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import ButtonGradient from "@/components/common/ButtonGradient";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { validationLoginSchema } from "@/lib/validate";
-import { useMutation } from "@tanstack/react-query";
-import authService from "@/services/auth-service";
-import { FORM_LOGIN_AUTH } from "@/constants/form";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function LoginPage() {
+  const { login: loginStore } = useAuthStore();
   const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
-  const { mutate, isPending } = useMutation({ mutationFn: authService.login })
-
+  const { mutate, isPending } = useMutation({ mutationFn: authService.login });
 
   const methods = useForm({
     resolver: yupResolver(validationLoginSchema),
@@ -31,119 +34,35 @@ export default function LoginPage() {
     watch,
     handleSubmit,
     reset,
+    register,
     formState: { errors },
   } = methods;
 
-  const isFormValid = watch(FORM_LOGIN_AUTH.email) && watch(FORM_LOGIN_AUTH.password)
-  const isSubmitDisabled = isPending || !isFormValid
+  const isFormValid = watch(FORM_LOGIN.email) && watch(FORM_LOGIN.password);
+  const isSubmitDisabled = isPending || !isFormValid;
 
   const onSubmit = async (data: any) => {
-    if (isSubmitDisabled) return
+    if (isSubmitDisabled) return;
 
-    // mutate(
-    //   { email: data.email, password: data.password },
-    //   {
-    //     onSuccess: (response) => {
-    //       toast.success(response?.message)
-    //       setIsAuthenticated(true)
-    //       setUser(response?.data?.user!)
-    //       setLocalStorage('user', response?.data?.user!)
-    //       TokenStorage.setToken(response?.data?.tokens?.access_token!)
-    //       TokenStorage.setRefreshToken(response?.data?.tokens?.refresh_token!)
-    //       router.push(ROUTES.HOME)
-    //       reset()
-    //     },
-    //     onError: (error) => {
-    //       console.error(error)
-    //       toast.error(error?.message || 'An error occurred during login')
-    //     },
-    //   }
-    // )
-  }
-
-  // const onSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   router.push("/dashboard");
-  // };
+    mutate(data, {
+      onSuccess: (response) => {
+        loginStore(response?.data?.user!);
+        AuthStorage.setAccessToken(response?.data?.token?.accessToken!);
+        AuthStorage.setRefreshToken(response?.data?.token?.refreshToken!);
+        router.push(ROUTES.DASHBOARD);
+        toast.success(response?.message);
+        reset();
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error(error?.message || "An error occurred during login");
+      },
+    });
+  };
 
   return (
     <div className="min-h-screen flex">
       {/* Left side - Login Form */}
-      <div className="w-full lg:w-1/2 p-8 sm:p-12 xl:p-24 flex flex-col justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md mx-auto space-y-8"
-        >
-          <div className="space-y-2">
-            <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80">
-              <CircuitBoard className="h-6 w-6" />
-              <h1 className="text-xl font-bold">Câu lạc bộ Công nghệ IUH</h1>
-            </Link>
-            <h2 className="text-3xl font-bold">Chào mừng trở lại</h2>
-            <p className="text-muted-foreground">
-              Nhập thông tin đăng nhập để truy cập tài khoản của bạn
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type="password"
-                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Switch id="admin-mode" checked={isAdmin} onCheckedChange={setIsAdmin} />
-                <Label htmlFor="admin-mode">Quyền truy cập Admin</Label>
-              </div>
-              <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                Quên mật khẩu?
-              </Link>
-            </div>
-
-            <ButtonGradient type="submit">Đăng nhập</ButtonGradient>
-          </form>
-
-          <div className="space-y-4">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Hoặc tiếp tục với</span>
-              </div>
-            </div>
-
-            <Button variant="outline" className="w-full">
-              <Github className="mr-2 h-4 w-4" />
-              Tiếp tục với GitHub
-            </Button>
-          </div>
-
-          <p className="text-center text-sm text-muted-foreground">
-            Chưa có tài khoản?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Đăng ký
-            </Link>
-          </p>
-        </motion.div>
-      </div>
-
-      {/* Right side - Feature Showcase */}
       <div className="hidden lg:block lg:w-1/2 bg-muted relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -193,6 +112,96 @@ export default function LoginPage() {
             </motion.div>
           </div>
         </div>
+      </div>
+
+      {/* Right side - Feature Showcase */}
+      <div className="w-full lg:w-1/2 p-8 sm:p-12 xl:p-24 flex flex-col justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md mx-auto space-y-8"
+        >
+          <div className="space-y-2">
+            <Link href="/" className="flex items-center gap-2 text-primary hover:opacity-80">
+              <CircuitBoard className="h-6 w-6" />
+              <h1 className="text-xl font-bold">Câu lạc bộ Công nghệ IUH</h1>
+            </Link>
+            <h2 className="text-3xl font-bold">Chào mừng trở lại</h2>
+            <p className="text-muted-foreground">
+              Nhập thông tin đăng nhập để truy cập tài khoản của bạn
+            </p>
+          </div>
+
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* <form onSubmit={onSubmit} className="space-y-4"> */}
+              <div className="space-y-2">
+                <Label htmlFor={FORM_LOGIN.email}>Email</Label>
+                <Input
+                  id={FORM_LOGIN.email}
+                  {...register(FORM_LOGIN.email)}
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                />
+                {errors[FORM_LOGIN.email] && (
+                  <span>{errors?.[FORM_LOGIN.email]?.message?.toString()}</span>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={FORM_LOGIN.password}>Mật khẩu</Label>
+                <Input
+                  id={FORM_LOGIN.password}
+                  {...register(FORM_LOGIN.password)}
+                  type="password"
+                  required
+                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                />
+                {errors[FORM_LOGIN.password] && (
+                  <span>{errors?.[FORM_LOGIN.password]?.message?.toString()}</span>
+                )}
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Switch id="admin-mode" checked={isAdmin} onCheckedChange={setIsAdmin} />
+                  <Label htmlFor="admin-mode">Quyền truy cập Admin</Label>
+                </div>
+                {/* <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                Quên mật khẩu?
+              </Link> */}
+              </div>
+
+              <ButtonGradient type="submit" hasArrow>
+                Đăng nhập
+              </ButtonGradient>
+            </form>
+          </FormProvider>
+
+          {/* <div className="space-y-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Hoặc tiếp tục với</span>
+              </div>
+            </div>
+
+            <Button variant="outline" className="w-full">
+              <Github className="mr-2 h-4 w-4" />
+              Tiếp tục với GitHub
+            </Button>
+          </div> */}
+
+          <p className="text-center text-sm text-muted-foreground">
+            Chưa có tài khoản?{" "}
+            <Link href="/register" className="text-primary hover:underline">
+              Đăng ký
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </div>
   );

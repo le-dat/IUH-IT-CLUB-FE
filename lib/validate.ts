@@ -1,29 +1,85 @@
-import { FORM_SIGN_AUTH } from "@/constants/form";
+import { FORM_SIGN } from "@/constants/auth";
 import * as yup from "yup";
 
 export const validationLoginSchema = yup.object().shape({
-  [FORM_SIGN_AUTH.email]: yup
+  [FORM_SIGN.email]: yup
     .string()
-    .required("Email is required")
+    .required("Email là bắt buộc")
     .matches(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      "Invalid email address"
+      "Địa chỉ email không hợp lệ"
     ),
-  [FORM_SIGN_AUTH.password]: yup
+  [FORM_SIGN.password]: yup
     .string()
-    .required("Password is required")
-    .min(6, "Password must be at least 8 characters long"),
-  // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-  // .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-  // .matches(/[0-9]/, 'Password must contain at least one number')
-  // .matches(/[@$!%*?&#]/, 'Password must contain at least one special character'),
+    .required("Mật khẩu là bắt buộc")
+    .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  // .matches(/[A-Z]/, 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa')
+  // .matches(/[a-z]/, 'Mật khẩu phải chứa ít nhất một chữ cái viết thường')
+  // .matches(/[0-9]/, 'Mật khẩu phải chứa ít nhất một số')
+  // .matches(/[@$!%*?&#]/, 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt'),
 });
 
-export const validationSignUpSchema = yup.object().shape({
-  [FORM_SIGN_AUTH.name]: yup
+export const validationRegisterSchema = yup.object().shape({
+  ...validationLoginSchema.fields,
+
+  [FORM_SIGN.username]: yup
     .string()
     .trim()
-    .required("First name is required")
-    .matches(/^[A-Za-z\s]*$/, "First name cannot contain special characters"),
-  ...validationLoginSchema.fields,
+    .required("Tên là bắt buộc")
+    .matches(/^[A-Za-z\s]*$/, "Tên không được chứa ký tự đặc biệt"),
+  [FORM_SIGN.codeStudent]: yup
+    .number()
+    .required("Mã sinh viên là bắt buộc")
+    .typeError("Mã sinh viên phải là số"),
+  [FORM_SIGN.phone]: yup
+    .string()
+    .required("Số điện thoại là bắt buộc")
+    .matches(/^[0-9]{10}$/, "Số điện thoại không hợp lệ, phải có 10 chữ số"),
+  [FORM_SIGN.confirmPassword]: yup
+    .string()
+    .oneOf([yup.ref(FORM_SIGN.password), undefined], "Mật khẩu xác nhận không khớp")
+    .required("Xác nhận mật khẩu là bắt buộc"),
+});
+
+export const validationUserSchema = yup.object().shape({
+  username: yup.string().trim().required("Tên là bắt buộc"),
+  email: yup
+    .string()
+    .required("Email là bắt buộc")
+    .matches(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      "Địa chỉ email không hợp lệ"
+    ),
+  codeStudent: yup
+    .number()
+    .required("Mã sinh viên là bắt buộc")
+    .typeError("Mã sinh viên phải là số"),
+  phone: yup
+    .string()
+    .required("Số điện thoại là bắt buộc")
+    .matches(/^[0-9]{10}$/, "Số điện thoại không hợp lệ, phải có 10 chữ số"),
+  role: yup.string().required("Vai trò là bắt buộc"),
+  skill: yup.string().required("Kỹ năng là bắt buộc"),
+  year: yup.string().required("Năm học là bắt buộc"),
+});
+
+export const validationTeamSchema = yup.object().shape({
+  name: yup.string().trim().required("Tên là bắt buộc"),
+  description: yup.string().trim().required("Mô tả là bắt buộc"),
+  members: yup.array().min(1, "Ít nhất một thành viên"),
+});
+
+export const validationEventSchema = yup.object().shape({
+  title: yup.string().trim().required("Tiêu đề là bắt buộc"),
+  description: yup.string().trim().required("Mô tả là bắt buộc"),
+  startAt: yup.date().required("Thời gian bắt đầu là bắt buộc"),
+  endAt: yup.date().required("Thời gian kết thúc là bắt buộc"),
+});
+
+export const validationDeviceSchema = yup.object().shape({
+  name: yup.string().trim().required("Tên là bắt buộc"),
+  description: yup.string().trim().required("Mô tả là bắt buộc"),
+  status: yup.string().required("Trạng thái là bắt buộc"),
+  category: yup.string().required("Danh mục là bắt buộc"),
+  quantity: yup.number().required("Số lượng là bắt buộc").typeError("Số lượng phải là số"),
 });

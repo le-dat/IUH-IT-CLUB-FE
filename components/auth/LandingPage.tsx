@@ -43,7 +43,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.2 }}
               >
                 <Link href="/login">
-                  <Button variant="ghost">Đăng Nhập</Button>
+                  <Button variant="secondary">Đăng Nhập</Button>
                 </Link>
               </motion.div>
               <motion.div
@@ -52,7 +52,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.3 }}
               >
                 <Link href="/register">
-                  <Button>Bắt Đầu</Button>
+                  <ButtonGradient>Đăng kí</ButtonGradient>
                 </Link>
               </motion.div>
             </div>
@@ -78,21 +78,21 @@ export default function LandingPage() {
                 nhà đổi mới công nghệ. Chia sẻ kiến thức, xây dựng dự án và cùng nhau phát triển.
               </p>
             </motion.div>
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               className="flex items-center justify-center gap-4"
             >
               <Link href="/register">
-                <ButtonGradient>Tham gia Cộng đồng</ButtonGradient>
+                <ButtonGradient hasArrow>Tham gia Cộng đồng</ButtonGradient>
               </Link>
               <Link href="/login">
                 <Button size="lg" variant="outline">
                   Tìm Hiểu Thêm
                 </Button>
               </Link>
-            </motion.div>
+            </motion.div> */}
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function LandingPage() {
               những người cùng chí hướng, truy cập tài nguyên quý giá và nâng cao kỹ năng của bạn.
             </p>
             <Link href="/register">
-              <Button size="lg">Bắt Đầu Ngay</Button>
+              <Button size="lg">Đăng kí ngay</Button>
             </Link>
           </div>
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />

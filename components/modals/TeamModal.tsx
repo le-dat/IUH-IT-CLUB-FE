@@ -21,6 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import teamService from "@/services/team-service";
+import { FORM_TEAM } from "@/constants/team";
+import { toast } from "sonner";
 
 interface TeamModalProps {
   isOpen: boolean;
@@ -43,88 +48,153 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
     description: team?.description || "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Xử lý logic tạo/chỉnh sửa nhóm ở đây
-    console.log("Dữ liệu nhóm:", formData);
-    onClose();
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [`team-${team?.id}`],
+    queryFn: () => teamService.getTeamById({ id: team?.id?.toString() || "" }),
+  });
+
+  const { mutate: handleCreate, isPending: isPendingCreate } = useMutation({
+    mutationFn: teamService.createTeam,
+  });
+  const { mutate: handleUpdate, isPending: isPendingUpdate } = useMutation({
+    mutationFn: teamService.updateTeamById,
+  });
+  const isCreateMode = mode === "create";
+
+  const methods = useForm();
+
+  const {
+    watch,
+    handleSubmit,
+    reset,
+    control,
+    register,
+    formState: { errors },
+  } = methods;
+
+  const isFormValid = watch(FORM_TEAM.name);
+  const isSubmitDisabled = isPendingCreate || isPendingUpdate || !isFormValid;
+
+  const onSubmit = async (data: any) => {
+    console.log("data: ", data);
+    if (isSubmitDisabled) return;
+
+    if (isCreateMode) {
+      handleCreate(data, {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          console.log("response: ", response);
+          onClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      });
+    } else {
+      handleUpdate(data, {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          console.log("response: ", response);
+          onClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      });
+    }
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
-          <DialogTitle>{mode === "create" ? "Tạo Nhóm Mới" : "Chỉnh Sửa Nhóm"}</DialogTitle>
+          <DialogTitle>{isCreateMode ? "Tạo Nhóm Mới" : "Chỉnh Sửa Nhóm"}</DialogTitle>
           <DialogDescription>
-            {mode === "create"
-              ? "Tạo một nhóm mới cho câu lạc bộ công nghệ"
-              : "Cập nhật thông tin nhóm"}
+            {isCreateMode ? "Tạo một nhóm mới cho câu lạc bộ công nghệ" : "Cập nhật thông tin nhóm"}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Tên Nhóm</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Nhập tên nhóm"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="lead">Trưởng Nhóm</Label>
-            <Select
-              value={formData.lead}
-              onValueChange={(value) => setFormData({ ...formData, lead: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Chọn trưởng nhóm" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Alex Johnson">Alex Johnson</SelectItem>
-                <SelectItem value="Sarah Chen">Sarah Chen</SelectItem>
-                <SelectItem value="Michael Rodriguez">Michael Rodriguez</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="status">Trạng Thái</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) => setFormData({ ...formData, status: value })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Chọn trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Active">Hoạt Động</SelectItem>
-                <SelectItem value="On Hold">Tạm Dừng</SelectItem>
-                <SelectItem value="Completed">Hoàn Thành</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Mô Tả</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Nhập mô tả nhóm"
-              required
-            />
-          </div>
-          <DialogFooter>
-            {/* <Button type="button" variant="outline" onClick={onClose}>
-              Hủy
-            </Button> */}
-            <Button type="submit">{mode === "create" ? "Tạo Nhóm" : "Lưu Thay Đổi"}</Button>
-          </DialogFooter>
-        </form>
+
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor={FORM_TEAM.name}>Tên Nhóm</Label>
+              <Input
+                id={FORM_TEAM.name}
+                {...register(FORM_TEAM.name)}
+                errorMessage={errors[FORM_TEAM.name]?.message?.toString()}
+                placeholder="Nhập tên nhóm"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={FORM_TEAM.leader}>Trưởng Nhóm</Label>
+              <Controller
+                name={FORM_TEAM.leader}
+                control={control}
+                defaultValue=""
+                rules={{ required: "Trưởng nhóm là bắt buộc" }}
+                render={({ field }) => (
+                  <Select {...field}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn trưởng nhóm" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Alex Johnson">Alex Johnson</SelectItem>
+                      <SelectItem value="Sarah Chen">Sarah Chen</SelectItem>
+                      <SelectItem value="Michael Rodriguez">Michael Rodriguez</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors[FORM_TEAM.leader] && (
+                <span>{errors?.[FORM_TEAM.leader]?.message?.toString()}</span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={FORM_TEAM.status}>Trạng Thái</Label>
+              <Controller
+                name={FORM_TEAM.status}
+                control={control}
+                defaultValue=""
+                rules={{ required: "Trạng thái là bắt buộc" }}
+                render={({ field }) => (
+                  <Select {...field}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn trạng thái" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Active">Hoạt Động</SelectItem>
+                      <SelectItem value="On Hold">Tạm Dừng</SelectItem>
+                      <SelectItem value="Completed">Hoàn Thành</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors[FORM_TEAM.status] && (
+                <span>{errors?.[FORM_TEAM.status]?.message?.toString()}</span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={FORM_TEAM.description}>Mô Tả</Label>
+              <Textarea
+                id={FORM_TEAM.description}
+                value={formData.description}
+                {...register(FORM_TEAM.description)}
+                placeholder="Nhập mô tả nhóm"
+                required
+              />
+              {errors[FORM_TEAM.description] && (
+                <span>{errors?.[FORM_TEAM.description]?.message?.toString()}</span>
+              )}
+            </div>
+            <DialogFooter>
+              <Button type="submit">{isCreateMode ? "Tạo Nhóm" : "Lưu Thay Đổi"}</Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

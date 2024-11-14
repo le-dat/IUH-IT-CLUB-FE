@@ -1,7 +1,24 @@
+import { IUser } from "./user-type";
+
 export interface ITokens {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
-export interface IRegister {}
-export interface ILogIn {}
+export interface IResponseLogin {
+  token: ITokens,
+  user: IUser
+}
+
+export interface IRegister {
+  username: string;
+  email: string;
+  phone: string;
+  password: string;
+  codeStudent: number;
+}
+
+export interface ILogIn {
+  email: string;
+  password: string;
+}

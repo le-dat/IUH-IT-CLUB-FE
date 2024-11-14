@@ -4,10 +4,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  startIndex: number;
-  endIndex: number;
-  totalItems: number;
-  itemName: string;
   onPageChange: (page: number) => void;
   className?: string;
 }
@@ -15,10 +11,6 @@ interface PaginationProps {
 export default function Pagination({
   currentPage,
   totalPages,
-  startIndex,
-  endIndex,
-  totalItems,
-  itemName,
   onPageChange,
   className = "",
 }: PaginationProps) {
@@ -26,9 +18,6 @@ export default function Pagination({
 
   return (
     <div className={`flex items-center gap-4 ${className}`}>
-      {/* <p className="text-sm text-muted-foreground whitespace-nowrap">
-        {startIndex + 1}-{endIndex} of {totalItems} {itemName}
-      </p> */}
       <div className="flex items-center gap-1 shrink-0">
         <Button
           variant="outline"

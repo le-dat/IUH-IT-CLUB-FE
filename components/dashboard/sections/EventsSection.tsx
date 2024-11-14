@@ -55,14 +55,14 @@ const mockEvents: Event[] = [
 export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   const [displayedItems, setDisplayedItems] = useState(ITEMS_PER_PAGE);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { searchTerm, setSearchTerm, filteredItems } = useFilter({
     items: mockEvents,

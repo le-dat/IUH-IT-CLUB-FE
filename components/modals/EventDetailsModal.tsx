@@ -39,10 +39,7 @@ export default function EventDetailsModal({
   onEdit,
 }: EventDetailsModalProps) {
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
@@ -96,9 +93,6 @@ export default function EventDetailsModal({
         </div>
 
         <DialogFooter>
-          {/* <Button variant="outline" onClick={onClose}>
-            Đóng
-          </Button> */}
           {isAdmin && event.status !== "Pending Approval" && (
             <Button onClick={onEdit}>Chỉnh sửa sự kiện</Button>
           )}
