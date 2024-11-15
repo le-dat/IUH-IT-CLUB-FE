@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import TeamModal from "@/components/modals/TeamModal";
@@ -15,52 +15,54 @@ import teamService from "@/services/team-service";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ITeam } from "@/types/team-type";
-interface Team {
-  id: number;
-  name: string;
-  members: number;
-  projects: number;
-  lead: string;
-  status: string;
-  description: string;
-}
+import useTeamStore from "@/store/team-store";
+// interface Team {
+//   id: number;
+//   name: string;
+//   members: number;
+//   projects: number;
+//   lead: string;
+//   status: string;
+//   description: string;
+// }
 
-const ITEMS_PER_PAGE = 10;
+// const ITEMS_PER_PAGE = 10;
 
-const mockTeams: Team[] | [] = [
-  {
-    id: 1,
-    name: "Phát triển Web",
-    members: 8,
-    projects: 3,
-    lead: "John Doe",
-    status: "active",
-    description: "Mô tả về phát triển web",
-  },
-  {
-    id: 2,
-    name: "Phát triển Mobile",
-    members: 5,
-    projects: 2,
-    lead: "Jane Doe",
-    status: "inactive",
-    description: "Mô tả về phát triển mobile",
-  },
-  {
-    id: 3,
-    name: "Phát triển Blockchain",
-    members: 10,
-    projects: 1,
-    lead: "Alice Doe",
-    status: "active",
-    description: "Mô tả về phát triển blockchain",
-  },
-];
+// const mockTeams: Team[] | [] = [
+//   {
+//     id: 1,
+//     name: "Phát triển Web",
+//     members: 8,
+//     projects: 3,
+//     lead: "John Doe",
+//     status: "active",
+//     description: "Mô tả về phát triển web",
+//   },
+//   {
+//     id: 2,
+//     name: "Phát triển Mobile",
+//     members: 5,
+//     projects: 2,
+//     lead: "Jane Doe",
+//     status: "inactive",
+//     description: "Mô tả về phát triển mobile",
+//   },
+//   {
+//     id: 3,
+//     name: "Phát triển Blockchain",
+//     members: 10,
+//     projects: 1,
+//     lead: "Alice Doe",
+//     status: "active",
+//     description: "Mô tả về phát triển blockchain",
+//   },
+// ];
 
 export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
+  const { setTeams } = useTeamStore();
 
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<ITeam | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -69,14 +71,13 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isJoinRequestSent, setIsJoinRequestSent] = useState<number[]>([]);
-  const [displayedItems, setDisplayedItems] = useState(ITEMS_PER_PAGE);
+  // const [displayedItems, setDisplayedItems] = useState(ITEMS_PER_PAGE);
 
   // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`team-manager-${currentPage}`],
     queryFn: () => teamService.getTeams({ page: 1, limit: 10 }),
-    enabled: true,
   });
 
   const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({
@@ -98,11 +99,11 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
 
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    setDisplayedItems((prev) => Math.min(prev + ITEMS_PER_PAGE, mockTeams.length));
+    // setDisplayedItems((prev) => Math.min(prev + ITEMS_PER_PAGE, mockTeams.length));
     // setIsLoading(false);
   };
 
-  const handleView = (team: Team) => {
+  const handleView = (team: ITeam) => {
     setSelectedTeam(team);
     setIsDetailsModalOpen(true);
   };
@@ -112,7 +113,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (team: Team) => {
+  const handleDelete = (team: ITeam) => {
     setSelectedTeam(team);
     setIsDeleteModalOpen(true);
   };
@@ -137,10 +138,10 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   };
 
   const confirmDelete = () => {
-    console.log("Đang xóa nhóm:", selectedTeam?.id);
+    console.log("Đang xóa nhóm:", selectedTeam?._id);
 
     handleDeleteById(
-      { id: selectedTeam?.id?.toString() || "" },
+      { id: selectedTeam?._id?.toString() || "" },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
@@ -155,8 +156,12 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     );
   };
 
-  const displayedTeams = mockTeams.slice(0, displayedItems);
-  const hasMore = displayedItems < mockTeams.length;
+  // const displayedTeams = mockTeams.slice(0, displayedItems);
+  const hasMore = (data?.data?.teams?.length ?? 0) < (data?.data?.teams?.length ?? 0);
+
+  useEffect(() => {
+    setTeams(data?.data?.teams || []);
+  }, [data, setTeams]);
 
   return (
     <div className="space-y-6">
@@ -176,7 +181,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
       </div>
 
       <TeamsGrid
-        teams={displayedTeams}
+        teams={data?.data?.teams || []}
         isAdmin={isAdmin}
         isLoading={isLoading}
         hasMore={hasMore}
@@ -205,7 +210,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}
             mode="edit"
-            team={selectedTeam}
+            team={selectedTeam!}
           />
 
           <DeleteConfirmationModal
@@ -213,7 +218,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={confirmDelete}
             title="Xóa nhóm"
-            description={`Bạn có chắc chắn muốn xóa nhóm "${selectedTeam.name}"? Hành động này không thể hoàn tác.`}
+            description={`Bạn có chắc chắn muốn xóa nhóm "${selectedTeam.teamName}"? Hành động này không thể hoàn tác.`}
           />
         </>
       )}
@@ -222,6 +227,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         mode="create"
+        team={selectedTeam!}
       />
     </div>
   );

@@ -12,26 +12,16 @@ import {
 } from "@/components/ui/table";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { conditionsMap, statusMap } from "@/constants/device";
-
-interface Device {
-  id: number;
-  name: string;
-  type: string;
-  status: string;
-  assignedTo: string;
-  lastChecked: string;
-  condition: string;
-  specifications?: string;
-}
+import { IDevice } from "@/types/device-type";
 
 interface DeviceTableProps {
-  devices: Device[];
+  devices: IDevice[];
   isAdmin: boolean;
-  onView: (device: Device) => void;
-  onEdit: (device: Device) => void;
-  onDelete: (device: Device) => void;
-  onRequest: (device: Device) => void;
-  onApprove: (device: Device) => void;
+  onView: (device: IDevice) => void;
+  onEdit: (device: IDevice) => void;
+  onDelete: (device: IDevice) => void;
+  onRequest: (device: IDevice) => void;
+  onApprove: (device: IDevice) => void;
 }
 
 export default function DeviceTable({
@@ -51,35 +41,37 @@ export default function DeviceTable({
           <TableHead>Loại</TableHead>
           <TableHead>Trạng Thái</TableHead>
           <TableHead>Được Giao Cho</TableHead>
-          <TableHead>Lần Kiểm Tra Cuối</TableHead>
-          <TableHead>Tình Trạng</TableHead>
+          {/* <TableHead>Lần Kiểm Tra Cuối</TableHead>
+          <TableHead>Tình Trạng</TableHead> */}
           <TableHead>Hành Động</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {devices.map((device) => (
-          <TableRow key={device.id}>
+          <TableRow key={device._id}>
             <TableCell className="font-medium">{device.name}</TableCell>
             <TableCell>{device.type}</TableCell>
             <TableCell>
               <Badge
                 variant={
-                  device.status === "Available"
+                  device.status === "available"
                     ? "default"
-                    : device.status === "Pending Approval"
+                    : device.status === "pending approval"
                     ? "secondary"
                     : "outline"
                 }
                 className="shrink-0"
               >
-                {statusMap[device.status as keyof typeof statusMap] || "OutofService"}
+                {statusMap[device.status as keyof typeof statusMap] || "available"}
               </Badge>
             </TableCell>
-            <TableCell>{device.assignedTo}</TableCell>
-            <TableCell>{device.lastChecked}</TableCell>
-            <TableCell>
+            <TableCell>{device?.currentBorrower?.username}</TableCell>
+            {/* <TableCell>
+              {device.lastChecked}
+              </TableCell> */}
+            {/* <TableCell>
               {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]}
-            </TableCell>
+            </TableCell> */}
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" onClick={() => onView(device)}>
@@ -87,7 +79,7 @@ export default function DeviceTable({
                 </Button>
                 {isAdmin ? (
                   <>
-                    {device.status === "Pending Approval" ? (
+                    {device.status === "pending approval" ? (
                       <Button variant="ghost" size="sm" onClick={() => onApprove(device)}>
                         Xem yêu cầu
                       </Button>
@@ -103,7 +95,7 @@ export default function DeviceTable({
                     )}
                   </>
                 ) : (
-                  device.status === "Available" && (
+                  device.status === "available" && (
                     <Button variant="ghost" size="sm" onClick={() => onRequest(device)}>
                       Yêu cầu mượn
                     </Button>

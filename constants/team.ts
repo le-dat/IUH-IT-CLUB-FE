@@ -1,7 +1,7 @@
 export const FORM_TEAM = Object.freeze({
-  name: "name",
-  leader: "leader",
-  status: "status",
+  teamName: "teamName",
+  teamLeader: "teamLeader",
+  members: "members",
   description: "description",
-  note: "note",
+  status: "status",
 } as const);

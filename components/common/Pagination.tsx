@@ -14,7 +14,7 @@ export default function Pagination({
   onPageChange,
   className = "",
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
+  // if (totalPages <= 1) return null;
 
   return (
     <div className={`flex items-center gap-4 ${className}`}>

@@ -1,19 +1,14 @@
+import { IEvent } from "@/types/event-type";
 import { create } from "zustand";
 
-interface Event {
-  id: string;
-  name: string;
-  date: string;
-}
-
 interface EventState {
-  events: Event[];
-  setEvent: (events: Event[]) => void;
+  events: IEvent[];
+  setEvent: (events: IEvent[]) => void;
 }
 
 const useEventStore = create<EventState>((set) => ({
   events: [],
-  setEvent: (events: Event[]) => set({ events }),
+  setEvent: (events: IEvent[]) => set({ events }),
 }));
 
 export default useEventStore;

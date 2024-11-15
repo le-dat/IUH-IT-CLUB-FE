@@ -2,17 +2,18 @@ import { ICommonMongodb, IId } from "./common";
 import { IUser } from "./user-type";
 
 export interface ICompetition extends IId {
-  name: string;
-  date: Date;
+  competitionName: string;
+  competitionDate: Date;
   description: string;
   location: string;
-  status: "champion" | "runner up" | "encourage" | null;
+  status: "open" | "closed up" | null;
 }
 
-export interface ITeam extends ICommonMongodb, IUser {
-  // leader?: IUser;
+export interface ITeam extends ICommonMongodb {
+  teamName: string;
+  teamLeader?: IUser;
   members: IUser[] | [];
   description: string;
   competition: ICompetition[];
-  status: "active" | "inactive";
+  status: "open" | "closed";
 }

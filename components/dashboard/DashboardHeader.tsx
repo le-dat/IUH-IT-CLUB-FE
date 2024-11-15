@@ -7,18 +7,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CircuitBoard, Settings, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { useRouter } from "next/navigation";
-import ButtonGradient from "../common/ButtonGradient";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import authService from "@/services/auth-service";
-import userService from "@/services/user-service";
-import { AuthStorage } from "@/lib/local-storage";
-import { toast } from "sonner";
-import { useEffect } from "react";
-import useAuthStore from "@/store/auth-store";
 import { ROUTES } from "@/constants/route";
+import { AuthStorage } from "@/lib/local-storage";
+import userService from "@/services/user-service";
+import useAuthStore from "@/store/auth-store";
+import { useQuery } from "@tanstack/react-query";
+import { CircuitBoard, LogOut, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import ButtonGradient from "../common/ButtonGradient";
 
 interface DashboardHeaderProps {
   isAdmin: boolean;
@@ -26,7 +25,8 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
   const router = useRouter();
-  const { login: loginStore ,logout} = useAuthStore();
+  const { login: loginStore, logout } = useAuthStore();
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`user-profile`],
     queryFn: () => userService.getMe(),
@@ -38,10 +38,9 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
 
   const handleLogout = async () => {
     AuthStorage.clearToken();
-    logout()
+    logout();
     router.push(ROUTES.LOGIN);
     toast.success("Đăng xuất thành công");
-    refetch();
   };
 
   useEffect(() => {

@@ -1,14 +1,23 @@
 import { IEvent } from "@/types/event-type";
 import { SuccessResponse } from "@/types/response-type";
 import axiosClient from "./axios-client";
+import { IPagination } from "@/types/common";
 
 const eventService = {
-  getEvents: async ({ page, limit }: { page: number; limit: number }) => {
+  getEvents: async ({
+    search = "",
+    page,
+    limit,
+  }: {
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<IEvent[]>>("/events", {
-        params: { page, limit },
+      const response = await axiosClient.get("/events", {
+        params: { q: search, page, limit },
       });
-      return response.data;
+      return response.data as SuccessResponse<{ events: IEvent[]; pagination: IPagination }>;
     } catch (error) {
       throw new Error("Failed to fetch events");
     }

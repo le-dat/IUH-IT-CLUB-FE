@@ -1,15 +1,15 @@
 "use client";
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Plus, Search } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Plus, Search } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface DeviceFiltersProps {
   searchTerm: string;
@@ -22,8 +22,8 @@ interface DeviceFiltersProps {
   onAddDevice: () => void;
 }
 
-const deviceTypes = ['All Types', 'Laptop', 'Development Board', 'Mobile Device', 'Other'];
-const deviceStatuses = ['All Statuses', 'Available', 'In Use', 'Maintenance', 'Pending Approval'];
+const deviceTypes = ["All Types", "Laptop", "Development Board", "Mobile Device", "Other"];
+const deviceStatuses = ["All Statuses", "Available", "In Use", "Maintenance", "Pending Approval"];
 
 export default function DeviceFilters({
   searchTerm,
@@ -75,7 +75,7 @@ export default function DeviceFilters({
       {isAdmin && (
         <Button onClick={onAddDevice} className="whitespace-nowrap">
           <Plus className="h-4 w-4 mr-2" />
-          Add Device
+          Thêm thiết bị
         </Button>
       )}
     </div>

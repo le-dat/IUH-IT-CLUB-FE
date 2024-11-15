@@ -31,7 +31,7 @@ const userService = {
   }: { search?: string; year?: string; skill?: string; page?: number; limit?: number } = {}) => {
     try {
       const response = await axiosClient.get("/user/members", {
-        params: { q: search,level: year, skill, page, limit },
+        params: { q: search, level: year, skill, page, limit },
       });
       return response.data as SuccessResponse<{ users: IUser[]; pagination: IPagination }>;
     } catch (error: any) {

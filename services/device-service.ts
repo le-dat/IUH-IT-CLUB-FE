@@ -1,14 +1,25 @@
 import { IDevice } from "@/types/device-type";
 import { SuccessResponse } from "@/types/response-type";
 import axiosClient from "./axios-client";
+import { IPagination } from "@/types/common";
 
 const deviceService = {
-  getDevices: async ({ page, limit }: { page: number; limit: number }) => {
+  getDevices: async ({
+    search = "",
+    status = "",
+    page,
+    limit,
+  }: {
+    search?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+  }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<IDevice[]>>("/devices", {
-        params: { page, limit },
+      const response = await axiosClient.get("/equipment", {
+        params: { q: search, status, page, limit },
       });
-      return response.data;
+      return response.data as SuccessResponse<{ equipment: IDevice[]; pagination: IPagination }>;
     } catch (error) {
       throw new Error("Failed to fetch devices");
     }
@@ -16,42 +27,32 @@ const deviceService = {
 
   getDeviceById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<IDevice>>(`/devices/${id}`);
+      const response = await axiosClient.get<SuccessResponse<IDevice>>(`/equipment/${id}`);
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch device by id");
     }
   },
-  createDevice: async ({ device }: { device: IDevice }) => {
+  createDevice: async ({ data }: { data: IDevice }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<IDevice>>("/devices", device);
-      return response.data;
+      const response = await axiosClient.post("/equipment", data);
+      return response.data as SuccessResponse<IDevice>;
     } catch (error) {
       throw new Error("Failed to create device");
     }
   },
-  searchDevices: async ({ keyword }: { keyword: string }) => {
-    try {
-      const response = await axiosClient.get<SuccessResponse<IDevice[]>>(
-        `/devices/search?keyword=${keyword}`
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to search devices");
-    }
-  },
 
-  updateDeviceById: async ({ id, device }: { id: string; device: IDevice }) => {
+  updateDeviceById: async ({ id, data }: { id: string; data: IDevice }) => {
     try {
-      const response = await axiosClient.put<SuccessResponse<IDevice>>(`/devices/${id}`, device);
-      return response.data;
+      const response = await axiosClient.put(`/equipment/${id}`, data);
+      return response.data as SuccessResponse<IDevice>;
     } catch (error) {
       throw new Error("Failed to update device");
     }
   },
   deleteDeviceById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.delete<SuccessResponse<null>>(`/devices/${id}`);
+      const response = await axiosClient.delete<SuccessResponse<null>>(`/equipment/${id}`);
       return response.data;
     } catch (error) {
       throw new Error("Failed to delete device");

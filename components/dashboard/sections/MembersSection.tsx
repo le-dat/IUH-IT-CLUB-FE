@@ -3,7 +3,6 @@
 import Pagination from "@/components/common/Pagination";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
 import MemberModal from "@/components/modals/MemberModal";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,15 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "@/hooks/useTranslation";
-import { Plus, Search } from "lucide-react";
-import { useState } from "react";
-import MemberTable from "./members/MemberTable";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import userService from "@/services/user-service";
-import { toast } from "sonner";
-import { useDebounce } from "@uidotdev/usehooks";
-import teamService from "@/services/team-service";
+import useUserStore from "@/store/user-store";
 import { IUser } from "@/types/user-type";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import MemberTable from "./members/MemberTable";
 
 interface MembersSectionProps {
   isAdmin: boolean;
@@ -29,15 +28,16 @@ interface MembersSectionProps {
 
 export default function MembersSection({ isAdmin }: MembersSectionProps) {
   const { t } = useTranslation();
+  const { setUsers } = useUserStore();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedYear, setSelectedYear] = useState<string>("All Years");
-  const [selectedSkill, setSelectedSkill] = useState<string>("All Skills");
+  const [selectedYear, setSelectedYear] = useState<string>("");
+  const [selectedSkill, setSelectedSkill] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 700);
-  const debouncedSelectedYear = useDebounce(selectedYear, 500);
-  const debouncedSelectedSkill = useDebounce(selectedSkill, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm?.trim(), 700);
+  const debouncedSelectedYear = useDebounce(selectedYear?.trim(), 500);
+  const debouncedSelectedSkill = useDebounce(selectedSkill?.trim(), 500);
   const debouncedCurrentPage = useDebounce(currentPage, 500);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -61,7 +61,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
     mutationFn: userService.deleteUserById,
   });
 
-  const totalPages = Math.ceil(Number(data?.data?.pagination?.totalPages));
+  const totalPages = Number(data?.data?.pagination?.totalPages) || 1;
 
   const handleAction = (member: IUser, mode: "view" | "edit") => {
     setSelectedMember(member);
@@ -97,6 +97,10 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
     );
   };
 
+  useEffect(() => {
+    setUsers(data?.data?.users || []);
+  }, [data, setUsers]);
+
   return (
     <div className="space-y-6 overflow-x-auto">
       <div className="flex flex-col gap-4">
@@ -123,11 +127,11 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[180px] focus-visible:outline-none">
+              <SelectTrigger className="w-[180px] ">
                 <SelectValue placeholder="Lọc theo năm học" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="All Years">Tất cả năm</SelectItem>
+                <SelectItem value=" ">Tất cả năm</SelectItem>
                 <SelectItem value="Freshman">Năm nhất</SelectItem>
                 <SelectItem value="Sophomore">Năm hai</SelectItem>
                 <SelectItem value="Junior">Năm ba</SelectItem>
@@ -140,7 +144,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
                 <SelectValue placeholder="Lọc theo kỹ năng" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="All Skills">Tất cả kỹ năng</SelectItem>
+                <SelectItem value=" ">Tất cả kỹ năng</SelectItem>
                 <SelectItem value="React">React</SelectItem>
                 <SelectItem value="Node.js">Node.js</SelectItem>
                 <SelectItem value="TypeScript">TypeScript</SelectItem>
@@ -169,6 +173,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         mode={modalMode}
         member={selectedMember!}
         isAdmin={isAdmin}
+        refetch={refetch}
       />
       {selectedMember && (
         <DeleteConfirmationModal

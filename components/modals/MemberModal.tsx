@@ -31,6 +31,7 @@ import { FORM_USER } from "@/constants/user";
 import { IUser } from "@/types/user-type";
 import { validationUserSchema } from "@/lib/validate";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface MemberModalProps {
   isOpen: boolean;
@@ -38,9 +39,17 @@ interface MemberModalProps {
   mode: "view" | "create" | "edit";
   member?: IUser;
   isAdmin: boolean;
+  refetch?: () => void;
 }
 
-export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: MemberModalProps) {
+export default function MemberModal({
+  isOpen,
+  onClose,
+  mode,
+  member,
+  isAdmin,
+  refetch,
+}: MemberModalProps) {
   const isViewMode = mode === "view";
   const canEdit = isAdmin && mode !== "view";
 
@@ -90,6 +99,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
         { id: member?._id as string, data },
         {
           onSuccess: (response) => {
+            refetch && refetch();
             toast.success(response?.message);
             handleClose();
           },
@@ -102,6 +112,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
     } else {
       mutateCreateUser(data, {
         onSuccess: (response) => {
+          refetch && refetch();
           toast.success(response?.message);
           handleClose();
         },
@@ -180,11 +191,23 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
                 <Label className="text-indigo-400" htmlFor={FORM_SIGN.email}>
                   Email
                 </Label>
+
                 {isViewMode ? (
                   <p>
-                    <Link href={`mailto:${member?.email}`} target="_blank" className="text-sm">
-                      {member?.email}
-                    </Link>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={`mailto:${member?.email}`}
+                          target="_blank"
+                          className="text-sm hover:underline hover:italic"
+                        >
+                          {member?.email}
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-yellow-500">
+                        <span>Gửi email cho </span>
+                      </TooltipContent>
+                    </Tooltip>
                   </p>
                 ) : (
                   <>
@@ -230,17 +253,24 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
 
               <div className="space-y-2">
                 <Label className="text-indigo-400" htmlFor="phone">
-                  Phone (Zalo)
+                  Điện thoại
                 </Label>
                 {isViewMode ? (
                   <p>
-                    <Link
-                      href={`https://zalo.me/${member?.phone}`}
-                      target="_blank"
-                      className="text-sm"
-                    >
-                      {member?.phone}
-                    </Link>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={`https://zalo.me/${member?.phone}`}
+                          target="_blank"
+                          className="text-sm hover:underline hover:italic"
+                        >
+                          {member?.phone}
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-yellow-500">
+                        <span>Liên lạc bằng zalo </span>
+                      </TooltipContent>
+                    </Tooltip>
                   </p>
                 ) : (
                   <>
@@ -263,7 +293,7 @@ export default function MemberModal({ isOpen, onClose, mode, member, isAdmin }: 
 
             {isViewMode && member?.skills && (
               <div className="space-y-2">
-                <Label>Kỹ Năng</Label>
+                <Label className="text-indigo-400">Kỹ Năng</Label>
                 <div className="flex gap-2 flex-wrap">
                   {member.skills.map((skill: string, index: number) => (
                     <Badge key={index} variant="secondary" className="shrink-0">

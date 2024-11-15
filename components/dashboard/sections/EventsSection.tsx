@@ -1,19 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import EventDetailsModal from "@/components/modals/EventDetailsModal";
-import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
-import EventsGrid from "./events/EventsGrid";
 import SearchInput from "@/components/common/SearchInput";
-import { useTranslation } from "@/hooks/useTranslation";
-import { useFilter } from "@/hooks/useFilter";
-import { createSearchFilter } from "@/lib/utils/filters";
-import EventModal from "@/components/modals/CreateEventModal";
 import ApprovalModal from "@/components/modals/ApprovalModal";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import EventModal from "@/components/modals/CreateEventModal";
+import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
+import EventDetailsModal from "@/components/modals/EventDetailsModal";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/hooks/useTranslation";
 import eventService from "@/services/event-service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import EventsGrid from "./events/EventsGrid";
+import useEventStore from "@/store/event-store";
 
 interface Event {
   id: number;
@@ -56,6 +55,7 @@ const mockEvents: Event[] = [
 
 export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
+  const { setEvent } = useEventStore();
 
   const [selectedTeam, setSelectedTeam] = useState<Event | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -80,7 +80,6 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`team-manager-${currentPage}`],
     queryFn: () => eventService.getEvents({ page: 1, limit: 10 }),
-    enabled: true,
   });
 
   const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({
@@ -135,6 +134,10 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
 
   const displayedEvents = mockEvents.slice(0, displayedItems);
   const hasMore = displayedItems < mockEvents.length;
+
+  useEffect(() => {
+    setEvent(data?.data?.events || []);
+  }, [data, setEvent]);
 
   return (
     <div className="space-y-6">

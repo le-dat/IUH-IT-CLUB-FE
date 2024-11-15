@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,38 +26,49 @@ import deviceService from "@/services/device-service";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FORM_DEVICE } from "@/constants/device";
 import { toast } from "sonner";
+import { IDevice } from "@/types/device-type";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validationDeviceSchema } from "@/lib/validate";
 
 interface DeviceModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: "create" | "edit";
-  device?: {
-    id: number;
-    name: string;
-    type: string;
-    status: string;
-    condition: string;
-    notes?: string;
-  };
+  device?: IDevice;
+  refetch?: () => void;
 }
 
-export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceModalProps) {
-  const [formData, setFormData] = useState({
-    name: device?.name || "",
-    type: device?.type || "",
-    status: device?.status || "Available",
-    condition: device?.condition || "Good",
-    notes: device?.notes || "",
-  });
-
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [`user-manager`],
-    queryFn: () => deviceService.getDeviceById({ id: device?.id?.toString() || "" }),
-  });
-
-  const { mutate, isPending } = useMutation({ mutationFn: deviceService.updateDeviceById });
+export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: DeviceModalProps) {
   const isCreateMode = mode === "create";
-  const methods = useForm();
+
+  // const [formData, setFormData] = useState({
+  //   name: device?.name || "",
+  //   type: device?.type || "",
+  //   // status: device?.status || "Available",
+  //   // condition: device?.condition || "Good",
+  //   // notes: device?.notes || "",
+  // });
+
+  // const { data, isLoading, error, refetch } = useQuery({
+  //   queryKey: [`user-manager`],
+  //   queryFn: () => deviceService.getDeviceById({ id: device?._id?.toString() || "" }),
+  // });
+
+  const { mutate: mutateCreateDevice, isPending: isPendingCreateDevice } = useMutation({
+    mutationFn: deviceService.createDevice,
+  });
+  const { mutate: mutateUpdateDevice, isPending: isPendingUpdateDevice } = useMutation({
+    mutationFn: deviceService.updateDeviceById,
+  });
+
+  const methods = useForm({
+    resolver: yupResolver(validationDeviceSchema),
+    defaultValues: {
+      [FORM_DEVICE.name]: device?.name || "",
+      [FORM_DEVICE.type]: device?.type || "",
+      [FORM_DEVICE.status]: device?.status || "",
+    },
+  });
 
   const {
     watch,
@@ -68,30 +79,67 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
     formState: { errors },
   } = methods;
 
-  const isFormValid = watch(FORM_DEVICE.name);
-  const isSubmitDisabled = isPending || !isFormValid;
+  const isFormValid =
+    watch(FORM_DEVICE.name) && watch(FORM_DEVICE.type) && watch(FORM_DEVICE.status);
+  const isSubmitDisabled = isPendingCreateDevice || isPendingUpdateDevice || !isFormValid;
 
   const onSubmit = async (data: any) => {
-    console.log("data: ", data);
     if (isSubmitDisabled) return;
 
-    mutate(data, {
-      onSuccess: (response) => {
-        toast.success(response?.message);
-        console.log("response: ", response);
-        onClose();
-      },
-      onError: (error) => {
-        console.error(error);
-        toast.error(error?.message || "An error occurred during login");
-      },
-    });
+    if (isCreateMode) {
+      mutateCreateDevice(
+        { data },
+        {
+          onSuccess: (response) => {
+            refetch && refetch();
+            toast.success(response?.message);
+            handleClose();
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error(error?.message || "An error occurred during create device");
+          },
+        }
+      );
+    } else {
+      const updatedData = {
+        id: device?._id as string,
+        data,
+      };
+      mutateUpdateDevice(updatedData, {
+        onSuccess: (response) => {
+          console.log("response: ", response);
+          refetch && refetch();
+          toast.success(response?.message);
+          handleClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during update device");
+        },
+      });
+    }
   };
+
+  const handleClose = () => {
+    onClose();
+    reset();
+  };
+
+  useEffect(() => {
+    if (device && mode === "edit") {
+      reset({
+        [FORM_DEVICE.name]: device.name,
+        [FORM_DEVICE.type]: device.type,
+        [FORM_DEVICE.status]: device.status,
+      });
+    }
+  }, [device, mode, reset]);
 
   return (
     <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogCloseButton onClick={onClose} />
+        <DialogCloseButton onClick={handleClose} />
         <DialogHeader>
           <DialogTitle>{isCreateMode ? "Thêm Thiết Bị Mới" : "Chỉnh Sửa Thiết Bị"}</DialogTitle>
           <DialogDescription>
@@ -106,10 +154,14 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
               <Input
                 id={FORM_DEVICE.name}
                 {...register(FORM_DEVICE.name)}
-                errorMessage={errors[FORM_DEVICE.name]?.message?.toString()}
                 placeholder="Nhập tên thiết bị"
                 required
               />
+              {errors[FORM_DEVICE.name] && (
+                <span className="text-red-500 mt-2">
+                  {errors?.[FORM_DEVICE.name]?.message?.toString()}
+                </span>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -121,7 +173,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   defaultValue=""
                   rules={{ required: "Loại thiết bị là bắt buộc" }}
                   render={({ field }) => (
-                    <Select {...field}>
+                    <Select {...field} onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn loại thiết bị" />
                       </SelectTrigger>
@@ -150,14 +202,14 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   defaultValue=""
                   rules={{ required: "Tình trạng là bắt buộc" }}
                   render={({ field }) => (
-                    <Select {...field}>
+                    <Select {...field} onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn trạng thái" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Available">Có Sẵn</SelectItem>
-                        <SelectItem value="In Use">Đang Sử Dụng</SelectItem>
-                        <SelectItem value="Maintenance">Bảo Trì</SelectItem>
+                        <SelectItem value="available">Có sẵn</SelectItem>
+                        <SelectItem value="in use">Đang sử dụng</SelectItem>
+                        <SelectItem value="unavailable">Không có sẵn</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
@@ -168,7 +220,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   </span>
                 )}
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor={FORM_DEVICE.condition}>Tình Trạng</Label>
                 <Controller
                   name={FORM_DEVICE.condition}
@@ -176,7 +228,8 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                   defaultValue=""
                   rules={{ required: "Tình trạng là bắt buộc" }}
                   render={({ field }) => (
-                    <Select {...field}>
+                                       <Select {...field} onValueChange={(value) => field.onChange(value)}>
+
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn tình trạng" />
                       </SelectTrigger>
@@ -193,9 +246,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                     {errors?.[FORM_DEVICE.condition]?.message?.toString()}
                   </span>
                 )}
-              </div>
+              </div> */}
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="notes">Ghi Chú</Label>
               <Textarea
                 id="notes"
@@ -203,7 +256,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device }: DeviceMod
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Nhập bất kỳ ghi chú bổ sung nào về thiết bị"
               />
-            </div>
+            </div> */}
             <DialogFooter>
               <Button type="submit">{isCreateMode ? "Thêm Thiết Bị" : "Lưu Thay Đổi"}</Button>
             </DialogFooter>

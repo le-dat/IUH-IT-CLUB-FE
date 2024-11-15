@@ -26,32 +26,25 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import teamService from "@/services/team-service";
 import { FORM_TEAM } from "@/constants/team";
 import { toast } from "sonner";
+import { ITeam } from "@/types/team-type";
+import { validationTeamSchema } from "@/lib/validate";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface TeamModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: "create" | "edit";
-  team?: {
-    id: number;
-    name: string;
-    lead: string;
-    status: string;
-    description?: string;
-  };
+  team: ITeam;
 }
 
 export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProps) {
-  const [formData, setFormData] = useState({
-    name: team?.name || "",
-    lead: team?.lead || "",
-    status: team?.status || "Active",
-    description: team?.description || "",
-  });
 
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [`team-${team?.id}`],
-    queryFn: () => teamService.getTeamById({ id: team?.id?.toString() || "" }),
-  });
+  const isCreateMode = mode === "create";
+
+  // const { data, isLoading, error, refetch } = useQuery({
+  //   queryKey: [`team-${team?._id}`],
+  //   queryFn: () => teamService.getTeamById({ id: team?._id?.toString() || "" }),
+  // });
 
   const { mutate: handleCreate, isPending: isPendingCreate } = useMutation({
     mutationFn: teamService.createTeam,
@@ -59,9 +52,16 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
   const { mutate: handleUpdate, isPending: isPendingUpdate } = useMutation({
     mutationFn: teamService.updateTeamById,
   });
-  const isCreateMode = mode === "create";
 
-  const methods = useForm();
+  const methods = useForm({
+    resolver: yupResolver(validationTeamSchema),
+    defaultValues: {
+      [FORM_TEAM.teamName]: team?.teamName || "",
+      [FORM_TEAM.description]: team?.description || "",
+      [FORM_TEAM.status]: team?.status || "",
+      // [FORM_TEAM.teamLeader]: team?.teamLeader 
+    },
+  });
 
   const {
     watch,
@@ -72,7 +72,7 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
     formState: { errors },
   } = methods;
 
-  const isFormValid = watch(FORM_TEAM.name);
+  const isFormValid = watch(FORM_TEAM.teamName) && watch(FORM_TEAM.description) && watch(FORM_TEAM.status);
   const isSubmitDisabled = isPendingCreate || isPendingUpdate || !isFormValid;
 
   const onSubmit = async (data: any) => {
@@ -120,23 +120,23 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor={FORM_TEAM.name}>Tên Nhóm</Label>
+              <Label htmlFor={FORM_TEAM.teamName}>Tên Nhóm</Label>
               <Input
-                id={FORM_TEAM.name}
-                {...register(FORM_TEAM.name)}
+                id={FORM_TEAM.teamName}
+                {...register(FORM_TEAM.teamName)}
                 placeholder="Nhập tên nhóm"
                 required
               />
-              {errors[FORM_TEAM.name] && (
+              {errors[FORM_TEAM.teamName] && (
                 <span className="text-red-500 mt-2">
-                  {errors?.[FORM_TEAM.name]?.message?.toString()}
+                  {errors?.[FORM_TEAM.teamName]?.message?.toString()}
                 </span>
               )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor={FORM_TEAM.leader}>Trưởng Nhóm</Label>
+            {/* <div className="space-y-2">
+              <Label htmlFor={FORM_TEAM.teamLeader}>Trưởng Nhóm</Label>
               <Controller
-                name={FORM_TEAM.leader}
+                name={FORM_TEAM.teamLeader}
                 control={control}
                 defaultValue=""
                 rules={{ required: "Trưởng nhóm là bắt buộc" }}
@@ -158,7 +158,7 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                   {errors?.[FORM_TEAM.leader]?.message?.toString()}
                 </span>
               )}
-            </div>
+            </div> */}
             <div className="space-y-2">
               <Label htmlFor={FORM_TEAM.status}>Trạng Thái</Label>
               <Controller
@@ -189,7 +189,6 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
               <Label htmlFor={FORM_TEAM.description}>Mô Tả</Label>
               <Textarea
                 id={FORM_TEAM.description}
-                value={formData.description}
                 {...register(FORM_TEAM.description)}
                 placeholder="Nhập mô tả nhóm"
                 required

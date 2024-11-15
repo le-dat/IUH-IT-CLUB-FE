@@ -1,13 +1,28 @@
 import { Card } from "@/components/ui/card";
 import userService from "@/services/user-service";
+import { useDeviceStore } from "@/store/device-store";
+import useEventStore from "@/store/event-store";
+import useTeamStore from "@/store/team-store";
+import useUserStore from "@/store/user-store";
 import { useQuery } from "@tanstack/react-query";
 import { Users, Target, Laptop, Calendar } from "lucide-react";
+import { useEffect } from "react";
 
 export default function DashboardStats() {
+  const { users } = useUserStore();
+  const { teams } = useTeamStore();
+  const { events } = useEventStore();
+  const { devices } = useDeviceStore();
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`dashboard`],
     queryFn: () => userService.getDashboard(),
-  });
+    enabled: true,
+  }); 
+
+  useEffect(() => {
+    refetch();
+  }, [devices, users, teams, events, refetch]);
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">

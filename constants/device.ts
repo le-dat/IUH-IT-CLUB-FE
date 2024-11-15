@@ -1,8 +1,8 @@
 export const statusMap = Object.freeze({
-  Available: "Có sẵn",
-  "Pending Approval": "Đang chờ duyệt",
-  Inuse: "Đang sử dụng",
-  OutofService: "Không sử dụng",
+  available: "Có sẵn",
+  "pending approval": "Đang chờ duyệt",
+  "in use": "Đang sử dụng",
+  unavailable: "Không sử dụng",
 });
 
 export const conditionsMap = Object.freeze({

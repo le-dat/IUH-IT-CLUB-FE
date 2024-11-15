@@ -1,6 +1,7 @@
 "use client";
 
 import ButtonGradient from "@/components/common/ButtonGradient";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FORM_SIGN } from "@/constants/auth";
@@ -10,7 +11,7 @@ import authService from "@/services/auth-service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { CircuitBoard, Code2, Users } from "lucide-react";
+import { ArrowLeft, CircuitBoard, Code2, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
@@ -58,8 +59,17 @@ export default function RegisterPage() {
     });
   };
 
+  const handleBack = () => {
+    router.push(ROUTES.LANDING_PAGE);
+  };
+
   return (
     <div className="min-h-screen flex">
+      <Button onClick={handleBack} className="fixed top-5 left-10 z-10 flex items-center gap-2">
+        <ArrowLeft className="h-4 w-4" />
+        Quay lại
+      </Button>
+
       {/* Left side - Login Form */}
       <div className="hidden lg:block lg:w-1/2 bg-muted relative overflow-hidden">
         <motion.div

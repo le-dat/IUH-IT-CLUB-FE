@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
@@ -23,106 +23,29 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import deviceService from "@/services/device-service";
 import { toast } from "sonner";
+import { useDeviceStore } from "@/store/device-store";
+import { IDevice } from "@/types/device-type";
 
 interface DevicesSectionProps {
   isAdmin: boolean;
 }
 
-const devices = [
-  {
-    id: 1,
-    name: "MacBook Pro",
-    type: "Laptop",
-    status: "Available",
-    assignedTo: "-",
-    lastChecked: "2024-02-20",
-    condition: "Fair",
-    specifications: '16" M1 Pro, 16GB RAM, 512GB SSD',
-  },
-  {
-    id: 2,
-    name: "Arduino Kit",
-    type: "Development Board",
-    status: "Pending Approval",
-    assignedTo: "Le Dat",
-    lastChecked: "2024-02-18",
-    condition: "Good",
-    specifications: "Arduino Uno R3 with Sensor Kit",
-    request: {
-      requester: "Le Dat",
-      startDate: "2024-03-01",
-      endDate: "2024-03-15",
-      purpose: "IoT project development",
-    },
-  },
-  {
-    id: 3,
-    name: "Arduino Kit",
-    type: "Development Board",
-    status: "Pending Approval",
-    assignedTo: "Alex Johnson",
-    lastChecked: "2024-02-18",
-    condition: "Good",
-    specifications: "Arduino Uno R3 with Sensor Kit",
-    request: {
-      requester: "Alex Johnson",
-      startDate: "2024-03-01",
-      endDate: "2024-03-15",
-      purpose: "IoT project development",
-    },
-  },
-  {
-    id: 4,
-    name: "Arduino Kit",
-    type: "Development Board",
-    status: "Pending Approval",
-    assignedTo: "Alex Johnson",
-    lastChecked: "2024-02-18",
-    condition: "Good",
-    specifications: "Arduino Uno R3 with Sensor Kit",
-    request: {
-      requester: "Alex Johnson",
-      startDate: "2024-03-01",
-      endDate: "2024-03-15",
-      purpose: "IoT project development",
-    },
-  },
-  {
-    id: 5,
-    name: "Arduino Kit",
-    type: "Development Board",
-    status: "Pending Approval",
-    assignedTo: "Alex Johnson",
-    lastChecked: "2024-02-18",
-    condition: "Good",
-    specifications: "Arduino Uno R3 with Sensor Kit",
-    request: {
-      requester: "Alex Johnson",
-      startDate: "2024-03-01",
-      endDate: "2024-03-15",
-      purpose: "IoT project development",
-    },
-  },
-];
-
-const ITEMS_PER_PAGE = 10;
-
 export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   const { t } = useTranslation();
+  const { setDevices } = useDeviceStore();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState("All Statuses");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("All Conditions");
   const [selectedType, setSelectedType] = useState("All Types");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 700);
-  const debouncedSelectedYear = useDebounce(selectedStatus, 500);
-  const debouncedSelectedSkill = useDebounce(selectedCondition, 500);
-  const debouncedSelectedType = useDebounce(selectedType, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm?.trim(), 700);
+  const debouncedStatus = useDebounce(selectedStatus?.trim(), 500);
+  const debouncedSelectedCondition = useDebounce(selectedCondition?.trim(), 500);
   const debouncedCurrentPage = useDebounce(currentPage, 500);
 
-  const [selectedDevice, setSelectedDevice] = useState<any>(null);
+  const [selectedDevice, setSelectedDevice] = useState<IDevice | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -132,9 +55,15 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [
-      `user-manager-${debouncedSearchTerm}-${debouncedSelectedYear}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
+      `device-manager-${debouncedSearchTerm}-${debouncedStatus}-${debouncedSelectedCondition}-${debouncedCurrentPage}`,
     ],
-    queryFn: () => deviceService.getDevices({ page: 1, limit: 10 }),
+    queryFn: () =>
+      deviceService.getDevices({
+        search: debouncedSearchTerm,
+        status: debouncedStatus,
+        page: 1,
+        limit: 10,
+      }),
     enabled: true,
   });
 
@@ -142,20 +71,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
     mutationFn: deviceService.deleteDeviceById,
   });
 
-  const filteredDevices = devices.filter((device) => {
-    const matchesSearch =
-      device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      device.type.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = selectedStatus === "All Statuses" || device.status === selectedStatus;
-    const matchesCondition =
-      selectedCondition === "All Conditions" || device.condition === selectedCondition;
-    const matchesType = selectedType === "All Types" || device.type === selectedType;
-
-    return matchesSearch && matchesStatus && matchesCondition && matchesType;
-  });
-  const totalPages = Math.ceil(filteredDevices.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedDevices = filteredDevices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Number(data?.data?.pagination?.totalPages) || 1;
 
   const handleOpenModalView = (device: any) => {
     setSelectedDevice(device);
@@ -183,14 +99,13 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   };
 
   const confirmDelete = () => {
-    console.log("Deleting device:", selectedDevice?.id);
-
     handleDeleteById(
-      { id: selectedDevice?.id },
+      { id: selectedDevice?._id as string },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
           setIsDeleteModalOpen(false);
+          refetch();
         },
         onError: (error) => {
           console.error(error);
@@ -199,6 +114,10 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
       }
     );
   };
+
+  useEffect(() => {
+    setDevices(data?.data?.equipment || []);
+  }, [data, setDevices]);
 
   return (
     <div className="space-y-6 overflow-x-auto">
@@ -218,7 +137,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         {isAdmin && (
           <Button onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Device
+            Thêm thiết bị
           </Button>
         )}
       </div>
@@ -230,13 +149,15 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
               <SelectValue placeholder="Lọc theo trạng thái" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="All Statuses">Tất cả trạng thái</SelectItem>
-              <SelectItem value="Available">Có sẵn</SelectItem>
-              <SelectItem value="Pending Approval">Đang chờ phê duyệt</SelectItem>
+              <SelectItem value=" ">Tất cả trạng thái</SelectItem>
+              <SelectItem value="available">Có sẵn</SelectItem>
+              <SelectItem value="in use">Đang sử dụng</SelectItem>
+              <SelectItem value="unavailable">Không có sẵn</SelectItem>
+              <SelectItem value="pending approval">Đang chờ phê duyệt</SelectItem>
             </SelectContent>
           </Select>
 
-          <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+          {/* <Select value={selectedCondition} onValueChange={setSelectedCondition}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Lọc theo tình trạng" />
             </SelectTrigger>
@@ -246,9 +167,9 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
               <SelectItem value="Fair">Khá</SelectItem>
               <SelectItem value="Poor">Kém</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
-          <Select value={selectedType} onValueChange={setSelectedType}>
+          {/* <Select value={selectedType} onValueChange={setSelectedType}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Lọc theo loại thiết bị" />
             </SelectTrigger>
@@ -260,7 +181,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
               <SelectItem value="Mobile Device">Thiết Bị Di Động</SelectItem>
               <SelectItem value="Orther">Khác</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
 
         <Pagination
@@ -271,7 +192,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
       </div>
 
       <DeviceTable
-        devices={paginatedDevices}
+        devices={data?.data?.equipment || []}
         isAdmin={isAdmin}
         onView={handleOpenModalView}
         onEdit={(device) => {
@@ -298,6 +219,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             onClose={() => setIsEditModalOpen(false)}
             mode="edit"
             device={selectedDevice}
+            refetch={refetch}
           />
 
           <DeleteConfirmationModal
@@ -314,13 +236,13 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             deviceName={selectedDevice.name}
           />
 
-          {selectedDevice.status === "Pending Approval" && (
+          {/* {selectedDevice.status === "pending approval" && (
             <ApprovalModal
               isOpen={isApprovalModalOpen}
               onClose={() => setIsApprovalModalOpen(false)}
               type="device"
               item={{
-                id: selectedDevice.id,
+                id: selectedDevice._id,
                 deviceName: selectedDevice.name,
                 requester: selectedDevice.request?.requester,
                 startDate: selectedDevice.request?.startDate,
@@ -328,7 +250,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
                 purpose: selectedDevice.request?.purpose,
               }}
             />
-          )}
+          )} */}
         </>
       )}
 
@@ -336,6 +258,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         mode="create"
+        refetch={refetch}
       />
     </div>
   );

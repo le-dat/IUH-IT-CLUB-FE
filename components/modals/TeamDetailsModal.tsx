@@ -12,19 +12,12 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Users, FolderGit2 } from "lucide-react";
+import { ITeam } from "@/types/team-type";
 
 interface TeamDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  team: {
-    id: number;
-    name: string;
-    members: number;
-    projects: number;
-    lead: string;
-    status: string;
-    description?: string;
-  };
+  team: ITeam;
   isAdmin: boolean;
   onEdit?: () => void;
 }
@@ -42,7 +35,7 @@ export default function TeamDetailsModal({
         <DialogCloseButton onClick={onClose} />{" "}
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between gap-2 pr-6">
-            <span className="line-clamp-2">{team.name}</span>
+            <span className="line-clamp-2">{team?.teamName}</span>
             <Badge variant="secondary" className="shrink-0">
               {team.status}
             </Badge>
@@ -52,18 +45,18 @@ export default function TeamDetailsModal({
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-medium mb-2">Trưởng Nhóm</h4>
-            <p className="text-sm">{team.lead}</p>
+            <p className="text-sm">{team?.teamLeader?.username}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">{team.members} Thành viên</span>
+              <span className="text-sm">{team?.members?.length} Thành viên</span>
             </div>
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <FolderGit2 className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">{team.projects} Dự án</span>
-            </div>
+            </div> */}
           </div>
 
           {team.description && (

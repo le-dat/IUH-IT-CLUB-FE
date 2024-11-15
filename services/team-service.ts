@@ -1,14 +1,23 @@
 import { SuccessResponse } from "@/types/response-type";
 import { ITeam } from "@/types/team-type";
 import axiosClient from "./axios-client";
+import { IPagination } from "@/types/common";
 
 const teamService = {
-  getTeams: async ({ page, limit }: { page: number; limit: number }) => {
+  getTeams: async ({
+    search = "",
+    page,
+    limit,
+  }: {
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<ITeam[]>>(`/user/members`, {
-        params: { page, limit },
+      const response = await axiosClient.get(`/team`, {
+        params: { q: search, page, limit },
       });
-      return response.data;
+      return response.data as SuccessResponse<{ teams: ITeam[]; pagination: IPagination }>;
     } catch (error) {
       throw new Error("Failed to fetch teams");
     }

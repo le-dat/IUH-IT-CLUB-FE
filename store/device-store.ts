@@ -1,16 +1,12 @@
+import { IDevice } from "@/types/device-type";
 import { create } from "zustand";
 
-interface Device {
-  id: string;
-  name: string;
-}
-
 interface DeviceState {
-  devices: Device[];
-  setDevices: (devices: Device[]) => void;
+  devices: IDevice[];
+  setDevices: (devices: IDevice[]) => void;
 }
 
 export const useDeviceStore = create<DeviceState>((set) => ({
   devices: [],
-  setDevices: (devices: Device[]) => set({ devices }),
+  setDevices: (devices: IDevice[]) => set({ devices }),
 }));
