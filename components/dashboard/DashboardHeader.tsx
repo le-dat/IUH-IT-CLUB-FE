@@ -44,7 +44,7 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
   };
 
   useEffect(() => {
-    loginStore(data?.data!);
+    loginStore(data?.data?.user!);
   }, [data, loginStore]);
 
   return (
@@ -53,7 +53,7 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CircuitBoard className="h-6 w-6" />
-            <h1 className="text-xl font-bold">Câu lạc bộ lập trình IUH</h1>
+            <h1 className="text-xl font-bold hidden lg:block">Câu lạc bộ lập trình IUH</h1>
           </div>
 
           <div className="flex items-center gap-4">

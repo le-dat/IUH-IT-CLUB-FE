@@ -47,6 +47,13 @@ export default function LoginPage() {
 
     mutate(data, {
       onSuccess: (response) => {
+        if (response?.data?.user?.role !== "admin" && isAdmin) {
+          toast.error("Tài khoản của bạn không có quyền truy cập Admin");
+          return;
+        } else if (response?.data?.user?.role === "admin" && !isAdmin) {
+          toast.error("Vui lòng chuyển sang quyền truy cập Admin để tiếp tục");
+          return;
+        }
         loginStore(response?.data?.user!);
         AuthStorage.setAccessToken(response?.data?.token?.accessToken!);
         AuthStorage.setRefreshToken(response?.data?.token?.refreshToken!);
@@ -56,7 +63,7 @@ export default function LoginPage() {
       },
       onError: (error) => {
         console.error(error);
-        toast.error(error?.message || "An error occurred during login");
+        toast.error(error?.message || "Đã xảy ra lỗi trong quá trình đăng nhập");
       },
     });
   };

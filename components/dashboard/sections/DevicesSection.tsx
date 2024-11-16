@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ApprovalModal from "@/components/modals/ApprovalModal";
+import ApprovalModal from "@/components/modals/ApprovalModalDevice";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import deviceService from "@/services/device-service";
@@ -109,7 +109,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         },
         onError: (error) => {
           console.error(error);
-          toast.error(error?.message || "An error occurred during login");
+          toast.error(error?.message || "Đã có lỗi xảy ra");
         },
       }
     );
@@ -157,17 +157,17 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             </SelectContent>
           </Select>
 
-          {/* <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+          <Select value={selectedCondition} onValueChange={setSelectedCondition}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Lọc theo tình trạng" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All Conditions">Tất cả tình trạng</SelectItem>
-              <SelectItem value="Good">Tốt</SelectItem>
-              <SelectItem value="Fair">Khá</SelectItem>
-              <SelectItem value="Poor">Kém</SelectItem>
+              <SelectItem value="good">Tốt</SelectItem>
+              <SelectItem value="fair">Khá</SelectItem>
+              <SelectItem value="poor">Kém</SelectItem>
             </SelectContent>
-          </Select> */}
+          </Select>
 
           {/* <Select value={selectedType} onValueChange={setSelectedType}>
             <SelectTrigger className="w-[180px]">

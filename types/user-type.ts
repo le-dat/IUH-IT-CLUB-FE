@@ -5,7 +5,7 @@ export interface IUser extends ICommonMongodb {
   password: string;
   username: string;
   phone: string;
-  codeStudent: string;
+  courseNumber: string;
   role: "admin" | "member" | "visitor" | "teamLeader";
 
   skills?: string[];

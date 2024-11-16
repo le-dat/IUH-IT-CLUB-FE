@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,22 +29,18 @@ import { toast } from "sonner";
 import { ITeam } from "@/types/team-type";
 import { validationTeamSchema } from "@/lib/validate";
 import { yupResolver } from "@hookform/resolvers/yup";
+import useTeamStore from "@/store/team-store";
 
 interface TeamModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: "create" | "edit";
   team: ITeam;
+  refetch?: () => void;
 }
 
-export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProps) {
-
+export default function TeamModal({ isOpen, onClose, mode, team, refetch }: TeamModalProps) {
   const isCreateMode = mode === "create";
-
-  // const { data, isLoading, error, refetch } = useQuery({
-  //   queryKey: [`team-${team?._id}`],
-  //   queryFn: () => teamService.getTeamById({ id: team?._id?.toString() || "" }),
-  // });
 
   const { mutate: handleCreate, isPending: isPendingCreate } = useMutation({
     mutationFn: teamService.createTeam,
@@ -58,8 +54,8 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
     defaultValues: {
       [FORM_TEAM.teamName]: team?.teamName || "",
       [FORM_TEAM.description]: team?.description || "",
-      [FORM_TEAM.status]: team?.status || "",
-      // [FORM_TEAM.teamLeader]: team?.teamLeader 
+      // [FORM_TEAM.status]: team?.status || "",
+      // [FORM_TEAM.teamLeader]: team?.teamLeader
     },
   });
 
@@ -72,39 +68,44 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
     formState: { errors },
   } = methods;
 
-  const isFormValid = watch(FORM_TEAM.teamName) && watch(FORM_TEAM.description) && watch(FORM_TEAM.status);
+  const isFormValid = watch(FORM_TEAM.teamName) && watch(FORM_TEAM.description);
   const isSubmitDisabled = isPendingCreate || isPendingUpdate || !isFormValid;
 
   const onSubmit = async (data: any) => {
     console.log("data: ", data);
     if (isSubmitDisabled) return;
 
-    if (isCreateMode) {
-      handleCreate(data, {
-        onSuccess: (response) => {
-          toast.success(response?.message);
-          console.log("response: ", response);
-          onClose();
-        },
-        onError: (error) => {
-          console.error(error);
-          toast.error(error?.message || "An error occurred during login");
-        },
-      });
-    } else {
-      handleUpdate(data, {
-        onSuccess: (response) => {
-          toast.success(response?.message);
-          console.log("response: ", response);
-          onClose();
-        },
-        onError: (error) => {
-          console.error(error);
-          toast.error(error?.message || "An error occurred during login");
-        },
-      });
-    }
+    // if (isCreateMode) {
+    //   handleCreate(data, {
+    //     onSuccess: (response) => {
+    //       console.log("response: ", response);
+    //       refetch && refetch();
+    //       toast.success(response?.message);
+    //       onClose();
+    //     },
+    //     onError: (error) => {
+    //       console.error(error);
+    //                 toast.error(error?.message || "Đã có lỗi xảy ra");
+
+    //     },
+    //   });
+    // } else {
+    //   handleUpdate(data, {
+    //     onSuccess: (response) => {
+    //       console.log("response: ", response);
+    //       refetch && refetch();
+    //       toast.success(response?.message);
+    //       onClose();
+    //     },
+    //     onError: (error) => {
+    //       console.error(error);
+    //                 toast.error(error?.message || "Đã có lỗi xảy ra");
+
+    //     },
+    //   });
+    // }
   };
+  const onErrors = (errors: any) => console.error(errors);
 
   return (
     <Dialog open={isOpen}>
@@ -118,7 +119,7 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
         </DialogHeader>
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit, onErrors)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor={FORM_TEAM.teamName}>Tên Nhóm</Label>
               <Input
@@ -159,7 +160,7 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                 </span>
               )}
             </div> */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor={FORM_TEAM.status}>Trạng Thái</Label>
               <Controller
                 name={FORM_TEAM.status}
@@ -184,7 +185,7 @@ export default function TeamModal({ isOpen, onClose, mode, team }: TeamModalProp
                   {errors?.[FORM_TEAM.status]?.message?.toString()}
                 </span>
               )}
-            </div>
+            </div> */}
             <div className="space-y-2">
               <Label htmlFor={FORM_TEAM.description}>Mô Tả</Label>
               <Textarea

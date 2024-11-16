@@ -2,7 +2,7 @@ export const FORM_USER = Object.freeze({
   email: "email",
   password: "password",
   username: "username",
-  codeStudent: "codeStudent",
+  courseNumber: "courseNumber",
   phone: "phone",
   skills: "skills",
 } as const);

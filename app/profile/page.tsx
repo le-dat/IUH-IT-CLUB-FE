@@ -66,7 +66,7 @@ export default function ProfilePage() {
       },
       onError: (error) => {
         console.error(error);
-        toast.error(error?.message || "An error occurred during login");
+        toast.error(error?.message || "Đã có lỗi xảy ra");
       },
     });
   };
@@ -139,15 +139,15 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor={FORM_USER.codeStudent}>Mã sinh viên</Label>
+                        <Label htmlFor={FORM_USER.courseNumber}>Khóa học</Label>
                         <Input
-                          id={FORM_USER.codeStudent}
+                          id={FORM_USER.courseNumber}
                           defaultValue="2022222"
                           className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         />
-                        {errors[FORM_USER.codeStudent] && (
+                        {errors[FORM_USER.courseNumber] && (
                           <span className="text-red-500 mt-2">
-                            {errors[FORM_USER.codeStudent]?.message?.toString()}
+                            {errors[FORM_USER.courseNumber]?.message?.toString()}
                           </span>
                         )}
                       </div>

@@ -13,6 +13,7 @@ import {
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { ITeam } from "@/types/team-type";
 import { IUser } from "@/types/user-type";
+import { formatDate } from "@/lib/utils";
 
 interface MemberTableProps {
   members: IUser[];
@@ -34,7 +35,8 @@ export default function MemberTable({
       <TableHeader>
         <TableRow>
           <TableHead>Thành viên</TableHead>
-          <TableHead>Năm học</TableHead>
+          <TableHead>Khóa học</TableHead>
+          <TableHead>Kĩ năng</TableHead>
           <TableHead>Ngày tham gia</TableHead>
           <TableHead>Thao tác</TableHead>
         </TableRow>
@@ -48,11 +50,12 @@ export default function MemberTable({
                 <span>{member.username}</span>
               </div>
             </TableCell>
-            <TableCell>{member.codeStudent}</TableCell>
-            <TableCell>
-              {/* <Badge variant="secondary">{member.status}</Badge> */}
-            </TableCell>
-            {/* <TableCell>{member.joinDate}</TableCell> */}
+            <TableCell>{member.courseNumber}</TableCell>
+            <TableCell>{member.courseNumber}</TableCell>
+            {/* <TableCell>
+              <Badge variant="secondary">{member.status}</Badge>
+            </TableCell> */}
+            <TableCell>{formatDate(member.createdAt)}</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" onClick={() => onView(member)}>

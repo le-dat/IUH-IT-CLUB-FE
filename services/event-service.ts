@@ -38,17 +38,7 @@ const eventService = {
       throw new Error("Failed to create event");
     }
   },
-  searchEvents: async ({ keyword }: { keyword: string }) => {
-    try {
-      const response = await axiosClient.get<SuccessResponse<IEvent[]>>(
-        `/events/search?keyword=${keyword}`
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to search events");
-    }
-  },
-  updateEvent: async ({ id, event }: { id: string; event: IEvent }) => {
+  updateEventById: async ({ id, event }: { id: string; event: IEvent }) => {
     try {
       const response = await axiosClient.put<SuccessResponse<IEvent>>(`/events/${id}`, event);
       return response.data;
@@ -56,7 +46,7 @@ const eventService = {
       throw new Error("Failed to update event");
     }
   },
-  deleteEvent: async ({ id }: { id: string }) => {
+  deleteEventById: async ({ id }: { id: string }) => {
     try {
       const response = await axiosClient.delete<SuccessResponse<null>>(`/events/${id}`);
       return response.data;

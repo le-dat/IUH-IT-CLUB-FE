@@ -3,12 +3,12 @@ import { IUser } from "./user-type";
 
 export interface IDevice extends ICommonMongodb {
   name: string;
-  // last_check: Date;
+  lastCheck: Date;
   status: "available" | "in use" | "unavailable" | "pending approval";
-  // status_health: "good" | "normal" | "poor";
+  statusHealth: "good" | "normal" | "poor";
   type: string;
-  // requestBy: IUser | null;
+  requestBy: IUser | null;
   currentBorrower?: IUser | null;
-  borrowDate?: Date | null;
-  returnDate?: Date | null;
+  borrowDate: string | null;
+  returnDate: string | null;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import SearchInput from "@/components/common/SearchInput";
-import ApprovalModal from "@/components/modals/ApprovalModal";
+import ApprovalModal from "@/components/modals/ApprovalModalDevice";
 import EventModal from "@/components/modals/CreateEventModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
 import EventDetailsModal from "@/components/modals/EventDetailsModal";
@@ -13,6 +13,8 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import EventsGrid from "./events/EventsGrid";
 import useEventStore from "@/store/event-store";
+import { IEvent } from "@/types/event-type";
+import ApprovalModalEvent from "@/components/modals/ApprovalModalEvent";
 
 interface Event {
   id: number;
@@ -57,11 +59,11 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
   const { setEvent } = useEventStore();
 
-  const [selectedTeam, setSelectedTeam] = useState<Event | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<IEvent | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -101,7 +103,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     // setIsLoading(false);
   };
 
-  const handleView = (event: Event) => {
+  const handleView = (event: IEvent) => {
     setSelectedEvent(event);
     setIsDetailsModalOpen(true);
   };
@@ -111,7 +113,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (event: Event) => {
+  const handleDelete = (event: IEvent) => {
     setSelectedEvent(event);
     setIsDeleteModalOpen(true);
   };
@@ -120,14 +122,14 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     setRegisteredEvents((prev) => [...prev, eventId]);
   };
 
-  const handleApproval = (event: Event) => {
+  const handleApproval = (event: IEvent) => {
     setSelectedEvent(event);
     setIsApprovalModalOpen(true);
   };
 
   const confirmDelete = () => {
     // Handle delete logic here
-    console.log("Deleting event:", selectedEvent?.id);
+    console.log("Deleting event:", selectedEvent?._id);
     setIsDeleteModalOpen(false);
     setSelectedEvent(null);
   };
@@ -197,10 +199,10 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={confirmDelete}
             title={t("events.deleteTitle")}
-            description={`${t("events.deleteConfirmation")} ${selectedEvent?.title || ""}`}
+            description={`${t("events.deleteConfirmation")} ${selectedEvent?.eventName || ""}`}
           />
 
-          <ApprovalModal
+          <ApprovalModalEvent
             isOpen={isApprovalModalOpen}
             onClose={() => setIsApprovalModalOpen(false)}
             type="event"

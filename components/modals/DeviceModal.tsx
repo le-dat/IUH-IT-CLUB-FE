@@ -82,6 +82,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
   const isFormValid =
     watch(FORM_DEVICE.name) && watch(FORM_DEVICE.type) && watch(FORM_DEVICE.status);
   const isSubmitDisabled = isPendingCreateDevice || isPendingUpdateDevice || !isFormValid;
+  const onErrors = (errors: any) => console.error(errors);
 
   const onSubmit = async (data: any) => {
     if (isSubmitDisabled) return;
@@ -97,7 +98,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
           },
           onError: (error) => {
             console.error(error);
-            toast.error(error?.message || "An error occurred during create device");
+            toast.error(error?.message || "Đã có lỗi xảy ra");
           },
         }
       );
@@ -115,7 +116,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
         },
         onError: (error) => {
           console.error(error);
-          toast.error(error?.message || "An error occurred during update device");
+          toast.error(error?.message || "Đã có lỗi xảy ra");
         },
       });
     }
@@ -148,7 +149,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
         </DialogHeader>
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit, onErrors)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor={FORM_DEVICE.name}>Tên Thiết Bị</Label>
               <Input

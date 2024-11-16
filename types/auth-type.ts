@@ -6,8 +6,8 @@ export interface ITokens {
 }
 
 export interface IResponseLogin {
-  token: ITokens,
-  user: IUser
+  token: ITokens;
+  user: IUser;
 }
 
 export interface IRegister {
@@ -15,7 +15,7 @@ export interface IRegister {
   email: string;
   phone: string;
   password: string;
-  codeStudent: number;
+  courseNumber: number;
 }
 
 export interface ILogIn {

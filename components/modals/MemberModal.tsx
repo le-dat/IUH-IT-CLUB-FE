@@ -53,11 +53,6 @@ export default function MemberModal({
   const isViewMode = mode === "view";
   const canEdit = isAdmin && mode !== "view";
 
-  // const { data, isLoading, error, refetch } = useQuery({
-  //   queryKey: [`user-manager`],
-  //   queryFn: () => userService.getUserById({ id: member?._id as string }),
-  // });
-
   const { mutate: mutateCreateUser, isPending: isPendingCreateUser } = useMutation({
     mutationFn: userService.createUser,
   });
@@ -70,7 +65,7 @@ export default function MemberModal({
     defaultValues: {
       username: member?.username || "",
       email: member?.email || "",
-      codeStudent: Number(member?.codeStudent) || 0,
+      courseNumber: member?.courseNumber || "",
       phone: member?.phone || "",
     },
   });
@@ -85,10 +80,12 @@ export default function MemberModal({
 
   const isFormValid =
     watch(FORM_USER.email) &&
-    watch(FORM_USER.codeStudent) &&
+    watch(FORM_USER.courseNumber) &&
     watch(FORM_USER.phone) &&
     watch(FORM_USER.username);
   const isSubmitDisabled = isPendingCreateUser || isPendingUpdateUser || !isFormValid;
+
+  const onErrors = (errors: any) => console.error(errors);
 
   const onSubmit = async (data: any) => {
     console.log("data: ", data);
@@ -105,7 +102,7 @@ export default function MemberModal({
           },
           onError: (error) => {
             console.error(error);
-            toast.error(error?.message || "Đã xảy ra lỗi trong quá trình cập nhật thông tin");
+            toast.error(error?.message || "Đã có lỗi xảy ra");
           },
         }
       );
@@ -118,7 +115,7 @@ export default function MemberModal({
         },
         onError: (error) => {
           console.error(error);
-          toast.error(error?.message || "Đã xảy ra lỗi trong quá trình tạo thành viên mới");
+          toast.error(error?.message || "Đã có lỗi xảy ra");
         },
       });
     }
@@ -132,10 +129,10 @@ export default function MemberModal({
   useEffect(() => {
     if (member && mode === "edit") {
       reset({
-        username: member.username,
-        email: member.email,
-        codeStudent: Number(member.codeStudent),
-        phone: member.phone,
+        username: member?.username,
+        email: member?.email,
+        courseNumber: member?.courseNumber,
+        phone: member?.phone,
       });
     }
   }, [member, mode, reset]);
@@ -162,7 +159,7 @@ export default function MemberModal({
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit, onErrors)} className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
                 <Label className="text-indigo-400" htmlFor={FORM_USER.username}>
@@ -228,23 +225,23 @@ export default function MemberModal({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-indigo-400" htmlFor={FORM_SIGN.codeStudent}>
-                  Mã số sinh viên
+                <Label className="text-indigo-400" htmlFor={FORM_SIGN.courseNumber}>
+                  Khóa học
                 </Label>
                 {isViewMode ? (
-                  <p className="text-sm">{member?.codeStudent}</p>
+                  <p className="text-sm">{member?.courseNumber}</p>
                 ) : (
                   <>
                     <Input
-                      id={FORM_USER.codeStudent}
-                      {...register(FORM_USER.codeStudent)}
+                      id={FORM_USER.courseNumber}
+                      {...register(FORM_USER.courseNumber)}
                       placeholder="Nhập mã số sinh viên"
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
-                    {errors[FORM_USER.codeStudent] && (
+                    {errors[FORM_USER.courseNumber] && (
                       <span className="text-red-500 mt-2">
-                        {errors?.[FORM_USER.codeStudent]?.message?.toString()}
+                        {errors?.[FORM_USER.courseNumber]?.message?.toString()}
                       </span>
                     )}
                   </>

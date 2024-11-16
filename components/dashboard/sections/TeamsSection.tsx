@@ -150,7 +150,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         },
         onError: (error) => {
           console.error(error);
-          toast.error(error?.message || "An error occurred during login");
+          toast.error(error?.message || "Đã có lỗi xảy ra");
         },
       }
     );
@@ -211,6 +211,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
             onClose={() => setIsEditModalOpen(false)}
             mode="edit"
             team={selectedTeam!}
+            refetch={refetch}
           />
 
           <DeleteConfirmationModal

@@ -4,8 +4,16 @@ import ButtonGradient from "@/components/common/ButtonGradient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { FORM_SIGN } from "@/constants/auth";
 import { ROUTES } from "@/constants/route";
+import { getCourseNumber } from "@/lib/utils";
 import { validationRegisterSchema } from "@/lib/validate";
 import authService from "@/services/auth-service";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,7 +22,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, CircuitBoard, Code2, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function RegisterPage() {
@@ -29,6 +37,7 @@ export default function RegisterPage() {
     watch,
     handleSubmit,
     reset,
+    control,
     register,
     formState: { errors },
   } = methods;
@@ -36,7 +45,7 @@ export default function RegisterPage() {
   const isFormValid =
     watch(FORM_SIGN.username) &&
     watch(FORM_SIGN.email) &&
-    watch(FORM_SIGN.codeStudent) &&
+    watch(FORM_SIGN.courseNumber) &&
     watch(FORM_SIGN.phone) &&
     watch(FORM_SIGN.password) &&
     watch(FORM_SIGN.confirmPassword);
@@ -54,7 +63,7 @@ export default function RegisterPage() {
       },
       onError: (error) => {
         console.error(error);
-        toast.error(error?.message || "An error occurred during login");
+        toast.error(error?.message || "Đã có lỗi xảy ra");
       },
     });
   };
@@ -176,17 +185,29 @@ export default function RegisterPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor={FORM_SIGN.codeStudent}>Mã số sinh viên</Label>
-                <Input
-                  id={FORM_SIGN.codeStudent}
-                  {...register(FORM_SIGN.codeStudent)}
-                  placeholder="20111111"
-                  required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                <Label htmlFor={FORM_SIGN.courseNumber}>Khóa học</Label>
+                <Controller
+                  name={FORM_SIGN.courseNumber}
+                  control={control}
+                  rules={{ required: "Khóa học là bắt buộc" }}
+                  render={({ field }) => (
+                    <Select {...field} onValueChange={(value) => field.onChange(value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn khóa học" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 7 }).map((_, index) => (
+                          <SelectItem key={index} value={getCourseNumber(index)}>
+                            {getCourseNumber(index)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
-                {errors[FORM_SIGN.codeStudent] && (
+                {errors[FORM_SIGN.courseNumber] && (
                   <span className="text-red-500 mt-2">
-                    {errors?.[FORM_SIGN.codeStudent]?.message?.toString()}
+                    {errors?.[FORM_SIGN.courseNumber]?.message?.toString()}
                   </span>
                 )}
               </div>

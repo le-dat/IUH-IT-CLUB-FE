@@ -41,8 +41,8 @@ export default function DeviceTable({
           <TableHead>Loại</TableHead>
           <TableHead>Trạng Thái</TableHead>
           <TableHead>Được Giao Cho</TableHead>
-          {/* <TableHead>Lần Kiểm Tra Cuối</TableHead>
-          <TableHead>Tình Trạng</TableHead> */}
+          <TableHead>Lần Kiểm Tra Cuối</TableHead>
+          <TableHead>Tình Trạng</TableHead>
           <TableHead>Hành Động</TableHead>
         </TableRow>
       </TableHeader>
@@ -66,12 +66,12 @@ export default function DeviceTable({
               </Badge>
             </TableCell>
             <TableCell>{device?.currentBorrower?.username}</TableCell>
-            {/* <TableCell>
-              {device.lastChecked}
-              </TableCell> */}
-            {/* <TableCell>
-              {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]}
-            </TableCell> */}
+            <TableCell>
+              {/* {device.lastChecked} */}
+              </TableCell>
+            <TableCell>
+              {/* {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]} */}
+            </TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" onClick={() => onView(device)}>

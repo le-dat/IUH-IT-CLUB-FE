@@ -34,10 +34,10 @@ export default function TechClubDashboard() {
 
         <Tabs defaultValue="members" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="members">Thành viên</TabsTrigger>
-            <TabsTrigger value="teams">Đội tuyển</TabsTrigger>
-            <TabsTrigger value="events">Sự kiện</TabsTrigger>
-            <TabsTrigger value="devices">Thiết bị</TabsTrigger>
+            <TabsTrigger className="lg:text-[18px]" value="members">Thành viên</TabsTrigger>
+            <TabsTrigger className="lg:text-[18px]" value="teams">Đội tuyển</TabsTrigger>
+            <TabsTrigger className="lg:text-[18px]" value="events">Sự kiện</TabsTrigger>
+            <TabsTrigger className="lg:text-[18px]" value="devices">Thiết bị</TabsTrigger>
           </TabsList>
 
           <TabsContent value="members">

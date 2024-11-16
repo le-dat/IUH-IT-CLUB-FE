@@ -16,7 +16,7 @@ const userService = {
   getMe: async () => {
     try {
       const response = await axiosClient.get("/user/profile");
-      return response.data as SuccessResponse<IUser>;
+      return response.data as SuccessResponse<{ user: IUser }>;
     } catch (error: any) {
       console.error(error);
       throw new Error(error?.message ?? "Failed to get me");

@@ -33,7 +33,7 @@ export default function LandingPage() {
               className="flex items-center gap-2"
             >
               <CircuitBoard className="h-6 w-6" />
-              <span className="text-xl font-bold">Câu lạc bộ lập trình IUH</span>
+              <span className="text-xl font-bold hidden lg:block">Câu lạc bộ lập trình IUH</span>
             </motion.div>
             <div className="flex items-center gap-4">
               <ThemeToggle />

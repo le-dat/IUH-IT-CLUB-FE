@@ -5,7 +5,7 @@ export const FORM_LOGIN = Object.freeze({
 
 export const FORM_SIGN = Object.freeze({
   username: "username",
-  codeStudent: "codeStudent",
+  courseNumber: "courseNumber",
   phone: "phone",
   ...FORM_LOGIN,
   confirmPassword: "confirmPassword",

@@ -21,6 +21,7 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import MemberTable from "./members/MemberTable";
+import { getCourseNumber } from "@/lib/utils";
 
 interface MembersSectionProps {
   isAdmin: boolean;
@@ -91,7 +92,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         },
         onError: (error) => {
           console.error(error);
-          toast.error(error?.message || "An error occurred during login");
+          toast.error(error?.message || "Đã có lỗi xảy ra");
         },
       }
     );
@@ -127,15 +128,15 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[180px] ">
-                <SelectValue placeholder="Lọc theo năm học" />
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn khóa học " />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=" ">Tất cả năm</SelectItem>
-                <SelectItem value="Freshman">Năm nhất</SelectItem>
-                <SelectItem value="Sophomore">Năm hai</SelectItem>
-                <SelectItem value="Junior">Năm ba</SelectItem>
-                <SelectItem value="Senior">Năm tư</SelectItem>
+                {Array.from({ length: 7 }).map((_, index) => (
+                  <SelectItem key={index} value={getCourseNumber(index)}>
+                    {getCourseNumber(index)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -145,10 +146,11 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value=" ">Tất cả kỹ năng</SelectItem>
-                <SelectItem value="React">React</SelectItem>
-                <SelectItem value="Node.js">Node.js</SelectItem>
-                <SelectItem value="TypeScript">TypeScript</SelectItem>
-                <SelectItem value="UI Design">UI Design</SelectItem>
+                <SelectItem value="front-end">Front-end</SelectItem>
+                <SelectItem value="back-end">Back-end</SelectItem>
+                <SelectItem value="mobile">Mobile</SelectItem>
+                <SelectItem value="ai">Artificial intelligence</SelectItem>
+                <SelectItem value="design">Design</SelectItem>
               </SelectContent>
             </Select>
           </div>
