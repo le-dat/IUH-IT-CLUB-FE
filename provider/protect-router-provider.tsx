@@ -13,14 +13,14 @@ const ProtectRouter = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const redirectToHome = () => {
-      if (publicRoutes.includes(pathName)) {
+      if (publicRoutes.includes(pathName as (typeof publicRoutes)[number])) {
         router.push(ROUTES.DASHBOARD);
       }
     };
 
     const redirectToLogin = () => {
       if (pathName === ROUTES.DASHBOARD) {
-        router.back();
+        router.push(ROUTES.LANDING_PAGE);
       }
     };
 
@@ -31,7 +31,7 @@ const ProtectRouter = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isAuthenticated, pathName, router]);
 
-  if (isAuthenticated || publicRoutes.includes(pathName)) {
+  if (isAuthenticated || publicRoutes.includes(pathName as (typeof publicRoutes)[number])) {
     return <>{children}</>;
   }
 

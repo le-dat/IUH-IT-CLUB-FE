@@ -20,51 +20,63 @@ import { IEvent } from "@/types/event-type";
 import { formatDateTime } from "@/lib/utils/date";
 import { useMutation } from "@tanstack/react-query";
 import eventService from "@/services/event-service";
+import { toast } from "sonner";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { validationEventSchema } from "@/lib/validate";
 
 interface ApprovalModalEventProps {
   isOpen: boolean;
   onClose: () => void;
   item: IEvent;
+  refetch?: () => void;
 }
 
-export default function ApprovalModalEvent({ isOpen, onClose, item }: ApprovalModalEventProps) {
-  const [notes, setNotes] = useState("");
+export default function ApprovalModalEvent({
+  isOpen,
+  onClose,
+  item,
+  refetch,
+}: ApprovalModalEventProps) {
+  // const [notes, setNotes] = useState("");
 
   const { mutate: mutateUpdateEvent, isPending: isPendingUpdateEvent } = useMutation({
     mutationFn: eventService.updateEventById,
   });
 
+  const handleClose = () => {
+    onClose();
+  };
+
   const handleApprove = () => {
-    console.log("Đã phê duyệt:", { item, notes });
-    const data = { id: item._id, data: { status: "approved" } };
-    // mutateUpdateDevice(data, {
-    //     onSuccess: (response) => {
-    //       refetch && refetch();
-    //       toast.success(response?.message);
-    //       handleClose();
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //       toast.error(error?.message || "Đã có lỗi xảy ra");
-    //     },
-    // });
+    const data = { id: item._id, event: { ...item, status: "approved" } };
+    mutateUpdateEvent(data, {
+      onSuccess: (response) => {
+        refetch && refetch();
+        toast.success(response?.message);
+        handleClose();
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error(error?.message || "Đã có lỗi xảy ra");
+      },
+    });
     onClose();
   };
 
   const handleReject = () => {
-    console.log("Đã từ chối:", { item, notes });
-    const data = { id: item._id, data: { status: "approved" } };
-    // mutateUpdateDevice(data, {
-    //     onSuccess: (response) => {
-    //       refetch && refetch();
-    //       toast.success(response?.message);
-    //       handleClose();
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //       toast.error(error?.message || "Đã có lỗi xảy ra");
-    //     },
-    // });
+    const data = { id: item._id, event: { ...item, status: "rejected" } };
+    mutateUpdateEvent(data, {
+      onSuccess: (response) => {
+        refetch && refetch();
+        toast.success(response?.message);
+        handleClose();
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error(error?.message || "Đã có lỗi xảy ra");
+      },
+    });
     onClose();
   };
 
@@ -98,7 +110,7 @@ export default function ApprovalModalEvent({ isOpen, onClose, item }: ApprovalMo
                 <span>{item.location}</span>
               </div>
               <div className="pt-2 border-t">
-                <Badge variant="outline">Yêu cầu bởi {item?.requestBy?.username}</Badge>
+                <Badge variant="outline">Yêu cầu bởi {item?.host?.username}</Badge>
               </div>
             </div>
           </div>

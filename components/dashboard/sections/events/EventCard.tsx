@@ -4,19 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Users, Clock, Eye, Edit, Trash2 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion } from "framer-motion";
+import { IEvent } from "@/types/event-type";
+import { formatDate } from "@/lib/utils";
 
 interface EventCardProps {
-  event: {
-    id: number;
-    title: string;
-    date: string;
-    time: string;
-    location: string;
-    attendees: number;
-    status: string;
-    description: string;
-    requester?: string;
-  };
+  event: IEvent;
   isAdmin: boolean;
   onView: () => void;
   onEdit: () => void;
@@ -47,29 +39,29 @@ export default function EventCard({
       <Card className="p-6 group hover:shadow-lg transition-all duration-300">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">{event.title}</h3>
+            <h3 className="font-semibold text-lg">{event.eventName}</h3>
             <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
           </div>
           <Badge
             variant={
-              event.status === "Pending Approval"
+              event.statusEvent === "coming"
                 ? "secondary"
-                : event.status === "Approved"
+                : event.statusEvent === "done"
                 ? "default"
                 : "destructive"
             }
             className="shrink-0"
           >
-            {event.status === "Pending Approval" ? "Chờ duyệt" : "Đã duyệt"}
+            {event.statusEvent === "coming" ? "Sắp tới" : "Đã qua"}
           </Badge>
         </div>
 
         <div className="mt-4 space-y-2">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">{event.date}</span>
+            <span className="text-sm">{formatDate(event.eventDate)}</span>
             <Clock className="h-4 w-4 text-muted-foreground ml-2" />
-            <span className="text-sm">{event.time}</span>
+            <span className="text-sm">{event.startTime}</span>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-muted-foreground" />
@@ -78,17 +70,17 @@ export default function EventCard({
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm">
-              {event.attendees} {t("events.attendees")}
+              {event?.registeredParticipants?.length} {t("events.attendees")}
             </span>
           </div>
-          {event.status === "Pending Approval" && event.requester && (
+          {event.statusRequest === "pending-approval" && event.host && (
             <p className="text-sm text-muted-foreground">
-              {t("events.requestedBy")}: {event.requester}
+              {t("events.requestedBy")}: {event?.host?.username}
             </p>
           )}
         </div>
 
-        <div className="mt-6 flex gap-2">
+        <div className="mt-6 flex gap-2 justify-end">
           {/* <Button
             variant="ghost"
             size="sm"
@@ -98,7 +90,7 @@ export default function EventCard({
           </Button> */}
           {isAdmin ? (
             <>
-              {event.status === "Pending Approval" ? (
+              {event.statusRequest === "pending-approval" ? (
                 <Button onClick={onEdit} className="flex-1">
                   {t("events.reviewRequest")}
                 </Button>
@@ -115,9 +107,9 @@ export default function EventCard({
             </>
           ) : (
             <Button
-              variant={event.status === "Approved" ? "default" : "outline"}
+              variant={event.statusRequest === "approved" ? "default" : "outline"}
               className="flex-1"
-              disabled={event.status !== "Approved" || isRegistered}
+              disabled={event.statusRequest !== "approved" || isRegistered}
               onClick={onRegister}
             >
               {isRegistered ? t("events.registered") : t("events.register")}

@@ -11,7 +11,7 @@ export default function CardSkeleton({ count = 3 }: CardSkeletonProps) {
       {Array(count)
         .fill(null)
         .map((_, i) => (
-          <Card key={i} className="p-6 space-y-4">
+          <Card key={`card-${i}`} className="p-6 space-y-4">
             <div className="space-y-2">
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-full" />

@@ -24,14 +24,14 @@ const userService = {
   },
   getAllUser: async ({
     search = "",
-    year = "",
+    level = "",
     skill = "",
     page = 1,
     limit = 10,
-  }: { search?: string; year?: string; skill?: string; page?: number; limit?: number } = {}) => {
+  }: { search?: string; level?: string; skill?: string; page?: number; limit?: number } = {}) => {
     try {
       const response = await axiosClient.get("/user/members", {
-        params: { q: search, level: year, skill, page, limit },
+        params: { q: search, level, skill, page, limit },
       });
       return response.data as SuccessResponse<{ users: IUser[]; pagination: IPagination }>;
     } catch (error: any) {

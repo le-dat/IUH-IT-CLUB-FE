@@ -15,7 +15,7 @@ export interface IRegister {
   email: string;
   phone: string;
   password: string;
-  courseNumber: number;
+  level: number;
 }
 
 export interface ILogIn {

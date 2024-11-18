@@ -45,7 +45,7 @@ export default function RegisterPage() {
   const isFormValid =
     watch(FORM_SIGN.username) &&
     watch(FORM_SIGN.email) &&
-    watch(FORM_SIGN.courseNumber) &&
+    watch(FORM_SIGN.level) &&
     watch(FORM_SIGN.phone) &&
     watch(FORM_SIGN.password) &&
     watch(FORM_SIGN.confirmPassword);
@@ -67,6 +67,7 @@ export default function RegisterPage() {
       },
     });
   };
+  const onErrors = (errors: any) => console.error(errors);
 
   const handleBack = () => {
     router.push(ROUTES.LANDING_PAGE);
@@ -152,7 +153,7 @@ export default function RegisterPage() {
           </div>
 
           <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit, onErrors)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor={FORM_SIGN.username}>Tên</Label>
                 <Input
@@ -185,14 +186,14 @@ export default function RegisterPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor={FORM_SIGN.courseNumber}>Khóa học</Label>
+                <Label htmlFor={FORM_SIGN.level}>Khóa học</Label>
                 <Controller
-                  name={FORM_SIGN.courseNumber}
+                  name={FORM_SIGN.level}
                   control={control}
                   rules={{ required: "Khóa học là bắt buộc" }}
                   render={({ field }) => (
                     <Select {...field} onValueChange={(value) => field.onChange(value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Chọn khóa học" />
                       </SelectTrigger>
                       <SelectContent>
@@ -205,9 +206,9 @@ export default function RegisterPage() {
                     </Select>
                   )}
                 />
-                {errors[FORM_SIGN.courseNumber] && (
+                {errors[FORM_SIGN.level] && (
                   <span className="text-red-500 mt-2">
-                    {errors?.[FORM_SIGN.courseNumber]?.message?.toString()}
+                    {errors?.[FORM_SIGN.level]?.message?.toString()}
                   </span>
                 )}
               </div>

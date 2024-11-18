@@ -27,7 +27,7 @@ export const validationRegisterSchema = yup.object().shape({
     .trim()
     .required("Tên là bắt buộc")
     .matches(/^[A-Za-z\s]*$/, "Tên không được chứa ký tự đặc biệt"),
-  [FORM_SIGN.courseNumber]: yup.string().required("Khóa học là bắt buộc"),
+  [FORM_SIGN.level]: yup.string().required("Khóa học là bắt buộc"),
   [FORM_SIGN.phone]: yup
     .string()
     .required("Số điện thoại là bắt buộc")
@@ -47,13 +47,15 @@ export const validationUserSchema = yup.object().shape({
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       "Địa chỉ email không hợp lệ"
     ),
-  courseNumber: yup.string().required("Khóa học là bắt buộc"),
+  level: yup.string().required("Khóa học là bắt buộc"),
   phone: yup
     .string()
     .required("Số điện thoại là bắt buộc")
     .matches(/^[0-9]{9,}$/, "Số điện thoại không hợp lệ, phải có 9 chữ số"),
   role: yup.string(),
-  skill: yup.string(),
+  skills: yup.string(),
+  skillDetail: yup.string(),
+  description: yup.string(),
   year: yup.string(),
 });
 
@@ -73,7 +75,9 @@ export const validationEventSchema = yup.object().shape({
   description: yup.string().trim().required("Mô tả là bắt buộc"),
   location: yup.string().trim().required("Địa điểm là bắt buộc"),
   eventDate: yup.date().required("Ngày là bắt buộc"),
-  time: yup.string().required("Thời gian là bắt buộc"),
+  startTime: yup.string().required("Thời gian là bắt buộc"),
+  statusEvent: yup.string().required("Trạng thái là bắt buộc"),
+  statusRequest: yup.string().required("Trạng thái là bắt buộc"),
 });
 
 export const validationDeviceSchema = yup.object().shape({

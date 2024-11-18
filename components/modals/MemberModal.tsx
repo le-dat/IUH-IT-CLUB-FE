@@ -65,7 +65,7 @@ export default function MemberModal({
     defaultValues: {
       username: member?.username || "",
       email: member?.email || "",
-      courseNumber: member?.courseNumber || "",
+      level: member?.level || "",
       phone: member?.phone || "",
     },
   });
@@ -80,7 +80,7 @@ export default function MemberModal({
 
   const isFormValid =
     watch(FORM_USER.email) &&
-    watch(FORM_USER.courseNumber) &&
+    watch(FORM_USER.level) &&
     watch(FORM_USER.phone) &&
     watch(FORM_USER.username);
   const isSubmitDisabled = isPendingCreateUser || isPendingUpdateUser || !isFormValid;
@@ -131,7 +131,7 @@ export default function MemberModal({
       reset({
         username: member?.username,
         email: member?.email,
-        courseNumber: member?.courseNumber,
+        level: member?.level,
         phone: member?.phone,
       });
     }
@@ -190,22 +190,20 @@ export default function MemberModal({
                 </Label>
 
                 {isViewMode ? (
-                  <p>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href={`mailto:${member?.email}`}
-                          target="_blank"
-                          className="text-sm hover:underline hover:italic"
-                        >
-                          {member?.email}
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-yellow-500">
-                        <span>Gửi email cho </span>
-                      </TooltipContent>
-                    </Tooltip>
-                  </p>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={`mailto:${member?.email}`}
+                        target="_blank"
+                        className="text-sm hover:underline hover:italic"
+                      >
+                        {member?.email}
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-yellow-500">
+                      <span>Gửi email cho </span>
+                    </TooltipContent>
+                  </Tooltip>
                 ) : (
                   <>
                     <Input
@@ -225,23 +223,23 @@ export default function MemberModal({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-indigo-400" htmlFor={FORM_SIGN.courseNumber}>
+                <Label className="text-indigo-400" htmlFor={FORM_SIGN.level}>
                   Khóa học
                 </Label>
                 {isViewMode ? (
-                  <p className="text-sm">{member?.courseNumber}</p>
+                  <p className="text-sm">{member?.level}</p>
                 ) : (
                   <>
                     <Input
-                      id={FORM_USER.courseNumber}
-                      {...register(FORM_USER.courseNumber)}
+                      id={FORM_USER.level}
+                      {...register(FORM_USER.level)}
                       placeholder="Nhập mã số sinh viên"
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
-                    {errors[FORM_USER.courseNumber] && (
+                    {errors[FORM_USER.level] && (
                       <span className="text-red-500 mt-2">
-                        {errors?.[FORM_USER.courseNumber]?.message?.toString()}
+                        {errors?.[FORM_USER.level]?.message?.toString()}
                       </span>
                     )}
                   </>
@@ -253,22 +251,20 @@ export default function MemberModal({
                   Điện thoại
                 </Label>
                 {isViewMode ? (
-                  <p>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href={`https://zalo.me/${member?.phone}`}
-                          target="_blank"
-                          className="text-sm hover:underline hover:italic"
-                        >
-                          {member?.phone}
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-yellow-500">
-                        <span>Liên lạc bằng zalo </span>
-                      </TooltipContent>
-                    </Tooltip>
-                  </p>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={`https://zalo.me/${member?.phone}`}
+                        target="_blank"
+                        className="text-sm hover:underline hover:italic"
+                      >
+                        {member?.phone}
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-yellow-500">
+                      <span>Liên lạc bằng zalo </span>
+                    </TooltipContent>
+                  </Tooltip>
                 ) : (
                   <>
                     <Input

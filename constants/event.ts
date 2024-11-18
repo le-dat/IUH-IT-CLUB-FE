@@ -3,8 +3,9 @@ export const FORM_EVENT = Object.freeze({
   location: "location",
   description: "description",
   eventDate: "eventDate",
-  status: "status",
-  time: "time",
-  attendees: "attendees",
-  organizer: "organizer",
+  startTime: "startTime",
+  host: "host",
+  registeredParticipants: "attendees",
+  statusEvent: "statusEvent",
+  statusRequest: "statusRequest",
 } as const);

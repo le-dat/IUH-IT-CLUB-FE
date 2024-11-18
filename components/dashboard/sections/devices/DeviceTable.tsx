@@ -13,6 +13,7 @@ import {
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { conditionsMap, statusMap } from "@/constants/device";
 import { IDevice } from "@/types/device-type";
+import { formatDate } from "@/lib/utils";
 
 interface DeviceTableProps {
   devices: IDevice[];
@@ -65,10 +66,8 @@ export default function DeviceTable({
                 {statusMap[device.status as keyof typeof statusMap] || "available"}
               </Badge>
             </TableCell>
-            <TableCell>{device?.currentBorrower?.username}</TableCell>
-            <TableCell>
-              {/* {device.lastChecked} */}
-              </TableCell>
+            <TableCell>{device?.currentBorrower?.username ?? "_"}</TableCell>
+            <TableCell>{formatDate(device.updatedAt)}</TableCell>
             <TableCell>
               {/* {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]} */}
             </TableCell>

@@ -15,53 +15,18 @@ import EventsGrid from "./events/EventsGrid";
 import useEventStore from "@/store/event-store";
 import { IEvent } from "@/types/event-type";
 import ApprovalModalEvent from "@/components/modals/ApprovalModalEvent";
-
-interface Event {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  attendees: number;
-  status: "Pending Approval" | "Approved" | "Rejected";
-  description: string;
-  requester?: string;
-}
-
-const ITEMS_PER_PAGE = 6;
-
-const mockEvents: Event[] = [
-  {
-    id: 1,
-    title: "Tech Workshop 2024",
-    date: "2024-03-15",
-    time: "14:00",
-    location: "H4.1",
-    attendees: 25,
-    status: "Pending Approval",
-    description: "Hội thảo về các công nghệ web mới nhất và các phương pháp tốt nhất.",
-    requester: "Le Dat",
-  },
-  {
-    id: 2,
-    title: "Hackathon Spring",
-    date: "2024-04-01",
-    time: "09:00",
-    location: "H8.1",
-    attendees: 50,
-    status: "Approved",
-    description: "Thử thách lập trình 24 giờ cho các thành viên câu lạc bộ.",
-  },
-  // Add more mock events as needed
-];
+import { useDebounce } from "@uidotdev/usehooks";
+import { toast } from "sonner";
 
 export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
   const { setEvent } = useEventStore();
 
-  const [selectedTeam, setSelectedTeam] = useState<IEvent | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedCurrentPage = useDebounce(currentPage, 500);
 
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
@@ -69,73 +34,101 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
-  const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
-  const [displayedItems, setDisplayedItems] = useState(ITEMS_PER_PAGE);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // const { searchTerm, setSearchTerm, filteredItems } = useFilter({
-  //   items: mockEvents,
-  //   filterFn: (event, { searchTerm }) =>
-  //     createSearchFilter(searchTerm, ["title", "location"])(event),
-  // });
+  const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [`team-manager-${currentPage}`],
-    queryFn: () => eventService.getEvents({ page: 1, limit: 10 }),
+    queryKey: [`event-manager-${debouncedSearchTerm}`],
+    queryFn: () =>
+      eventService.getEvents({
+        search: debouncedSearchTerm,
+        page: debouncedCurrentPage,
+        limit: 10,
+      }),
   });
 
   const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({
-    mutationFn: eventService.deleteEvent,
+    mutationFn: eventService.deleteEventById,
   });
 
   const { mutate: handleUpdateById, isPending: isUpdateDelete } = useMutation({
-    mutationFn: eventService.updateEvent,
+    mutationFn: eventService.updateEventById,
   });
 
   const loadMore = async () => {
     if (isLoading) return;
-    // setIsLoading(true);
-
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    setDisplayedItems((prev) => Math.min(prev + ITEMS_PER_PAGE, mockEvents.length));
-    // setIsLoading(false);
+    setCurrentPage((prev) => prev + 1);
   };
 
-  const handleView = (event: IEvent) => {
+  const handleOpenModalView = (event: IEvent) => {
     setSelectedEvent(event);
     setIsDetailsModalOpen(true);
   };
 
-  const handleEdit = () => {
+  const handleOpenModalEdit = () => {
     setIsDetailsModalOpen(false);
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (event: IEvent) => {
+  const handleOpenModalDelete = (event: IEvent) => {
     setSelectedEvent(event);
     setIsDeleteModalOpen(true);
   };
 
-  const handleRegister = (eventId: number) => {
-    setRegisteredEvents((prev) => [...prev, eventId]);
+  const handleRegister = (eventId: string) => {
+    handleUpdateById(
+      { id: selectedEvent?._id?.toString() || "", event: selectedEvent as unknown as IEvent },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          setIsDeleteModalOpen(false);
+          setRegisteredEvents((prev) => [...prev, eventId]);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      }
+    );
   };
 
   const handleApproval = (event: IEvent) => {
-    setSelectedEvent(event);
-    setIsApprovalModalOpen(true);
+    handleUpdateById(
+      { id: selectedEvent?._id?.toString() || "", event: selectedEvent as unknown as IEvent },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          setSelectedEvent(event);
+          setIsApprovalModalOpen(true);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      }
+    );
   };
 
   const confirmDelete = () => {
-    // Handle delete logic here
-    console.log("Deleting event:", selectedEvent?._id);
-    setIsDeleteModalOpen(false);
-    setSelectedEvent(null);
+    handleDeleteById(
+      { id: selectedEvent?._id?.toString() || "" },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          setIsDeleteModalOpen(false);
+          setSelectedEvent(null);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "Đã có lỗi xảy ra");
+        },
+      }
+    );
   };
 
-  const displayedEvents = mockEvents.slice(0, displayedItems);
-  const hasMore = displayedItems < mockEvents.length;
+  const hasMore =
+    Number(data?.data?.events?.length) > 0 &&
+    Number(data?.data?.pagination?.totalPages) > currentPage &&
+    Number(data?.data?.pagination?.totalPages) > 1;
 
   useEffect(() => {
     setEvent(data?.data?.events || []);
@@ -157,21 +150,21 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
       </div>
 
       <EventsGrid
-        events={displayedEvents}
+        events={data?.data?.events || []}
         isAdmin={isAdmin}
         isLoading={isLoading}
         hasMore={hasMore}
         onLoadMore={loadMore}
-        onView={handleView}
+        onView={handleOpenModalView}
         onEdit={(event) => {
-          if (event.status === "Pending Approval") {
+          if (event.statusRequest === "pending-approval") {
             handleApproval(event);
           } else {
             setSelectedEvent(event);
             setIsEditModalOpen(true);
           }
         }}
-        onDelete={(event) => handleDelete(event)}
+        onDelete={(event) => handleOpenModalDelete(event)}
         onRegister={handleRegister}
         registeredEvents={registeredEvents}
       />
@@ -183,7 +176,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
             onClose={() => setIsDetailsModalOpen(false)}
             event={selectedEvent}
             isAdmin={isAdmin}
-            onEdit={handleEdit}
+            onEdit={handleOpenModalEdit}
           />
 
           <EventModal
@@ -205,7 +198,6 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
           <ApprovalModalEvent
             isOpen={isApprovalModalOpen}
             onClose={() => setIsApprovalModalOpen(false)}
-            type="event"
             item={selectedEvent}
           />
         </>
@@ -215,7 +207,9 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         isAdmin={isAdmin}
+        event={selectedEvent}
         mode="create"
+        refetch={refetch}
       />
     </div>
   );

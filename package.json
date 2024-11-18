@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "start:dev": "env-cmd -f .env/.env.development next dev",
+    "build:dev": "env-cmd -f .env/.env.development next build",
+    "build:stag": "env-cmd -f .env/.env.staging next build",
+    "start:stag": "env-cmd -f .env/.env.staging next start",
+    "build:prod": "env-cmd -f .env/.env.production next build",
+    "start:prod": "env-cmd -f .env/.env.production next start",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -49,8 +55,10 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+    "env-cmd": "^10.1.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.1",
     "framer-motion": "^11.0.8",
@@ -79,5 +87,6 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.59.7"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

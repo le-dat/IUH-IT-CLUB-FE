@@ -171,11 +171,10 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                 <Controller
                   name={FORM_DEVICE.type}
                   control={control}
-                  defaultValue=""
                   rules={{ required: "Loại thiết bị là bắt buộc" }}
                   render={({ field }) => (
                     <Select {...field} onValueChange={(value) => field.onChange(value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Chọn loại thiết bị" />
                       </SelectTrigger>
                       <SelectContent>
@@ -204,7 +203,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                   rules={{ required: "Tình trạng là bắt buộc" }}
                   render={({ field }) => (
                     <Select {...field} onValueChange={(value) => field.onChange(value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Chọn trạng thái" />
                       </SelectTrigger>
                       <SelectContent>
@@ -230,8 +229,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                   rules={{ required: "Tình trạng là bắt buộc" }}
                   render={({ field }) => (
                                        <Select {...field} onValueChange={(value) => field.onChange(value)}>
+                      <SelectTrigger className="w-full">
 
-                      <SelectTrigger>
+                      
                         <SelectValue placeholder="Chọn tình trạng" />
                       </SelectTrigger>
                       <SelectContent>

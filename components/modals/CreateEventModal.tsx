@@ -27,7 +27,7 @@ interface EventModalProps {
   isOpen: boolean;
   onClose: () => void;
   isAdmin: boolean;
-  event?: IEvent;
+  event: IEvent | null;
   mode: "create" | "edit";
   refetch?: () => void;
 }
@@ -44,7 +44,7 @@ export default function EventModal({
     mutationFn: eventService.createEvent,
   });
   const { mutate: mutateUpdateEvent, isPending: isPendingUpdateEvent } = useMutation({
-    mutationFn: eventService.updateEvent,
+    mutationFn: eventService.updateEventById,
   });
 
   const methods = useForm({
@@ -63,7 +63,9 @@ export default function EventModal({
   const isFormValid =
     Object.keys(errors).length === 0 &&
     watch(FORM_EVENT.eventName) &&
-    watch(FORM_EVENT.description);
+    watch(FORM_EVENT.eventDate) &&
+    watch(FORM_EVENT.startTime) &&
+    watch(FORM_EVENT.location);
   const isSubmitDisabled = isPendingCreateEvent || isPendingUpdateEvent || !isFormValid;
 
   const onErrors = (errors: any) => console.error(errors);
@@ -121,7 +123,9 @@ export default function EventModal({
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit, onErrors)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor={FORM_EVENT.eventName}>Tiêu Đề Sự Kiện</Label>
+              <Label htmlFor={FORM_EVENT.eventName} required>
+                Tiêu Đề Sự Kiện
+              </Label>
               <Input
                 id={FORM_EVENT.eventName}
                 {...register(FORM_EVENT.eventName)}
@@ -131,7 +135,9 @@ export default function EventModal({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor={FORM_EVENT.eventDate}>Ngày</Label>
+                <Label htmlFor={FORM_EVENT.eventDate} required>
+                  Ngày
+                </Label>
                 <Input
                   type="date"
                   id={FORM_EVENT.eventDate}
@@ -140,12 +146,21 @@ export default function EventModal({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor={FORM_EVENT.time}>Thời Gian</Label>
-                <Input type="time" id={FORM_EVENT.time} {...register(FORM_EVENT.time)} required />
+                <Label htmlFor={FORM_EVENT.startTime} required>
+                  Thời Gian
+                </Label>
+                <Input
+                  type="time"
+                  id={FORM_EVENT.startTime}
+                  {...register(FORM_EVENT.startTime)}
+                  required
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor={FORM_EVENT.location}>Địa Điểm</Label>
+              <Label htmlFor={FORM_EVENT.location} required>
+                Địa Điểm
+              </Label>
               <Input
                 id={FORM_EVENT.location}
                 {...register(FORM_EVENT.location)}

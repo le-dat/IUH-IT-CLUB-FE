@@ -16,6 +16,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ITeam } from "@/types/team-type";
 import useTeamStore from "@/store/team-store";
+import { useDebounce } from "@uidotdev/usehooks";
 // interface Team {
 //   id: number;
 //   name: string;
@@ -66,18 +67,19 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedCurrentPage = useDebounce(currentPage, 500);
+
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isJoinRequestSent, setIsJoinRequestSent] = useState<number[]>([]);
-  // const [displayedItems, setDisplayedItems] = useState(ITEMS_PER_PAGE);
-
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [`team-manager-${currentPage}`],
-    queryFn: () => teamService.getTeams({ page: 1, limit: 10 }),
+    queryKey: [`team-manager-${debouncedCurrentPage}`],
+    queryFn: () =>
+      teamService.getTeams({ search: debouncedSearchTerm, page: debouncedCurrentPage, limit: 10 }),
   });
 
   const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({
@@ -88,19 +90,9 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     mutationFn: teamService.updateTeamById,
   });
 
-  // const { searchTerm, setSearchTerm, filteredItems } = useFilter({
-  //   items: mockTeams,
-  //   filterFn: (team, { searchTerm }) => createSearchFilter(searchTerm, ["name", "lead"])(team),
-  // });
-
   const loadMore = async () => {
     if (isLoading) return;
-    // setIsLoading(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // setDisplayedItems((prev) => Math.min(prev + ITEMS_PER_PAGE, mockTeams.length));
-    // setIsLoading(false);
+    setCurrentPage((prev) => prev + 1);
   };
 
   const handleView = (team: ITeam) => {
@@ -119,27 +111,24 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   };
 
   const handleJoinTeam = (teamId: number) => {
-    // handleUpdateById(
-    //   { id: selectedTeam?.id?.toString() || "", team: selectedTeam as unknown as ITeam },
-    //   {
-    //     onSuccess: (response) => {
-    //       toast.success(response?.message);
-    //       setIsDeleteModalOpen(false);
-    //       setSelectedTeam(null);
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //       toast.error(error?.message || "An error occurred during login");
-    //     },
-    //   }
-    // );
-
-    setIsJoinRequestSent((prev) => [...prev, teamId]);
+    handleUpdateById(
+      { id: selectedTeam?._id?.toString() || "", team: selectedTeam as unknown as ITeam },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          setIsDeleteModalOpen(false);
+          setSelectedTeam(null);
+          setIsJoinRequestSent((prev) => [...prev, teamId]);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      }
+    );
   };
 
   const confirmDelete = () => {
-    console.log("Đang xóa nhóm:", selectedTeam?._id);
-
     handleDeleteById(
       { id: selectedTeam?._id?.toString() || "" },
       {
@@ -156,8 +145,10 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     );
   };
 
-  // const displayedTeams = mockTeams.slice(0, displayedItems);
-  const hasMore = (data?.data?.teams?.length ?? 0) < (data?.data?.teams?.length ?? 0);
+  const hasMore =
+    Number(data?.data?.teams?.length) > 0 &&
+    Number(data?.data?.pagination?.totalPages) > currentPage &&
+    Number(data?.data?.pagination?.totalPages) > 1;
 
   useEffect(() => {
     setTeams(data?.data?.teams || []);

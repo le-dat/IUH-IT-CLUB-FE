@@ -1,22 +1,23 @@
-import { useRef } from 'react';
-import EventCard from './EventCard';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import EmptyState from '@/components/common/EmptyState';
-import { Calendar } from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useRef } from "react";
+import EventCard from "./EventCard";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import EmptyState from "@/components/common/EmptyState";
+import { Calendar } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
+import { IEvent } from "@/types/event-type";
 
 interface EventsGridProps {
-  events: any[];
+  events: IEvent[] | [];
   isAdmin: boolean;
   isLoading: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
   onView: (event: any) => void;
-  onEdit: (event: any) => void;
+  onEdit: (event: IEvent) => void;
   onDelete: (event: any) => void;
-  onRegister: (eventId: number) => void;
-  registeredEvents: number[];
+  onRegister: (eventId: string) => void;
+  registeredEvents: string[];
 }
 
 export default function EventsGrid({
@@ -39,26 +40,21 @@ export default function EventsGrid({
   });
 
   if (events.length === 0) {
-    return (
-      <EmptyState
-        icon={<Calendar className="h-12 w-12" />}
-        message={t('events.noEvents')}
-      />
-    );
+    return <EmptyState icon={<Calendar className="h-12 w-12" />} message={t("events.noEvents")} />;
   }
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
       {events.map((event, index) => (
         <EventCard
-          key={event.id}
+          key={`event-card-${event._id}`}
           event={event}
           isAdmin={isAdmin}
           onView={() => onView(event)}
           onEdit={() => onEdit(event)}
           onDelete={() => onDelete(event)}
-          onRegister={() => onRegister(event.id)}
-          isRegistered={registeredEvents.includes(event.id)}
+          onRegister={() => onRegister(event._id)}
+          isRegistered={registeredEvents.includes(event._id)}
           index={index}
         />
       ))}

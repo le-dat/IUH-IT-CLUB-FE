@@ -36,7 +36,7 @@ export default function MemberTable({
         <TableRow>
           <TableHead>Thành viên</TableHead>
           <TableHead>Khóa học</TableHead>
-          <TableHead>Kĩ năng</TableHead>
+          <TableHead>Sở trường</TableHead>
           <TableHead>Ngày tham gia</TableHead>
           <TableHead>Thao tác</TableHead>
         </TableRow>
@@ -50,8 +50,14 @@ export default function MemberTable({
                 <span>{member.username}</span>
               </div>
             </TableCell>
-            <TableCell>{member.courseNumber}</TableCell>
-            <TableCell>{member.courseNumber}</TableCell>
+            <TableCell>{member.level}</TableCell>
+            <TableCell>
+              {member?.skills?.map((item, index) => (
+                <Badge key={index} variant="secondary" className="mr-1">
+                  {item}
+                </Badge>
+              ))}
+            </TableCell>
             {/* <TableCell>
               <Badge variant="secondary">{member.status}</Badge>
             </TableCell> */}

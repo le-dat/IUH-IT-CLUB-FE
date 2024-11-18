@@ -75,35 +75,33 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
     console.log("data: ", data);
     if (isSubmitDisabled) return;
 
-    // if (isCreateMode) {
-    //   handleCreate(data, {
-    //     onSuccess: (response) => {
-    //       console.log("response: ", response);
-    //       refetch && refetch();
-    //       toast.success(response?.message);
-    //       onClose();
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //                 toast.error(error?.message || "Đã có lỗi xảy ra");
-
-    //     },
-    //   });
-    // } else {
-    //   handleUpdate(data, {
-    //     onSuccess: (response) => {
-    //       console.log("response: ", response);
-    //       refetch && refetch();
-    //       toast.success(response?.message);
-    //       onClose();
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //                 toast.error(error?.message || "Đã có lỗi xảy ra");
-
-    //     },
-    //   });
-    // }
+    if (isCreateMode) {
+      handleCreate(data, {
+        onSuccess: (response) => {
+          console.log("response: ", response);
+          refetch && refetch();
+          toast.success(response?.message);
+          onClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "Đã có lỗi xảy ra");
+        },
+      });
+    } else {
+      handleUpdate(data, {
+        onSuccess: (response) => {
+          console.log("response: ", response);
+          refetch && refetch();
+          toast.success(response?.message);
+          onClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "Đã có lỗi xảy ra");
+        },
+      });
+    }
   };
   const onErrors = (errors: any) => console.error(errors);
 
@@ -143,7 +141,8 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 rules={{ required: "Trưởng nhóm là bắt buộc" }}
                 render={({ field }) => (
                   <Select {...field}>
-                    <SelectTrigger>
+                      <SelectTrigger className="w-full">
+                    
                       <SelectValue placeholder="Chọn trưởng nhóm" />
                     </SelectTrigger>
                     <SelectContent>
@@ -169,7 +168,7 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 rules={{ required: "Trạng thái là bắt buộc" }}
                 render={({ field }) => (
                   <Select {...field}>
-                    <SelectTrigger>
+                      <SelectTrigger className="w-full">
                       <SelectValue placeholder="Chọn trạng thái" />
                     </SelectTrigger>
                     <SelectContent>

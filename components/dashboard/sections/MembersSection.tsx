@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import MemberTable from "./members/MemberTable";
 import { getCourseNumber } from "@/lib/utils";
+import { SPECIALTIES } from "@/constants/user";
 
 interface MembersSectionProps {
   isAdmin: boolean;
@@ -32,12 +33,12 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
   const { setUsers } = useUserStore();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedYear, setSelectedYear] = useState<string>("");
+  const [selectedLevel, setSelectedLevel] = useState<string>("");
   const [selectedSkill, setSelectedSkill] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const debouncedSearchTerm = useDebounce(searchTerm?.trim(), 700);
-  const debouncedSelectedYear = useDebounce(selectedYear?.trim(), 500);
+  const debouncedSelectedLevel = useDebounce(selectedLevel?.trim(), 500);
   const debouncedSelectedSkill = useDebounce(selectedSkill?.trim(), 500);
   const debouncedCurrentPage = useDebounce(currentPage, 500);
 
@@ -48,11 +49,13 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [
-      `user-manager-${debouncedSearchTerm}-${debouncedSelectedYear}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
+      `user-manager-${debouncedSearchTerm}-${debouncedSelectedLevel}-${debouncedSelectedSkill}-${debouncedCurrentPage}`,
     ],
     queryFn: () =>
       userService.getAllUser({
         search: debouncedSearchTerm,
+        level: debouncedSelectedLevel,
+        skill: debouncedSelectedSkill,
         page: debouncedCurrentPage,
         limit: 10,
       }),
@@ -127,11 +130,12 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
 
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
-            <Select value={selectedYear} onValueChange={setSelectedYear}>
+            <Select value={selectedLevel} onValueChange={setSelectedLevel}>
               <SelectTrigger>
                 <SelectValue placeholder="Chọn khóa học " />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value=" ">Tất cả các khóa</SelectItem>
                 {Array.from({ length: 7 }).map((_, index) => (
                   <SelectItem key={index} value={getCourseNumber(index)}>
                     {getCourseNumber(index)}
@@ -142,15 +146,15 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
 
             <Select value={selectedSkill} onValueChange={setSelectedSkill}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Lọc theo kỹ năng" />
+                <SelectValue placeholder="Lọc theo sở trường" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=" ">Tất cả kỹ năng</SelectItem>
-                <SelectItem value="front-end">Front-end</SelectItem>
-                <SelectItem value="back-end">Back-end</SelectItem>
-                <SelectItem value="mobile">Mobile</SelectItem>
-                <SelectItem value="ai">Artificial intelligence</SelectItem>
-                <SelectItem value="design">Design</SelectItem>
+                <SelectItem value=" ">Tất cả sở trường</SelectItem>
+                {Object.entries(SPECIALTIES).map(([value, name]) => (
+                  <SelectItem key={value} value={value}>
+                    {name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

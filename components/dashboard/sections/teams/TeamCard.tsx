@@ -3,17 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Users, Eye, Edit, Trash2, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
+import { ITeam } from "@/types/team-type";
 
 interface TeamCardProps {
-  team: {
-    id: number;
-    name: string;
-    members: number;
-    projects: number;
-    lead: string;
-    status: string;
-    description: string;
-  };
+  team: ITeam;
   isAdmin: boolean;
   onView: () => void;
   onEdit: () => void;
@@ -42,8 +35,10 @@ export default function TeamCard({
       <Card className="p-6 group hover:shadow-lg transition-all duration-300">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">{team.name}</h3>
-            <p className="text-sm text-muted-foreground">Trưởng nhóm: {team.lead}</p>
+            <h3 className="font-semibold text-lg">{team.teamName}</h3>
+            <p className="text-sm text-muted-foreground">
+              Trưởng nhóm: {team?.teamLeader?.username}
+            </p>
           </div>
           <Badge variant="secondary" className="shrink-0">
             {team.status}
@@ -53,10 +48,7 @@ export default function TeamCard({
         <div className="mt-4 space-y-2">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">{team.members} thành viên</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm">{team.projects} dự án</span>
+            <span className="text-sm">{team?.members?.length} thành viên</span>
           </div>
           <p className="text-sm text-muted-foreground line-clamp-2">{team.description}</p>
         </div>
