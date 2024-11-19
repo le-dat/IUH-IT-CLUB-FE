@@ -159,9 +159,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                 required
               />
               {errors[FORM_DEVICE.name] && (
-                <span className="text-red-500 mt-2">
+                <div className="text-red-500 !mt-2">
                   {errors?.[FORM_DEVICE.name]?.message?.toString()}
-                </span>
+                </div>
               )}
             </div>
 
@@ -188,9 +188,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                   )}
                 />
                 {errors[FORM_DEVICE.type] && (
-                  <span className="text-red-500 mt-2">
+                  <div className="text-red-500 !mt-2">
                     {errors?.[FORM_DEVICE.type]?.message?.toString()}
-                  </span>
+                  </div>
                 )}
               </div>
 
@@ -215,9 +215,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                   )}
                 />
                 {errors[FORM_DEVICE.status] && (
-                  <span className="text-red-500 mt-2">
+                  <div className="text-red-500 !mt-2">
                     {errors?.[FORM_DEVICE.status]?.message?.toString()}
-                  </span>
+                  </div>
                 )}
               </div>
               {/* <div className="space-y-2">
@@ -243,9 +243,9 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                   )}
                 />
                 {errors[FORM_DEVICE.condition] && (
-                  <span className="text-red-500 mt-2">
+                  <div className="text-red-500 !mt-2">
                     {errors?.[FORM_DEVICE.condition]?.message?.toString()}
-                  </span>
+                  </div>
                 )}
               </div> */}
             </div>

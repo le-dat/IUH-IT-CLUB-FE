@@ -62,12 +62,6 @@ export const validationUserSchema = yup.object().shape({
 export const validationTeamSchema = yup.object().shape({
   teamName: yup.string().trim().required("Tên là bắt buộc"),
   description: yup.string().trim().required("Mô tả là bắt buộc"),
-  members: yup.array().min(1, "Ít nhất một thành viên"),
-  // status: yup.string().required("Trạng thái là bắt buộc"),
-  // teamLeader: yup.object({
-  //   value: yup.string().required("Trưởng nhóm là bắt buộc"),
-  //   label: yup.string().required("Trưởng nhóm là bắt buộc"),
-  // }).required("Trưởng nhóm là bắt buộc"),
 });
 
 export const validationEventSchema = yup.object().shape({
@@ -76,16 +70,10 @@ export const validationEventSchema = yup.object().shape({
   location: yup.string().trim().required("Địa điểm là bắt buộc"),
   eventDate: yup.date().required("Ngày là bắt buộc"),
   startTime: yup.string().required("Thời gian là bắt buộc"),
-  statusEvent: yup.string().required("Trạng thái là bắt buộc"),
-  statusRequest: yup.string().required("Trạng thái là bắt buộc"),
 });
 
 export const validationDeviceSchema = yup.object().shape({
   name: yup.string().trim().required("Tên là bắt buộc"),
   type: yup.string().trim().required("Loại thiết bị là bắt buộc"),
   status: yup.string().required("Trạng thái là bắt buộc"),
-
-  // description: yup.string().trim().required("Mô tả là bắt buộc"),
-  // category: yup.string().required("Danh mục là bắt buộc"),
-  // quantity: yup.number().required("Số lượng là bắt buộc").typeError("Số lượng phải là số"),
 });

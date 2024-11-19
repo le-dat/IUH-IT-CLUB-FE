@@ -176,9 +176,9 @@ export default function MemberModal({
                       required
                     />
                     {errors[FORM_USER.username] && (
-                      <span className="text-red-500 mt-2">
+                      <div className="text-red-500 !mt-2">
                         {errors?.[FORM_USER.username]?.message?.toString()}
-                      </span>
+                      </div>
                     )}
                   </>
                 )}
@@ -214,9 +214,9 @@ export default function MemberModal({
                       required
                     />
                     {errors[FORM_USER.email] && (
-                      <span className="text-red-500 mt-2">
+                      <div className="text-red-500 !mt-2">
                         {errors?.[FORM_USER.email]?.message?.toString()}
-                      </span>
+                      </div>
                     )}
                   </>
                 )}
@@ -238,9 +238,9 @@ export default function MemberModal({
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
                     {errors[FORM_USER.level] && (
-                      <span className="text-red-500 mt-2">
+                      <div className="text-red-500 !mt-2">
                         {errors?.[FORM_USER.level]?.message?.toString()}
-                      </span>
+                      </div>
                     )}
                   </>
                 )}
@@ -275,9 +275,9 @@ export default function MemberModal({
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
                     {errors[FORM_USER.phone] && (
-                      <span className="text-red-500 mt-2">
+                      <div className="text-red-500 !mt-2">
                         {errors?.[FORM_USER.phone]?.message?.toString()}
-                      </span>
+                      </div>
                     )}
                   </>
                 )}

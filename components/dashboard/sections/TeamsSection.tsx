@@ -17,47 +17,6 @@ import { toast } from "sonner";
 import { ITeam } from "@/types/team-type";
 import useTeamStore from "@/store/team-store";
 import { useDebounce } from "@uidotdev/usehooks";
-// interface Team {
-//   id: number;
-//   name: string;
-//   members: number;
-//   projects: number;
-//   lead: string;
-//   status: string;
-//   description: string;
-// }
-
-// const ITEMS_PER_PAGE = 10;
-
-// const mockTeams: Team[] | [] = [
-//   {
-//     id: 1,
-//     name: "Phát triển Web",
-//     members: 8,
-//     projects: 3,
-//     lead: "John Doe",
-//     status: "active",
-//     description: "Mô tả về phát triển web",
-//   },
-//   {
-//     id: 2,
-//     name: "Phát triển Mobile",
-//     members: 5,
-//     projects: 2,
-//     lead: "Jane Doe",
-//     status: "inactive",
-//     description: "Mô tả về phát triển mobile",
-//   },
-//   {
-//     id: 3,
-//     name: "Phát triển Blockchain",
-//     members: 10,
-//     projects: 1,
-//     lead: "Alice Doe",
-//     status: "active",
-//     description: "Mô tả về phát triển blockchain",
-//   },
-// ];
 
 export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
@@ -77,7 +36,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isJoinRequestSent, setIsJoinRequestSent] = useState<number[]>([]);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [`team-manager-${debouncedCurrentPage}`],
+    queryKey: [`team-manager-${debouncedSearchTerm}-${debouncedCurrentPage}`],
     queryFn: () =>
       teamService.getTeams({ search: debouncedSearchTerm, page: debouncedCurrentPage, limit: 10 }),
   });
@@ -133,9 +92,10 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
       { id: selectedTeam?._id?.toString() || "" },
       {
         onSuccess: (response) => {
-          toast.success(response?.message);
+          refetch();
           setIsDeleteModalOpen(false);
           setSelectedTeam(null);
+          toast.success(response?.message);
         },
         onError: (error) => {
           console.error(error);
@@ -220,6 +180,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         onClose={() => setIsCreateModalOpen(false)}
         mode="create"
         team={selectedTeam!}
+        refetch={refetch}
       />
     </div>
   );

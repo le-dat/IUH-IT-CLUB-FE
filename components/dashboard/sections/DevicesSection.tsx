@@ -157,7 +157,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             </SelectContent>
           </Select>
 
-          <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+          {/* <Select value={selectedCondition} onValueChange={setSelectedCondition}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Lọc theo tình trạng" />
             </SelectTrigger>
@@ -167,7 +167,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
               <SelectItem value="fair">Khá</SelectItem>
               <SelectItem value="poor">Kém</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* <Select value={selectedType} onValueChange={setSelectedType}>
             <SelectTrigger className="w-[180px]">

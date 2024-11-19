@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FORM_EVENT } from "@/constants/event";
 import { IEvent } from "@/types/event-type";
+import useAuthStore from "@/store/auth-store";
 
 interface EventModalProps {
   isOpen: boolean;
@@ -71,11 +72,15 @@ export default function EventModal({
   const onErrors = (errors: any) => console.error(errors);
 
   const onSubmit = async (data: any) => {
-    console.log("data: ", data);
+    const formatData = {
+      ...data,
+      statusEvent: "upcoming",
+    };
+    console.log("formatData: ", formatData);
     if (isSubmitDisabled) return;
 
     if (mode === "edit") {
-      mutateUpdateEvent(data, {
+      mutateUpdateEvent(formatData, {
         onSuccess: (response) => {
           refetch && refetch();
           toast.success(response?.message);
@@ -87,7 +92,7 @@ export default function EventModal({
         },
       });
     } else {
-      mutateCreateEvent(data, {
+      mutateCreateEvent(formatData, {
         onSuccess: (response) => {
           refetch && refetch();
           toast.success(response?.message);
@@ -112,6 +117,18 @@ export default function EventModal({
 
   const buttonTitle = mode === "edit" ? "Lưu Thay Đổi" : isAdmin ? "Tạo Sự Kiện" : "Gửi Đề Xuất";
 
+  useEffect(() => {
+    if (event && mode === "edit") {
+      reset({
+        eventName: event?.eventName,
+        eventDate: new Date(event?.eventDate),
+        startTime: event?.startTime,
+        location: event?.location,
+        description: event?.description,
+      });
+    }
+  }, [event, mode, reset]);
+
   return (
     <FormProvider {...methods}>
       <Dialog open={isOpen}>
@@ -132,6 +149,11 @@ export default function EventModal({
                 placeholder="Nhập tiêu đề sự kiện"
                 required
               />
+              {errors[FORM_EVENT.eventName] && (
+                <div className="text-red-500 !mt-2">
+                  {errors?.[FORM_EVENT.eventName]?.message?.toString()}
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -144,6 +166,11 @@ export default function EventModal({
                   {...register(FORM_EVENT.eventDate)}
                   required
                 />
+                {errors[FORM_EVENT.eventDate] && (
+                  <div className="text-red-500 !mt-2">
+                    {errors?.[FORM_EVENT.eventDate]?.message?.toString()}
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor={FORM_EVENT.startTime} required>
@@ -155,6 +182,11 @@ export default function EventModal({
                   {...register(FORM_EVENT.startTime)}
                   required
                 />
+                {errors[FORM_EVENT.startTime] && (
+                  <div className="text-red-500 !mt-2">
+                    {errors?.[FORM_EVENT.startTime]?.message?.toString()}
+                  </div>
+                )}
               </div>
             </div>
             <div className="space-y-2">
@@ -167,6 +199,11 @@ export default function EventModal({
                 placeholder="Nhập địa điểm sự kiện"
                 required
               />
+              {errors[FORM_EVENT.location] && (
+                <div className="text-red-500 !mt-2">
+                  {errors?.[FORM_EVENT.location]?.message?.toString()}
+                </div>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor={FORM_EVENT.description}>Mô Tả</Label>

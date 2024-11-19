@@ -64,7 +64,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h1 className="text-6xl font-bold tracking-tight bg-clip-text text-transparent leading-[5rem] bg-gradient-to-r from-primary to-primary/60">
+              <h1 className="text-3xl lg:text-6xl lg:leading-normal font-bold tracking-tight bg-clip-text text-transparent leading-[5rem] bg-gradient-to-r from-red-500 via-brown-500 to-orange-500">
                 Kết nối, Kiến tạo, Hợp tác
               </h1>
             </motion.div>
@@ -161,7 +161,9 @@ export default function LandingPage() {
           className="bg-primary/5 rounded-2xl p-12 relative overflow-hidden"
         >
           <div className="relative z-10 max-w-2xl">
-            <h2 className="text-4xl font-bold mb-6">Sẵn Sàng Tham Gia Câu Lạc Bộ Của Chúng Tôi?</h2>
+            <h2 className="text-2xl lg:text-4xl font-bold mb-6">
+              Sẵn Sàng Tham Gia Câu Lạc Bộ Của Chúng Tôi?
+            </h2>
             <p className="text-lg text-muted-foreground mb-8">
               Bắt đầu hành trình của bạn với Câu lạc bộ lập trình IUH ngay hôm nay. Kết nối với
               những người cùng chí hướng, truy cập tài nguyên quý giá và nâng cao kỹ năng của bạn.

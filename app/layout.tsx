@@ -1,12 +1,11 @@
-import ProtectRouter from "@/provider/protect-router-provider";
-import ReactQueryProvider from "@/provider/react-query-provider";
-import { ThemeProvider } from "@/provider/theme-provider";
 import type { Metadata, Viewport } from "next";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
-import { Toaster } from "sonner";
 import "./globals.css";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Suspense } from "react";
+
+const Config = dynamic(() => import("./config"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,29 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Suspense>
-          <ReactQueryProvider>
-            <ProtectRouter>
-              <TooltipProvider>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  {children}
-                  <Toaster
-                    className='toaster pointer-events-auto [&[data-close-button="true"]]:right-0'
-                    position="top-right"
-                    richColors
-                    closeButton
-                    duration={3000}
-                  />
-                </ThemeProvider>
-              </TooltipProvider>
-            </ProtectRouter>
-          </ReactQueryProvider>
-        </Suspense>
+        <Config>{children}</Config>
       </body>
     </html>
   );

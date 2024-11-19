@@ -36,9 +36,10 @@ export default function TeamCard({
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold text-lg">{team.teamName}</h3>
-            <p className="text-sm text-muted-foreground">
+            {/* <p className="text-sm text-muted-foreground">
               Trưởng nhóm: {team?.teamLeader?.username}
-            </p>
+            </p> */}
+            <p className="text-sm text-muted-foreground line-clamp-2">{team.description}</p>
           </div>
           <Badge variant="secondary" className="shrink-0">
             {team.status}
@@ -50,7 +51,6 @@ export default function TeamCard({
             <Users className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm">{team?.members?.length} thành viên</span>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2">{team.description}</p>
         </div>
 
         <div className="mt-6 flex gap-2">

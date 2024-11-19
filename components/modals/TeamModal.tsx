@@ -54,8 +54,6 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
     defaultValues: {
       [FORM_TEAM.teamName]: team?.teamName || "",
       [FORM_TEAM.description]: team?.description || "",
-      // [FORM_TEAM.status]: team?.status || "",
-      // [FORM_TEAM.teamLeader]: team?.teamLeader
     },
   });
 
@@ -127,9 +125,9 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 required
               />
               {errors[FORM_TEAM.teamName] && (
-                <span className="text-red-500 mt-2">
+                <div className="text-red-500 !mt-2">
                   {errors?.[FORM_TEAM.teamName]?.message?.toString()}
-                </span>
+                </div>
               )}
             </div>
             {/* <div className="space-y-2">
@@ -154,9 +152,9 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 )}
               />
               {errors[FORM_TEAM.leader] && (
-                <span className="text-red-500 mt-2">
+                <div className="text-red-500 !mt-2">
                   {errors?.[FORM_TEAM.leader]?.message?.toString()}
-                </span>
+                </div>
               )}
             </div> */}
             {/* <div className="space-y-2">
@@ -180,9 +178,9 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 )}
               />
               {errors[FORM_TEAM.status] && (
-                <span className="text-red-500 mt-2">
+                <div className="text-red-500 !mt-2">
                   {errors?.[FORM_TEAM.status]?.message?.toString()}
-                </span>
+                </div>
               )}
             </div> */}
             <div className="space-y-2">
@@ -194,9 +192,9 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 required
               />
               {errors[FORM_TEAM.description] && (
-                <span className="text-red-500 mt-2">
+                <div className="text-red-500 !mt-2">
                   {errors?.[FORM_TEAM.description]?.message?.toString()}
-                </span>
+                </div>
               )}
             </div>
             <DialogFooter>

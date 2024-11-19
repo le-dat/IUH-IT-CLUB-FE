@@ -113,6 +113,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
       { id: selectedEvent?._id?.toString() || "" },
       {
         onSuccess: (response) => {
+          refetch();
           toast.success(response?.message);
           setIsDeleteModalOpen(false);
           setSelectedEvent(null);

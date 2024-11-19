@@ -32,7 +32,7 @@ const eventService = {
   },
   createEvent: async (event: IEvent) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<IEvent>>("/events", event);
+      const response = await axiosClient.post<SuccessResponse<IEvent>>("/events/create", event);
       return response.data;
     } catch (error) {
       throw new Error("Failed to create event");
