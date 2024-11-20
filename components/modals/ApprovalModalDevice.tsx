@@ -21,52 +21,59 @@ import { IDevice } from "@/types/device-type";
 import { formatDate } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import deviceService from "@/services/device-service";
+import { toast } from "sonner";
 
 interface ApprovalModalDeviceProps {
   isOpen: boolean;
   onClose: () => void;
   item: IDevice;
+  refetch?: () => void;
 }
 
-export default function ApprovalModalDevice({ isOpen, onClose, item }: ApprovalModalDeviceProps) {
+export default function ApprovalModalDevice({
+  isOpen,
+  onClose,
+  item,
+  refetch,
+}: ApprovalModalDeviceProps) {
   const [notes, setNotes] = useState("");
 
   const { mutate: mutateUpdateDevice, isPending: isPendingUpdateDevice } = useMutation({
     mutationFn: deviceService.updateDeviceById,
   });
 
-  const handleApprove = () => {
-    console.log("Đã phê duyệt:", { item, notes });
-    const data = { id: item._id, data: { status: "approved" } };
-    // mutateUpdateDevice(data, {
-    //     onSuccess: (response) => {
-    //       refetch && refetch();
-    //       toast.success(response?.message);
-    //       handleClose();
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //       toast.error(error?.message || "Đã có lỗi xảy ra");
-    //     },
-    // });
+  const handleClose = () => {
     onClose();
+  };
+  const handleApprove = () => {
+    const data = { id: item._id, data: { ...item, status: "approved" } };
+
+    // mutateUpdateDevice(data, {
+    //   onSuccess: (response) => {
+    //     refetch && refetch();
+    //     toast.success(response?.message);
+    //     handleClose();
+    //   },
+    //   onError: (error) => {
+    //     console.error(error);
+    //     toast.error(error?.message || "Đã có lỗi xảy ra");
+    //   },
+    // });
   };
 
   const handleReject = () => {
-    console.log("Đã từ chối:", { item, notes });
-    const data = { id: item._id, data: { status: "rejected" } };
+    const data = { id: item._id, data: { ...item, status: "rejected" } };
     // mutateUpdateDevice(data, {
-    //     onSuccess: (response) => {
-    //       refetch && refetch();
-    //       toast.success(response?.message);
-    //       handleClose();
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //       toast.error(error?.message || "Đã có lỗi xảy ra");
-    //     },
+    //   onSuccess: (response) => {
+    //     refetch && refetch();
+    //     toast.success(response?.message);
+    //     handleClose();
+    //   },
+    //   onError: (error) => {
+    //     console.error(error);
+    //     toast.error(error?.message || "Đã có lỗi xảy ra");
+    //   },
     // });
-    onClose();
   };
 
   return (

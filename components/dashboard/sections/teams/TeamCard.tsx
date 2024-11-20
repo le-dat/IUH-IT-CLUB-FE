@@ -12,6 +12,7 @@ interface TeamCardProps {
   onEdit: () => void;
   onDelete: () => void;
   onJoin: () => void;
+  onLeave: () => void;
   hasJoinRequest: boolean;
   index: number;
 }
@@ -23,6 +24,7 @@ export default function TeamCard({
   onEdit,
   onDelete,
   onJoin,
+  onLeave,
   hasJoinRequest,
   index,
 }: TeamCardProps) {

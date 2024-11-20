@@ -49,7 +49,7 @@ export default function ApprovalModalEvent({
   };
 
   const handleApprove = () => {
-    const data = { id: item._id, event: { ...item, status: "approved" } };
+    const data = { id: item._id, data: { ...item, status: "approved" } };
     mutateUpdateEvent(data, {
       onSuccess: (response) => {
         refetch && refetch();
@@ -61,11 +61,10 @@ export default function ApprovalModalEvent({
         toast.error(error?.message || "Đã có lỗi xảy ra");
       },
     });
-    onClose();
   };
 
   const handleReject = () => {
-    const data = { id: item._id, event: { ...item, status: "rejected" } };
+    const data = { id: item._id, data: { ...item, status: "rejected" } };
     mutateUpdateEvent(data, {
       onSuccess: (response) => {
         refetch && refetch();
@@ -77,7 +76,6 @@ export default function ApprovalModalEvent({
         toast.error(error?.message || "Đã có lỗi xảy ra");
       },
     });
-    onClose();
   };
 
   return (

@@ -87,18 +87,21 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
         },
       });
     } else {
-      handleUpdate(data, {
-        onSuccess: (response) => {
-          console.log("response: ", response);
-          refetch && refetch();
-          toast.success(response?.message);
-          onClose();
-        },
-        onError: (error) => {
-          console.error(error);
-          toast.error(error?.message || "Đã có lỗi xảy ra");
-        },
-      });
+      handleUpdate(
+        { id: team?._id as string, data },
+        {
+          onSuccess: (response) => {
+            console.log("response: ", response);
+            refetch && refetch();
+            toast.success(response?.message);
+            onClose();
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error(error?.message || "Đã có lỗi xảy ra");
+          },
+        }
+      );
     }
   };
   const onErrors = (errors: any) => console.error(errors);

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ROUTES } from "@/constants/route";
-import { FORM_USER } from "@/constants/user";
+import { FORM_USER, SPECIALTIES } from "@/constants/user";
 import { getCourseNumber } from "@/lib/utils";
 import { validationUserSchema } from "@/lib/validate";
 import userService from "@/services/user-service";
@@ -35,9 +35,7 @@ export default function ProfilePage() {
     queryFn: () => userService.getMe(),
   });
   const user = data?.data?.user;
-  const [skills, setSkills] = useState<string[]>(
-    user?.skills || ["React", "TypeScript", "Node.js"]
-  );
+  const [skills, setSkills] = useState<string[]>(user?.forte || ["React", "TypeScript", "Node.js"]);
   const [newSkill, setNewSkill] = useState<string>("");
 
   const handleAddSkill = (e: React.FormEvent) => {
@@ -73,11 +71,11 @@ export default function ProfilePage() {
   const isSubmitDisabled = isPending || !isFormValid;
 
   const onSubmit = async (data: any) => {
-    const formatData = { ...data, skillDetail: newSkill };
+    const formatData = { ...data, forte: skills };
     if (isSubmitDisabled) return;
 
     mutate(
-      { id: user?._id as string, data },
+      { id: user?._id as string, data: formatData },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
@@ -98,15 +96,17 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
-    if (data?.data?.user) {
+    if (user) {
       reset({
-        username: data?.data?.user?.username,
-        email: data?.data?.user?.email,
-        level: data?.data?.user?.level,
-        phone: data?.data?.user?.phone,
+        username: user?.username,
+        email: user?.email,
+        level: user?.level,
+        phone: user?.phone,
       });
+      const resetSkillDetail = user?.forte?.map((skill) => skill.toString()) ?? [];
+      setSkills(resetSkillDetail);
     }
-  }, [data?.data?.user, reset]);
+  }, [user, reset]);
 
   return (
     <div className="min-h-screen bg-background py-12">
@@ -183,6 +183,7 @@ export default function ProfilePage() {
                         <Controller
                           name={FORM_USER.level}
                           control={control}
+                          defaultValue=""
                           rules={{ required: "Khóa học là bắt buộc" }}
                           render={({ field }) => (
                             <Select {...field} onValueChange={(value) => field.onChange(value)}>
@@ -224,9 +225,31 @@ export default function ProfilePage() {
 
                   <div className="space-y-4">
                     <Label className="text-amber-800 font-semibold" htmlFor={FORM_USER.skills}>
-                      Kỹ năng
+                      Sở trường
                     </Label>
                     <div className="space-y-4">
+                      <Controller
+                        name={FORM_USER.skills}
+                        control={control}
+                        render={({ field }) => (
+                          <Select {...field} onValueChange={(value) => field.onChange(value)}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Chọn sở trường" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectContent>
+                                <SelectItem value=" ">Tất cả sở trường</SelectItem>
+                                {Object.entries(SPECIALTIES).map(([value, name]) => (
+                                  <SelectItem key={value} value={value}>
+                                    {name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+
                       <div className="flex flex-wrap gap-2">
                         {skills.map((skill) => (
                           <Badge key={skill} variant="secondary" className="group">
@@ -240,17 +263,17 @@ export default function ProfilePage() {
                           </Badge>
                         ))}
                       </div>
-                      <form onSubmit={handleAddSkill} className="flex gap-2">
+                      <div className="flex items-center gap-3">
                         <Input
                           value={newSkill}
                           onChange={(e) => setNewSkill(e.target.value)}
                           placeholder="Thêm kỹ năng"
                           className="max-w-[200px]"
                         />
-                        <Button type="submit" size="icon">
+                        <Button onClick={handleAddSkill} type="submit" size="icon">
                           <Plus className="h-4 w-4" />
                         </Button>
-                      </form>
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -258,9 +281,7 @@ export default function ProfilePage() {
                 {/* Right column - Social links & Activities */}
                 <div className="space-y-6">
                   <Card className="p-6 space-y-4">
-                    <Label className="text-amber-800 font-semibold" htmlFor={FORM_USER.skills}>
-                      Liên kết xã hội
-                    </Label>
+                    <Label className="text-amber-800 font-semibold">Liên kết xã hội</Label>
                     <div className="space-y-3">
                       <div className="space-y-2">
                         <Label htmlFor={FORM_USER.email}>Email</Label>

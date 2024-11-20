@@ -17,9 +17,12 @@ import { toast } from "sonner";
 import { ITeam } from "@/types/team-type";
 import useTeamStore from "@/store/team-store";
 import { useDebounce } from "@uidotdev/usehooks";
+import useUserStore from "@/store/user-store";
+import useAuthStore from "@/store/auth-store";
 
 export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
   const { setTeams } = useTeamStore();
 
   const [selectedTeam, setSelectedTeam] = useState<ITeam | null>(null);
@@ -49,6 +52,14 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     mutationFn: teamService.updateTeamById,
   });
 
+  const { mutate: handleRequestJoinTeam, isPending: isUpdateJoinTeam } = useMutation({
+    mutationFn: teamService.requestJoinTeam,
+  });
+
+  const { mutate: handleRequestLeaveTeam, isPending: isUpdateLeaveTeam } = useMutation({
+    mutationFn: teamService.requestLeaveTeam,
+  });
+
   const loadMore = async () => {
     if (isLoading) return;
     setCurrentPage((prev) => prev + 1);
@@ -70,14 +81,32 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   };
 
   const handleJoinTeam = (teamId: number) => {
-    handleUpdateById(
-      { id: selectedTeam?._id?.toString() || "", team: selectedTeam as unknown as ITeam },
+    handleRequestJoinTeam(
+      { id: selectedTeam?._id?.toString() as string, userId: user?._id as string },
       {
         onSuccess: (response) => {
+          refetch();
           toast.success(response?.message);
           setIsDeleteModalOpen(false);
           setSelectedTeam(null);
-          setIsJoinRequestSent((prev) => [...prev, teamId]);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during login");
+        },
+      }
+    );
+  };
+
+  const handleLeaveTeam = (teamId: number) => {
+    handleRequestLeaveTeam(
+      { id: selectedTeam?._id?.toString() as string, userId: user?._id as string },
+      {
+        onSuccess: (response) => {
+          refetch();
+          toast.success(response?.message);
+          setIsDeleteModalOpen(false);
+          setSelectedTeam(null);
         },
         onError: (error) => {
           console.error(error);
@@ -144,6 +173,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         }}
         onDelete={handleDelete}
         onJoin={handleJoinTeam}
+        onLeave={handleLeaveTeam}
         joinRequests={isJoinRequestSent}
       />
 

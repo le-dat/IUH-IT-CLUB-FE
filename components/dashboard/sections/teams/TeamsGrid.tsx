@@ -15,6 +15,8 @@ interface TeamsGridProps {
   onEdit: (team: any) => void;
   onDelete: (team: any) => void;
   onJoin: (teamId: number) => void;
+  onLeave: (teamId: number) => void;
+
   joinRequests: number[];
 }
 
@@ -28,6 +30,7 @@ export default function TeamsGrid({
   onEdit,
   onDelete,
   onJoin,
+  onLeave,
   joinRequests,
 }: TeamsGridProps) {
   const { observerRef } = useInfiniteScroll({
@@ -56,6 +59,7 @@ export default function TeamsGrid({
           onEdit={() => onEdit(team)}
           onDelete={() => onDelete(team)}
           onJoin={() => onJoin(team.id)}
+          onLeave={() => onLeave(team.id)}
           hasJoinRequest={joinRequests.includes(team.id)}
           index={index}
         />

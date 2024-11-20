@@ -5,7 +5,7 @@ export interface IDevice extends ICommonMongodb {
   name: string;
   lastCheck: Date;
   status: "available" | "in use" | "unavailable" | "pending approval";
-  statusHealth: "good" | "normal" | "poor";
+  statusHealth?: "good" | "normal" | "poor";
   type: string;
   requestBy: IUser | null;
   currentBorrower?: IUser | null;

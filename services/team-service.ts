@@ -24,7 +24,7 @@ const teamService = {
   },
   getTeamById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<ITeam>>(`/team/teams/${id}`);
+      const response = await axiosClient.get<SuccessResponse<ITeam>>(`/team/${id}`);
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch team by id");
@@ -32,7 +32,7 @@ const teamService = {
   },
   createTeam: async (team: ITeam) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<ITeam>>("/team/teams", team);
+      const response = await axiosClient.post<SuccessResponse<ITeam>>("/team", team);
       return response.data;
     } catch (error) {
       throw new Error("Failed to create team");
@@ -49,17 +49,33 @@ const teamService = {
     }
   },
 
-  updateTeamById: async ({ id, team }: { id: string; team: ITeam }) => {
+  updateTeamById: async ({ id, data }: { id: string; data: Partial<ITeam> }) => {
     try {
-      const response = await axiosClient.put<SuccessResponse<ITeam>>(`/teams/${id}`, team);
+      const response = await axiosClient.put<SuccessResponse<ITeam>>(`/team/${id}`, data);
       return response.data;
     } catch (error) {
       throw new Error("Failed to update team");
     }
   },
+  requestJoinTeam: async ({ id, userId }: { id: string; userId: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<null>>(`/team/${id}/join`, userId);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to request join team");
+    }
+  },
+  requestLeaveTeam: async ({ id, userId }: { id: string; userId: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<null>>(`/team/${id}/leave`, userId);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to request leave team");
+    }
+  },
   deleteTeamById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.delete<SuccessResponse<null>>(`/teams/${id}`);
+      const response = await axiosClient.delete<SuccessResponse<null>>(`/team/${id}`);
       return response.data;
     } catch (error) {
       throw new Error("Failed to delete team");

@@ -38,9 +38,9 @@ const eventService = {
       throw new Error("Failed to create event");
     }
   },
-  updateEventById: async ({ id, event }: { id: string; event: IEvent }) => {
+  updateEventById: async ({ id, data }: { id: string; data: IEvent }) => {
     try {
-      const response = await axiosClient.put<SuccessResponse<IEvent>>(`/events/${id}`, event);
+      const response = await axiosClient.put<SuccessResponse<IEvent>>(`/events/${id}`, data);
       return response.data;
     } catch (error) {
       throw new Error("Failed to update event");

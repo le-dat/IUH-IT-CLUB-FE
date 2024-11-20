@@ -41,6 +41,8 @@ export default function EventModal({
   mode,
   refetch,
 }: EventModalProps) {
+  const [minDate, setMinDate] = useState<string>("");
+
   const { mutate: mutateCreateEvent, isPending: isPendingCreateEvent } = useMutation({
     mutationFn: eventService.createEvent,
   });
@@ -67,6 +69,7 @@ export default function EventModal({
     watch(FORM_EVENT.eventDate) &&
     watch(FORM_EVENT.startTime) &&
     watch(FORM_EVENT.location);
+
   const isSubmitDisabled = isPendingCreateEvent || isPendingUpdateEvent || !isFormValid;
 
   const onErrors = (errors: any) => console.error(errors);
@@ -80,17 +83,20 @@ export default function EventModal({
     if (isSubmitDisabled) return;
 
     if (mode === "edit") {
-      mutateUpdateEvent(formatData, {
-        onSuccess: (response) => {
-          refetch && refetch();
-          toast.success(response?.message);
-          onClose();
-        },
-        onError: (error) => {
-          console.error(error);
-          toast.error(error?.message || "Đã có lỗi xảy ra");
-        },
-      });
+      mutateUpdateEvent(
+        { id: event?._id as string, data: formatData },
+        {
+          onSuccess: (response) => {
+            refetch && refetch();
+            toast.success(response?.message);
+            onClose();
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error(error?.message || "Đã có lỗi xảy ra");
+          },
+        }
+      );
     } else {
       mutateCreateEvent(formatData, {
         onSuccess: (response) => {
@@ -126,6 +132,8 @@ export default function EventModal({
         location: event?.location,
         description: event?.description,
       });
+      const today = new Date().toISOString().split("T")[0];
+      setMinDate(today);
     }
   }, [event, mode, reset]);
 
@@ -165,6 +173,7 @@ export default function EventModal({
                   id={FORM_EVENT.eventDate}
                   {...register(FORM_EVENT.eventDate)}
                   required
+                  min={minDate}
                 />
                 {errors[FORM_EVENT.eventDate] && (
                   <div className="text-red-500 !mt-2">

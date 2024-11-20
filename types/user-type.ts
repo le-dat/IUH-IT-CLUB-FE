@@ -10,5 +10,5 @@ export interface IUser extends ICommonMongodb {
   description: string;
 
   skills?: string[];
-  skillDetail?: string[];
+  forte?: string[];
 }

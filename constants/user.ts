@@ -5,7 +5,7 @@ export const FORM_USER = Object.freeze({
   level: "level",
   phone: "phone",
   skills: "skills",
-  skillDetail: "skillDetail",
+  forte: "forte",
   description: "description",
 } as const);
 

@@ -76,7 +76,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
 
   const handleRegister = (eventId: string) => {
     handleUpdateById(
-      { id: selectedEvent?._id?.toString() || "", event: selectedEvent as unknown as IEvent },
+      { id: selectedEvent?._id?.toString() || "", data: selectedEvent as unknown as IEvent },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
@@ -93,7 +93,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
 
   const handleApproval = (event: IEvent) => {
     handleUpdateById(
-      { id: selectedEvent?._id?.toString() || "", event: selectedEvent as unknown as IEvent },
+      { id: selectedEvent?._id?.toString() || "", data: selectedEvent as unknown as IEvent },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
@@ -186,6 +186,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
             isAdmin={isAdmin}
             event={selectedEvent}
             mode="edit"
+            refetch={refetch}
           />
 
           <DeleteConfirmationModal

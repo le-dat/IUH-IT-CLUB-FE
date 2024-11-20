@@ -54,7 +54,7 @@ export const validationUserSchema = yup.object().shape({
     .matches(/^[0-9]{9,}$/, "Số điện thoại không hợp lệ, phải có 9 chữ số"),
   role: yup.string(),
   skills: yup.string(),
-  skillDetail: yup.string(),
+  forte: yup.string(),
   description: yup.string(),
   year: yup.string(),
 });

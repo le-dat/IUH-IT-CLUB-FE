@@ -44,7 +44,7 @@ export default function EventCard({
           </div>
           <Badge
             variant={
-              event.statusEvent === "coming"
+              event.statusEvent === "upcoming"
                 ? "secondary"
                 : event.statusEvent === "done"
                 ? "default"
@@ -52,7 +52,7 @@ export default function EventCard({
             }
             className="shrink-0"
           >
-            {event.statusEvent === "coming" ? "Sắp tới" : "Đã qua"}
+            {event.statusEvent === "upcoming" ? "Sắp tới" : "Đã qua"}
           </Badge>
         </div>
 
@@ -96,9 +96,11 @@ export default function EventCard({
                 </Button>
               ) : (
                 <>
-                  <Button variant="ghost" size="sm" onClick={onEdit}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
+                  {event?.statusEvent !== "done" && (
+                    <Button variant="ghost" size="sm" onClick={onEdit}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  )}
                   <Button variant="ghost" size="sm" onClick={onDelete}>
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
