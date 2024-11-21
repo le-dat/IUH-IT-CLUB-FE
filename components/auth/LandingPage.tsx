@@ -7,12 +7,14 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import ButtonGradient from "../common/ButtonGradient";
+import ParticleBackground from "../common/ParticleBackground";
 
 export default function LandingPage() {
   const router = useRouter();
 
   return (
     <div className="min-h-screen bg-background">
+      <ParticleBackground/>
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/0 pointer-events-none">
@@ -64,7 +66,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h1 className="text-3xl lg:text-6xl lg:leading-normal font-bold tracking-tight bg-clip-text text-transparent leading-[5rem] bg-gradient-to-r from-red-500 via-brown-500 to-orange-500">
+              <h1 className="text-4xl lg:text-6xl leading-normal font-bold tracking-tight bg-clip-text text-transparent leading-[5rem] bg-gradient-to-r from-red-500 via-brown-500 to-orange-500">
                 Kết nối, Kiến tạo, Hợp tác
               </h1>
             </motion.div>

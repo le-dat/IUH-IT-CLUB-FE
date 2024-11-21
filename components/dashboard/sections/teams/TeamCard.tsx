@@ -60,11 +60,11 @@ export default function TeamCard({
             <Button
               className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
               variant={hasJoinRequest ? "secondary" : "outline"}
-              onClick={onJoin}
+              onClick={hasJoinRequest ? onLeave : onJoin}
               disabled={hasJoinRequest}
             >
               <UserPlus className="h-4 w-4 mr-2" />
-              {hasJoinRequest ? "Đã gửi yêu cầu" : "Tham gia nhóm"}
+              {hasJoinRequest ? "Đã tham gia nhóm" : "Tham gia nhóm"}
             </Button>
           )}
           {/* <Button variant="ghost" size="sm" onClick={onView}>

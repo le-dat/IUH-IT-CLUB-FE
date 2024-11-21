@@ -1,23 +1,22 @@
-import { useRef } from 'react';
-import TeamCard from './TeamCard';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import EmptyState from '@/components/common/EmptyState';
-import { Users } from 'lucide-react';
+import { useRef } from "react";
+import TeamCard from "./TeamCard";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import EmptyState from "@/components/common/EmptyState";
+import { Users } from "lucide-react";
+import { ITeam } from "@/types/team-type";
 
 interface TeamsGridProps {
-  teams: any[];
+  teams: ITeam[];
   isAdmin: boolean;
   isLoading: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
-  onView: (team: any) => void;
-  onEdit: (team: any) => void;
-  onDelete: (team: any) => void;
-  onJoin: (teamId: number) => void;
-  onLeave: (teamId: number) => void;
-
-  joinRequests: number[];
+  onView: (team: ITeam) => void;
+  onEdit: (team: ITeam) => void;
+  onDelete: (team: ITeam) => void;
+  onJoin: (teamId: string) => void;
+  onLeave: (teamId: string) => void;
 }
 
 export default function TeamsGrid({
@@ -31,7 +30,6 @@ export default function TeamsGrid({
   onDelete,
   onJoin,
   onLeave,
-  joinRequests,
 }: TeamsGridProps) {
   const { observerRef } = useInfiniteScroll({
     onLoadMore,
@@ -40,30 +38,29 @@ export default function TeamsGrid({
   });
 
   if (teams.length === 0) {
-    return (
-      <EmptyState
-        icon={<Users className="h-12 w-12" />}
-        message="Không có nhóm nào"
-      />
-    );
+    return <EmptyState icon={<Users className="h-12 w-12" />} message="Không có nhóm nào" />;
   }
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {teams.map((team, index) => (
-        <TeamCard
-          key={team.id}
-          team={team}
-          isAdmin={isAdmin}
-          onView={() => onView(team)}
-          onEdit={() => onEdit(team)}
-          onDelete={() => onDelete(team)}
-          onJoin={() => onJoin(team.id)}
-          onLeave={() => onLeave(team.id)}
-          hasJoinRequest={joinRequests.includes(team.id)}
-          index={index}
-        />
-      ))}
+      {teams.map((team, index) => {
+        const hasJoinRequest = team?.members?.some((member) => member._id === team._id);
+
+        return (
+          <TeamCard
+            key={team._id}
+            team={team}
+            isAdmin={isAdmin}
+            onView={() => onView(team)}
+            onEdit={() => onEdit(team)}
+            onDelete={() => onDelete(team)}
+            onJoin={() => onJoin(team._id)}
+            onLeave={() => onLeave(team._id)}
+            hasJoinRequest={hasJoinRequest}
+            index={index}
+          />
+        );
+      })}
       {(isLoading || hasMore) && (
         <div ref={observerRef} className="col-span-full">
           <LoadingSpinner />

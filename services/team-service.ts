@@ -2,6 +2,7 @@ import { SuccessResponse } from "@/types/response-type";
 import { ITeam } from "@/types/team-type";
 import axiosClient from "./axios-client";
 import { IPagination } from "@/types/common";
+import { IUser } from "@/types/user-type";
 
 const teamService = {
   getTeams: async ({
@@ -57,9 +58,9 @@ const teamService = {
       throw new Error("Failed to update team");
     }
   },
-  requestJoinTeam: async ({ id, userId }: { id: string; userId: string }) => {
+  requestJoinTeam: async ({ id, user }: { id: string; user: IUser }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<null>>(`/team/${id}/join`, userId);
+      const response = await axiosClient.post<SuccessResponse<null>>(`/team/${id}/join`, user);
       return response.data;
     } catch (error) {
       throw new Error("Failed to request join team");

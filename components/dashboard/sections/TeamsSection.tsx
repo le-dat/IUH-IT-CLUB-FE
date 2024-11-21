@@ -36,7 +36,6 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-  const [isJoinRequestSent, setIsJoinRequestSent] = useState<number[]>([]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`team-manager-${debouncedSearchTerm}-${debouncedCurrentPage}`],
@@ -80,9 +79,9 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     setIsDeleteModalOpen(true);
   };
 
-  const handleJoinTeam = (teamId: number) => {
+  const handleJoinTeam = (teamId: string) => {
     handleRequestJoinTeam(
-      { id: selectedTeam?._id?.toString() as string, userId: user?._id as string },
+      { id: teamId, user: user! },
       {
         onSuccess: (response) => {
           refetch();
@@ -98,7 +97,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     );
   };
 
-  const handleLeaveTeam = (teamId: number) => {
+  const handleLeaveTeam = (teamId: string) => {
     handleRequestLeaveTeam(
       { id: selectedTeam?._id?.toString() as string, userId: user?._id as string },
       {
@@ -174,7 +173,6 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         onDelete={handleDelete}
         onJoin={handleJoinTeam}
         onLeave={handleLeaveTeam}
-        joinRequests={isJoinRequestSent}
       />
 
       {selectedTeam && (
