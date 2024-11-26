@@ -41,7 +41,14 @@ const deviceService = {
       throw new Error("Failed to create device");
     }
   },
-
+  requestDeviceById: async ({ id, data }: { id: string; data: IDevice }) => {
+    try {
+      const response = await axiosClient.post(`/equipment/${id}`, data);
+      return response.data as SuccessResponse<IDevice>;
+    } catch (error) {
+      throw new Error("Failed to request device");
+    }
+  },
   updateDeviceById: async ({ id, data }: { id: string; data: IDevice }) => {
     try {
       const response = await axiosClient.put(`/equipment/${id}`, data);
@@ -50,6 +57,7 @@ const deviceService = {
       throw new Error("Failed to update device");
     }
   },
+
   deleteDeviceById: async ({ id }: { id: string }) => {
     try {
       const response = await axiosClient.delete<SuccessResponse<null>>(`/equipment/${id}`);

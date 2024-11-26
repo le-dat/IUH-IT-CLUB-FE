@@ -65,6 +65,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         limit: 10,
       }),
     enabled: true,
+    refetchOnWindowFocus: false,
   });
 
   const { mutate: handleDeleteById, isPending } = useMutation({
@@ -233,7 +234,8 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
           <DeviceRequestModal
             isOpen={isRequestModalOpen}
             onClose={() => setIsRequestModalOpen(false)}
-            deviceName={selectedDevice.name}
+            refetch={refetch}
+            device={selectedDevice}
           />
 
           {/* {selectedDevice.status === "pending approval" && (

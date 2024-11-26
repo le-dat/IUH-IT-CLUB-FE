@@ -59,6 +59,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
         page: debouncedCurrentPage,
         limit: 10,
       }),
+    refetchOnWindowFocus: false,
   });
 
   const { mutate: handleDeleteById, isPending } = useMutation({

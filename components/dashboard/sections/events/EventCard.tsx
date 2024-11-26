@@ -1,11 +1,12 @@
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Users, Clock, Eye, Edit, Trash2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { REQUEST_EVENT_TRANSLATE } from "@/constants/event";
 import { useTranslation } from "@/hooks/useTranslation";
-import { motion } from "framer-motion";
-import { IEvent } from "@/types/event-type";
 import { formatDate } from "@/lib/utils";
+import { IEvent } from "@/types/event-type";
+import { motion } from "framer-motion";
+import { Calendar, Clock, Edit, MapPin, Trash2, Users } from "lucide-react";
 
 interface EventCardProps {
   event: IEvent;
@@ -17,7 +18,6 @@ interface EventCardProps {
   isRegistered: boolean;
   index: number;
 }
-
 export default function EventCard({
   event,
   isAdmin,
@@ -46,13 +46,13 @@ export default function EventCard({
             variant={
               event.statusEvent === "upcoming"
                 ? "secondary"
-                : event.statusEvent === "done"
+                : event.statusEvent === "passed"
                 ? "default"
                 : "destructive"
             }
             className="shrink-0"
           >
-            {event.statusEvent === "upcoming" ? "Sắp tới" : "Đã qua"}
+            {REQUEST_EVENT_TRANSLATE[event.statusEvent]}
           </Badge>
         </div>
 
@@ -73,7 +73,7 @@ export default function EventCard({
               {event?.registeredParticipants?.length} {t("events.attendees")}
             </span>
           </div>
-          {event.statusRequest === "pending-approval" && event.host && (
+          {event?.statusRequest === "pending" && event.host && (
             <p className="text-sm text-muted-foreground">
               {t("events.requestedBy")}: {event?.host?.username}
             </p>
@@ -90,13 +90,13 @@ export default function EventCard({
           </Button> */}
           {isAdmin ? (
             <>
-              {event.statusRequest === "pending-approval" ? (
+              {event.statusRequest === "pending" ? (
                 <Button onClick={onEdit} className="flex-1">
                   {t("events.reviewRequest")}
                 </Button>
               ) : (
                 <>
-                  {event?.statusEvent !== "done" && (
+                  {event?.statusEvent !== "passed" && (
                     <Button variant="ghost" size="sm" onClick={onEdit}>
                       <Edit className="h-4 w-4" />
                     </Button>

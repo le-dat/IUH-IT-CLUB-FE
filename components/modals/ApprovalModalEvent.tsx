@@ -40,17 +40,19 @@ export default function ApprovalModalEvent({
 }: ApprovalModalEventProps) {
   // const [notes, setNotes] = useState("");
 
-  const { mutate: mutateUpdateEvent, isPending: isPendingUpdateEvent } = useMutation({
-    mutationFn: eventService.updateEventById,
+  const { mutate: mutateApproveEvent, isPending: isPendingApproveEvent } = useMutation({
+    mutationFn: eventService.approveEventById,
   });
-
+  const { mutate: mutateRejectEvent, isPending: isPendingRejectEvent } = useMutation({
+    mutationFn: eventService.rejectEventById,
+  });
   const handleClose = () => {
     onClose();
   };
 
   const handleApprove = () => {
-    const data = { id: item._id, data: { ...item, status: "approved" } };
-    mutateUpdateEvent(data, {
+    const data = { id: item._id };
+    mutateApproveEvent(data, {
       onSuccess: (response) => {
         refetch && refetch();
         toast.success(response?.message);
@@ -64,8 +66,8 @@ export default function ApprovalModalEvent({
   };
 
   const handleReject = () => {
-    const data = { id: item._id, data: { ...item, status: "rejected" } };
-    mutateUpdateEvent(data, {
+    const data = { id: item._id };
+    mutateRejectEvent(data, {
       onSuccess: (response) => {
         refetch && refetch();
         toast.success(response?.message);

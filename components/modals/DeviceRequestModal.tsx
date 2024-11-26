@@ -16,18 +16,20 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar } from "lucide-react";
 import { format, addDays, isBefore, isAfter } from "date-fns";
+import { useMutation } from "@tanstack/react-query";
+import eventService from "@/services/event-service";
+import deviceService from "@/services/device-service";
+import { toast } from "sonner";
+import { IDevice } from "@/types/device-type";
 
 interface DeviceRequestModalProps {
   isOpen: boolean;
   onClose: () => void;
-  deviceName: string;
+  refetch?: () => void;
+  device: IDevice;
 }
 
-export default function DeviceRequestModal({
-  isOpen,
-  onClose,
-  deviceName,
-}: DeviceRequestModalProps) {
+export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRequestModalProps) {
   const [formData, setFormData] = useState({
     startDate: "",
     endDate: "",
@@ -37,6 +39,9 @@ export default function DeviceRequestModal({
   const [dateErrors, setDateErrors] = useState({
     startDate: "",
     endDate: "",
+  });
+  const { mutate: handleRequestDeviceById, isPending: isRegisterDelete } = useMutation({
+    mutationFn: deviceService.requestDeviceById,
   });
 
   // Tính toán giới hạn ngày
@@ -109,22 +114,36 @@ export default function DeviceRequestModal({
       return;
     }
 
-    // Xử lý gửi yêu cầu
-    console.log("Yêu cầu thiết bị:", formData);
-    onClose();
+    handleRequestDeviceById(
+      {
+        id: device._id as string,
+        data: {
+          ...device,
+          borrowDate: formData.startDate,
+          returnDate: formData.endDate,
+        },
+      },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+          onClose();
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "Đã có lỗi xảy ra");
+        },
+      }
+    );
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      //  onOpenChange={onClose}
-    >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
           <DialogTitle>Yêu Cầu Thiết Bị</DialogTitle>
           <DialogDescription>
-            Gửi yêu cầu mượn {deviceName}. Thời gian mượn tối đa là 2 tuần.
+            Gửi yêu cầu mượn {device?.name}. Thời gian mượn tối đa là 2 tuần.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -171,7 +190,7 @@ export default function DeviceRequestModal({
               {dateErrors.endDate && <p className="text-sm text-red-500">{dateErrors.endDate}</p>}
             </div>
           </div>
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="purpose">Mục Đích Sử Dụng</Label>
             <Textarea
               id="purpose"
@@ -180,11 +199,8 @@ export default function DeviceRequestModal({
               placeholder="Giải thích lý do bạn cần thiết bị này và cách bạn dự định sử dụng nó"
               required
             />
-          </div>
+          </div> */}
           <DialogFooter>
-            {/* <Button type="button" variant="outline" onClick={onClose}>
-              Hủy
-            </Button> */}
             <Button type="submit" disabled={!!dateErrors.startDate || !!dateErrors.endDate}>
               Gửi Yêu Cầu
             </Button>

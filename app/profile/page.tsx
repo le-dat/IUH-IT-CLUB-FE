@@ -33,6 +33,7 @@ export default function ProfilePage() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`user-profile`],
     queryFn: () => userService.getMe(),
+    refetchOnWindowFocus: false,
   });
   const user = data?.data?.user;
   const [skills, setSkills] = useState<string[]>(user?.forte || ["React", "TypeScript", "Node.js"]);
@@ -306,7 +307,7 @@ export default function ProfilePage() {
                     </div>
                   </Card>
 
-                  <Card className="p-6 space-y-4">
+                  {/* <Card className="p-6 space-y-4">
                     <Label className="text-amber-800 font-semibold">Hoạt động</Label>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
@@ -318,7 +319,7 @@ export default function ProfilePage() {
                         <span className="font-medium">0</span>
                       </div>
                     </div>
-                  </Card>
+                  </Card> */}
                 </div>
               </div>
             </motion.div>

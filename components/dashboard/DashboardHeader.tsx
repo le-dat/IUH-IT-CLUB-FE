@@ -30,6 +30,7 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`user-profile`],
     queryFn: () => userService.getMe(),
+    refetchOnWindowFocus: false,
   });
 
   const handleClick = (path: string) => {

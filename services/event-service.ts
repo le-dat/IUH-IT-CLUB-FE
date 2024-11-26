@@ -46,6 +46,39 @@ const eventService = {
       throw new Error("Failed to update event");
     }
   },
+  registerEventById: async ({ id, data }: { id: string; data: IEvent }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<IEvent>>(
+        `/events/register/${id}`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to update event");
+    }
+  },
+  approveEventById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<IEvent>>(`/events/approve`, {
+        eventId: id,
+        action: "approve",
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to update event");
+    }
+  },
+  rejectEventById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<IEvent>>(`/events/approve`, {
+        eventId: id,
+        action: "reject",
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to update event");
+    }
+  },
   deleteEventById: async ({ id }: { id: string }) => {
     try {
       const response = await axiosClient.delete<SuccessResponse<null>>(`/events/${id}`);

@@ -1,9 +1,10 @@
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, Eye, Edit, Trash2, UserPlus } from "lucide-react";
-import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { TEAM_STATUS } from "@/constants/team";
 import { ITeam } from "@/types/team-type";
+import { motion } from "framer-motion";
+import { Edit, Trash2, UserPlus, Users } from "lucide-react";
 
 interface TeamCardProps {
   team: ITeam;
@@ -44,7 +45,7 @@ export default function TeamCard({
             <p className="text-sm text-muted-foreground line-clamp-2">{team.description}</p>
           </div>
           <Badge variant="secondary" className="shrink-0">
-            {team.status}
+            {TEAM_STATUS?.[team.status]}
           </Badge>
         </div>
 

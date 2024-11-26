@@ -41,6 +41,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     queryKey: [`team-manager-${debouncedSearchTerm}-${debouncedCurrentPage}`],
     queryFn: () =>
       teamService.getTeams({ search: debouncedSearchTerm, page: debouncedCurrentPage, limit: 10 }),
+    refetchOnWindowFocus: false,
   });
 
   const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({

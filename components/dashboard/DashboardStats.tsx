@@ -18,6 +18,7 @@ export default function DashboardStats() {
     queryKey: [`dashboard`],
     queryFn: () => userService.getDashboard(),
     enabled: true,
+    refetchOnWindowFocus: false,
   }); 
 
   useEffect(() => {

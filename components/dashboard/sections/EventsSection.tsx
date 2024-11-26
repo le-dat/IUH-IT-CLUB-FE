@@ -44,14 +44,15 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
         page: debouncedCurrentPage,
         limit: 10,
       }),
+    refetchOnWindowFocus: false,
   });
 
   const { mutate: handleDeleteById, isPending: isPendingDelete } = useMutation({
     mutationFn: eventService.deleteEventById,
   });
 
-  const { mutate: handleUpdateById, isPending: isUpdateDelete } = useMutation({
-    mutationFn: eventService.updateEventById,
+  const { mutate: handleRegisterEventById, isPending: isRegisterDelete } = useMutation({
+    mutationFn: eventService.registerEventById,
   });
 
   const loadMore = async () => {
@@ -75,30 +76,13 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   };
 
   const handleRegister = (eventId: string) => {
-    handleUpdateById(
-      { id: selectedEvent?._id?.toString() || "", data: selectedEvent as unknown as IEvent },
+    handleRegisterEventById(
+      { id: eventId || "", data: selectedEvent as unknown as IEvent },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
           setIsDeleteModalOpen(false);
           setRegisteredEvents((prev) => [...prev, eventId]);
-        },
-        onError: (error) => {
-          console.error(error);
-          toast.error(error?.message || "An error occurred during login");
-        },
-      }
-    );
-  };
-
-  const handleApproval = (event: IEvent) => {
-    handleUpdateById(
-      { id: selectedEvent?._id?.toString() || "", data: selectedEvent as unknown as IEvent },
-      {
-        onSuccess: (response) => {
-          toast.success(response?.message);
-          setSelectedEvent(event);
-          setIsApprovalModalOpen(true);
         },
         onError: (error) => {
           console.error(error);
@@ -158,12 +142,15 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
         onLoadMore={loadMore}
         onView={handleOpenModalView}
         onEdit={(event) => {
-          if (event.statusRequest === "pending-approval") {
-            handleApproval(event);
-          } else {
-            setSelectedEvent(event);
-            setIsEditModalOpen(true);
-          }
+          setSelectedEvent(event);
+          setIsApprovalModalOpen(true);
+
+          // if (event.statusRequest === "pending") {
+          //   handleApproval(event);
+          // } else {
+          //   setSelectedEvent(event);
+          //   setIsEditModalOpen(true);
+          // }
         }}
         onDelete={(event) => handleOpenModalDelete(event)}
         onRegister={handleRegister}
@@ -201,6 +188,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
             isOpen={isApprovalModalOpen}
             onClose={() => setIsApprovalModalOpen(false)}
             item={selectedEvent}
+            refetch={refetch}
           />
         </>
       )}

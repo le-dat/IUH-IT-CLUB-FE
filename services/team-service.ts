@@ -60,7 +60,7 @@ const teamService = {
   },
   requestJoinTeam: async ({ id, user }: { id: string; user: IUser }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<null>>(`/team/${id}/join`, user);
+      const response = await axiosClient.post<SuccessResponse<null>>(`/team/join/${id}`, user);
       return response.data;
     } catch (error) {
       throw new Error("Failed to request join team");
@@ -68,7 +68,7 @@ const teamService = {
   },
   requestLeaveTeam: async ({ id, userId }: { id: string; userId: string }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<null>>(`/team/${id}/leave`, userId);
+      const response = await axiosClient.post<SuccessResponse<null>>(`/team/leave/${id}`, userId);
       return response.data;
     } catch (error) {
       throw new Error("Failed to request leave team");
