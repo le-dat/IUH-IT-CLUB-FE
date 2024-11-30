@@ -4,7 +4,7 @@ import { IUser } from "./user-type";
 export interface IDevice extends ICommonMongodb {
   name: string;
   lastCheck: Date;
-  status: "available" | "in use" | "unavailable" | "pending approval";
+  status: "available" | "in use" | "unavailable" | "pending";
   statusHealth?: "good" | "normal" | "poor";
   type: string;
   requestBy: IUser | null;

@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { FORM_EVENT } from "@/constants/event";
 import { IEvent } from "@/types/event-type";
 import useAuthStore from "@/store/auth-store";
+import { format, addDays, isBefore, isAfter } from "date-fns";
+
 
 interface EventModalProps {
   isOpen: boolean;
@@ -41,7 +43,9 @@ export default function EventModal({
   mode,
   refetch,
 }: EventModalProps) {
-  const [minDate, setMinDate] = useState<string>("");
+  const today = new Date();
+  const [minDate, setMinDate] = useState(today);
+  const maxStartDate = format(addDays(today, 30), "yyyy-MM-dd");
 
   const { mutate: mutateCreateEvent, isPending: isPendingCreateEvent } = useMutation({
     mutationFn: eventService.createEvent,
@@ -132,8 +136,6 @@ export default function EventModal({
         location: event?.location,
         description: event?.description,
       });
-      const today = new Date().toISOString().split("T")[0];
-      setMinDate(today);
     }
   }, [event, mode, reset]);
 
@@ -173,7 +175,8 @@ export default function EventModal({
                   id={FORM_EVENT.eventDate}
                   {...register(FORM_EVENT.eventDate)}
                   required
-                  min={minDate}
+                  min={format(minDate, "yyyy-MM-dd")}
+                  max={maxStartDate}
                 />
                 {errors[FORM_EVENT.eventDate] && (
                   <div className="text-red-500 !mt-2">

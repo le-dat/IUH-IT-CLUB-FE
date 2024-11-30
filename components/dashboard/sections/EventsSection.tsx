@@ -34,7 +34,6 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
-  const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [`event-manager-${debouncedSearchTerm}`],
@@ -80,9 +79,9 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
       { id: eventId || "", data: selectedEvent as unknown as IEvent },
       {
         onSuccess: (response) => {
+          refetch()
           toast.success(response?.message);
           setIsDeleteModalOpen(false);
-          setRegisteredEvents((prev) => [...prev, eventId]);
         },
         onError: (error) => {
           console.error(error);
@@ -154,7 +153,6 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
         }}
         onDelete={(event) => handleOpenModalDelete(event)}
         onRegister={handleRegister}
-        registeredEvents={registeredEvents}
       />
 
       {selectedEvent && (

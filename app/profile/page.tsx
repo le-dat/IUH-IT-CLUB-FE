@@ -141,7 +141,7 @@ export default function ProfilePage() {
                     <p className="text-muted-foreground">Lập trình viên Full Stack</p>
                   </div>
                 </div> */}
-                <Button onClick={handleBack} className="flex items-center gap-2">
+                <Button onClick={handleBack} type="button" className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   Quay lại
                 </Button>
@@ -181,25 +181,12 @@ export default function ProfilePage() {
                         <Label className="text-amber-800 font-semibold" htmlFor={FORM_USER.level}>
                           Khóa học
                         </Label>
-                        <Controller
-                          name={FORM_USER.level}
-                          control={control}
-                          defaultValue=""
-                          rules={{ required: "Khóa học là bắt buộc" }}
-                          render={({ field }) => (
-                            <Select {...field} onValueChange={(value) => field.onChange(value)}>
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Chọn khóa học" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {Array.from({ length: 7 }).map((_, index) => (
-                                  <SelectItem key={index} value={getCourseNumber(index)}>
-                                    {getCourseNumber(index)}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
+                        <Input
+                          id={FORM_USER.level}
+                          {...register(FORM_USER.level)}
+                          defaultValue="Tên người dùng"
+                          className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                          readOnly
                         />
                         {errors[FORM_USER.level] && (
                           <div className="text-red-500 !mt-2">

@@ -57,7 +57,7 @@ export default function DeviceTable({
                 variant={
                   device.status === "available"
                     ? "default"
-                    : device.status === "pending approval"
+                    : device.status === "pending"
                     ? "secondary"
                     : "outline"
                 }
@@ -78,7 +78,7 @@ export default function DeviceTable({
                 </Button>
                 {isAdmin ? (
                   <>
-                    {device.status === "pending approval" ? (
+                    {device.status === "pending" ? (
                       <Button variant="ghost" size="sm" onClick={() => onApprove(device)}>
                         Xem yêu cầu
                       </Button>

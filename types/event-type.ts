@@ -8,7 +8,7 @@ export interface IEvent extends ICommonMongodb {
   eventDate: string;
   startTime: string;
   host: IUser;
-  registeredParticipants: IUser[] | [];
+  registeredParticipants: string[];
   statusEvent: "upcoming" | "passed" | "canceled";
   statusRequest: "pending" | "approved" | "rejected";
 }

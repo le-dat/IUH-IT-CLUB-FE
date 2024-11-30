@@ -75,7 +75,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex">
-      <Button onClick={handleBack} className="fixed top-5 left-10 z-10 flex items-center gap-2">
+      <Button onClick={handleBack} type="button" className="fixed top-5 left-10 z-10 flex items-center gap-2">
         <ArrowLeft className="h-4 w-4" />
         Quay lại
       </Button>

@@ -6,6 +6,7 @@ import EmptyState from "@/components/common/EmptyState";
 import { Calendar } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { IEvent } from "@/types/event-type";
+import useAuthStore from "@/store/auth-store";
 
 interface EventsGridProps {
   events: IEvent[] | [];
@@ -17,7 +18,6 @@ interface EventsGridProps {
   onEdit: (event: IEvent) => void;
   onDelete: (event: any) => void;
   onRegister: (eventId: string) => void;
-  registeredEvents: string[];
 }
 
 export default function EventsGrid({
@@ -30,9 +30,9 @@ export default function EventsGrid({
   onEdit,
   onDelete,
   onRegister,
-  registeredEvents,
 }: EventsGridProps) {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
   const { observerRef } = useInfiniteScroll({
     onLoadMore,
     isLoading,
@@ -45,19 +45,21 @@ export default function EventsGrid({
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      {events.map((event, index) => (
-        <EventCard
-          key={`event-card-${event._id}`}
-          event={event}
-          isAdmin={isAdmin}
-          onView={() => onView(event)}
-          onEdit={() => onEdit(event)}
-          onDelete={() => onDelete(event)}
-          onRegister={() => onRegister(event._id)}
-          isRegistered={registeredEvents.includes(event._id)}
-          index={index}
-        />
-      ))}
+      {events.map((event, index) => {
+        return (
+          <EventCard
+            key={`event-card-${event._id}`}
+            event={event}
+            isAdmin={isAdmin}
+            onView={() => onView(event)}
+            onEdit={() => onEdit(event)}
+            onDelete={() => onDelete(event)}
+            onRegister={() => onRegister(event._id)}
+            isRegistered={event?.registeredParticipants?.includes(user?._id as string)}
+            index={index}
+          />
+        )
+      })}
       {(isLoading || hasMore) && (
         <div ref={observerRef} className="col-span-full">
           <LoadingSpinner />

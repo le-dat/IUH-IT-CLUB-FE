@@ -141,9 +141,9 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
       <DialogContent className="sm:max-w-[500px]">
         <DialogCloseButton onClick={onClose} />
         <DialogHeader>
-          <DialogTitle>Yêu Cầu Thiết Bị</DialogTitle>
+          <DialogTitle>Yêu Cầu Thiết Bị <span className="italic text-amber-600">&#39;{device?.name}&#39;</span></DialogTitle>
           <DialogDescription>
-            Gửi yêu cầu mượn {device?.name}. Thời gian mượn tối đa là 2 tuần.
+             Thời gian mượn tối đa là 2 tuần.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
