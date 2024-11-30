@@ -200,6 +200,22 @@ export default function TeamModal({ isOpen, onClose, mode, team, refetch }: Team
                 </div>
               )}
             </div>
+
+            {/* List of Members */}
+            {/* <div className="space-y-2">
+              <Label>Thành Viên</Label>
+              <ul>
+                {members.map((member) => (
+                  <li key={member} className="flex justify-between items-center">
+                    <span>{member}</span>
+                    <Button variant="destructive" onClick={() => handleDeleteMember(member)}>
+                      Xóa
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div> */}
+
             <DialogFooter>
               <Button type="submit">{isCreateMode ? "Tạo Nhóm" : "Lưu Thay Đổi"}</Button>
             </DialogFooter>

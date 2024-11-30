@@ -36,44 +36,46 @@ export default function ApprovalModalDevice({
   item,
   refetch,
 }: ApprovalModalDeviceProps) {
-  const [notes, setNotes] = useState("");
+  // const [notes, setNotes] = useState("");
 
-  const { mutate: mutateUpdateDevice, isPending: isPendingUpdateDevice } = useMutation({
-    mutationFn: deviceService.updateDeviceById,
+  const { mutate: mutateApproveDevice, isPending: isPendingApproveDevice } = useMutation({
+    mutationFn: deviceService.approveDeviceById,
+  });
+  const { mutate: mutateRejectDevice, isPending: isPendingRejectDevice } = useMutation({
+    mutationFn: deviceService.rejectDeviceById,
   });
 
   const handleClose = () => {
     onClose();
   };
   const handleApprove = () => {
-    const data = { id: item._id, data: { ...item, status: "approved" } };
-
-    // mutateUpdateDevice(data, {
-    //   onSuccess: (response) => {
-    //     refetch && refetch();
-    //     toast.success(response?.message);
-    //     handleClose();
-    //   },
-    //   onError: (error) => {
-    //     console.error(error);
-    //     toast.error(error?.message || "Đã có lỗi xảy ra");
-    //   },
-    // });
+    const data = { id: item._id };
+    mutateApproveDevice(data, {
+      onSuccess: (response) => {
+        refetch && refetch();
+        toast.success(response?.message);
+        handleClose();
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error(error?.message || "Đã có lỗi xảy ra");
+      },
+    });
   };
 
   const handleReject = () => {
-    const data = { id: item._id, data: { ...item, status: "rejected" } };
-    // mutateUpdateDevice(data, {
-    //   onSuccess: (response) => {
-    //     refetch && refetch();
-    //     toast.success(response?.message);
-    //     handleClose();
-    //   },
-    //   onError: (error) => {
-    //     console.error(error);
-    //     toast.error(error?.message || "Đã có lỗi xảy ra");
-    //   },
-    // });
+    const data = { id: item._id };
+    mutateRejectDevice(data, {
+      onSuccess: (response) => {
+        refetch && refetch();
+        toast.success(response?.message);
+        handleClose();
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error(error?.message || "Đã có lỗi xảy ra");
+      },
+    });
   };
 
   return (
@@ -103,7 +105,7 @@ export default function ApprovalModalDevice({
                 <div>Ngày kết thúc: {formatDate(item.returnDate as string)}</div>
               </div>
               <div className="pt-2 border-t">
-                <Badge variant="outline">Yêu cầu bởi {item?.requestBy?.username}</Badge>
+                <Badge variant="outline">Yêu cầu bởi {item?.currentBorrower?.username}</Badge>
               </div>
             </div>
           </div>

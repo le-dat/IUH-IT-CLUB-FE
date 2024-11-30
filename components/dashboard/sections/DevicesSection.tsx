@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import Pagination from "@/components/common/Pagination";
+import ApprovalModalDevice from "@/components/modals/ApprovalModalDevice";
+import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
+import DeviceDetailsModal from "@/components/modals/DeviceDetailsModal";
 import DeviceModal from "@/components/modals/DeviceModal";
 import DeviceRequestModal from "@/components/modals/DeviceRequestModal";
-import DeviceDetailsModal from "@/components/modals/DeviceDetailsModal";
-import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
-import DeviceTable from "./devices/DeviceTable";
-import Pagination from "@/components/common/Pagination";
-import { useTranslation } from "@/hooks/useTranslation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,13 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ApprovalModal from "@/components/modals/ApprovalModalDevice";
-import { useDebounce } from "@uidotdev/usehooks";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslation } from "@/hooks/useTranslation";
 import deviceService from "@/services/device-service";
-import { toast } from "sonner";
 import { useDeviceStore } from "@/store/device-store";
 import { IDevice } from "@/types/device-type";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
+import { Plus, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import DeviceTable from "./devices/DeviceTable";
+import { conditionsMap, statusMap } from "@/constants/device";
 
 interface DevicesSectionProps {
   isAdmin: boolean;
@@ -151,10 +152,11 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value=" ">Tất cả trạng thái</SelectItem>
-              <SelectItem value="available">Có sẵn</SelectItem>
-              <SelectItem value="in use">Đang sử dụng</SelectItem>
-              <SelectItem value="unavailable">Không có sẵn</SelectItem>
-              <SelectItem value="pending approval">Đang chờ phê duyệt</SelectItem>
+              {Object.entries(statusMap).map(([value, name]) => (
+                  <SelectItem key={value} value={value}>
+                    {name}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
 
@@ -164,9 +166,11 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All Conditions">Tất cả tình trạng</SelectItem>
-              <SelectItem value="good">Tốt</SelectItem>
-              <SelectItem value="fair">Khá</SelectItem>
-              <SelectItem value="poor">Kém</SelectItem>
+              {Object.entries(conditionsMap).map(([value, name]) => (
+                  <SelectItem key={value} value={value}>
+                    {name}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select> */}
 
@@ -236,6 +240,13 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             onClose={() => setIsRequestModalOpen(false)}
             refetch={refetch}
             device={selectedDevice}
+          />
+
+          <ApprovalModalDevice
+            isOpen={isApprovalModalOpen}
+            onClose={() => setIsApprovalModalOpen(false)}
+            item={selectedDevice!}
+            refetch={refetch}
           />
 
           {/* {selectedDevice.status === "pending approval" && (

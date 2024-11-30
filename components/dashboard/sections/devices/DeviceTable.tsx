@@ -69,7 +69,7 @@ export default function DeviceTable({
             <TableCell>{device?.currentBorrower?.username ?? "_"}</TableCell>
             <TableCell>{formatDate(device.updatedAt)}</TableCell>
             <TableCell>
-              {/* {conditionsMap[(device.condition as keyof typeof conditionsMap) || "Good"]} */}
+              {conditionsMap[(device.statusHealth as keyof typeof conditionsMap) || "good"]}
             </TableCell>
             <TableCell>
               <div className="flex gap-2">

@@ -47,7 +47,7 @@ export default function DeviceDetailsModal({
               variant={
                 device.status === "available"
                   ? "default"
-                  : device.status === "pending approval"
+                  : device.status === "pending"
                   ? "secondary"
                   : "outline"
               }

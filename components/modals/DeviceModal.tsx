@@ -24,7 +24,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import deviceService from "@/services/device-service";
 import { Controller, FormProvider, useForm } from "react-hook-form";
-import { FORM_DEVICE } from "@/constants/device";
+import { conditionsMap, FORM_DEVICE, statusMap } from "@/constants/device";
 import { toast } from "sonner";
 import { IDevice } from "@/types/device-type";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -41,19 +41,6 @@ interface DeviceModalProps {
 export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: DeviceModalProps) {
   const isCreateMode = mode === "create";
 
-  // const [formData, setFormData] = useState({
-  //   name: device?.name || "",
-  //   type: device?.type || "",
-  //   // status: device?.status || "Available",
-  //   // condition: device?.condition || "Good",
-  //   // notes: device?.notes || "",
-  // });
-
-  // const { data, isLoading, error, refetch } = useQuery({
-  //   queryKey: [`user-manager`],
-  //   queryFn: () => deviceService.getDeviceById({ id: device?._id?.toString() || "" }),
-  // });
-
   const { mutate: mutateCreateDevice, isPending: isPendingCreateDevice } = useMutation({
     mutationFn: deviceService.createDevice,
   });
@@ -67,6 +54,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
       [FORM_DEVICE.name]: device?.name || "",
       [FORM_DEVICE.type]: device?.type || "",
       [FORM_DEVICE.status]: device?.status || "",
+      [FORM_DEVICE.statusHealth]: device?.statusHealth || "",
     },
   });
 
@@ -133,6 +121,7 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
         [FORM_DEVICE.name]: device.name,
         [FORM_DEVICE.type]: device.type,
         [FORM_DEVICE.status]: device.status,
+        [FORM_DEVICE.statusHealth]: device.statusHealth,
       });
     }
   }, [device, mode, reset]);
@@ -207,9 +196,13 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                         <SelectValue placeholder="Chọn trạng thái" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="available">Có sẵn</SelectItem>
-                        <SelectItem value="in use">Đang sử dụng</SelectItem>
-                        <SelectItem value="unavailable">Không có sẵn</SelectItem>
+                        {Object.entries(statusMap)
+                          .filter(([value]) => value !== "pending")
+                          .map(([value, name]) => (
+                            <SelectItem key={value} value={value}>
+                              {name}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -220,34 +213,34 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                   </div>
                 )}
               </div>
-              {/* <div className="space-y-2">
-                <Label htmlFor={FORM_DEVICE.condition}>Tình Trạng</Label>
+              <div className="space-y-2">
+                <Label htmlFor={FORM_DEVICE.statusHealth}>Tình Trạng</Label>
                 <Controller
-                  name={FORM_DEVICE.condition}
+                  name={FORM_DEVICE.statusHealth}
                   control={control}
                   defaultValue=""
                   rules={{ required: "Tình trạng là bắt buộc" }}
                   render={({ field }) => (
-                                       <Select {...field} onValueChange={(value) => field.onChange(value)}>
+                    <Select {...field} onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="w-full">
-
-                      
                         <SelectValue placeholder="Chọn tình trạng" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="New">Mới</SelectItem>
-                        <SelectItem value="Used">Đã Sử Dụng</SelectItem>
-                        <SelectItem value="Damaged">Hư Hỏng</SelectItem>
+                        {Object.entries(conditionsMap).map(([value, name]) => (
+                          <SelectItem key={value} value={value}>
+                            {name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
                 />
-                {errors[FORM_DEVICE.condition] && (
+                {errors[FORM_DEVICE.statusHealth] && (
                   <div className="text-red-500 !mt-2">
-                    {errors?.[FORM_DEVICE.condition]?.message?.toString()}
+                    {errors?.[FORM_DEVICE.statusHealth]?.message?.toString()}
                   </div>
                 )}
-              </div> */}
+              </div>
             </div>
             {/* <div className="space-y-2">
               <Label htmlFor="notes">Ghi Chú</Label>

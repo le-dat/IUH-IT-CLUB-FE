@@ -35,7 +35,7 @@ const deviceService = {
   },
   createDevice: async ({ data }: { data: IDevice }) => {
     try {
-      const response = await axiosClient.post("/equipment", data);
+      const response = await axiosClient.post("/equipment/create", data);
       return response.data as SuccessResponse<IDevice>;
     } catch (error) {
       throw new Error("Failed to create device");
@@ -47,6 +47,28 @@ const deviceService = {
       return response.data as SuccessResponse<IDevice>;
     } catch (error) {
       throw new Error("Failed to request device");
+    }
+  },
+  approveDeviceById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/approve-borrow`, {
+        equipmentId: id,
+        action: "approve",
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to approve device");
+    }
+  },
+  rejectDeviceById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/approve-borrow`, {
+        equipmentId: id,
+        action: "reject",
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to reject device");
     }
   },
   updateDeviceById: async ({ id, data }: { id: string; data: IDevice }) => {

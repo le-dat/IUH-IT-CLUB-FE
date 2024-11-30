@@ -76,4 +76,5 @@ export const validationDeviceSchema = yup.object().shape({
   name: yup.string().trim().required("Tên là bắt buộc"),
   type: yup.string().trim().required("Loại thiết bị là bắt buộc"),
   status: yup.string().required("Trạng thái là bắt buộc"),
+  statusHealth: yup.string().required("Tình trạng là bắt buộc"),
 });
