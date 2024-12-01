@@ -145,7 +145,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
               </SelectContent>
             </Select>
 
-            <Select value={selectedSkill} onValueChange={setSelectedSkill}>
+            {/* <Select value={selectedSkill} onValueChange={setSelectedSkill}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Lọc theo sở trường" />
               </SelectTrigger>
@@ -157,7 +157,7 @@ export default function MembersSection({ isAdmin }: MembersSectionProps) {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
           <Pagination
             currentPage={currentPage}

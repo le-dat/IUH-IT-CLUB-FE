@@ -66,7 +66,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h1 className="text-4xl lg:text-6xl leading-normal font-bold tracking-tight bg-clip-text text-transparent leading-[5rem] bg-gradient-to-r from-red-500 via-brown-500 to-orange-500">
+              <h1 className="text-[36px] lg:text-[60px] font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-brown-500 to-orange-500">
                 Kết nối, Kiến tạo, Hợp tác
               </h1>
             </motion.div>

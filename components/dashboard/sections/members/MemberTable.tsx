@@ -36,7 +36,7 @@ export default function MemberTable({
         <TableRow>
           <TableHead>Thành viên</TableHead>
           <TableHead>Khóa học</TableHead>
-          <TableHead>Sở trường</TableHead>
+          {/* <TableHead>Sở trường</TableHead> */}
           <TableHead>Ngày tham gia</TableHead>
           <TableHead>Thao tác</TableHead>
         </TableRow>
@@ -51,13 +51,13 @@ export default function MemberTable({
               </div>
             </TableCell>
             <TableCell>{member.level}</TableCell>
-            <TableCell>
-              {member?.skills?.map((item, index) => (
+            {/* <TableCell className="gap-2 flex items-center flex-wrap">
+              {member?.forte?.map((item, index) => (
                 <Badge key={index} variant="secondary" className="mr-1">
                   {item}
                 </Badge>
               ))}
-            </TableCell>
+            </TableCell> */}
             {/* <TableCell>
               <Badge variant="secondary">{member.status}</Badge>
             </TableCell> */}

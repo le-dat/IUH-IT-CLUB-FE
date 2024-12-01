@@ -19,6 +19,7 @@ import useTeamStore from "@/store/team-store";
 import { useDebounce } from "@uidotdev/usehooks";
 import useUserStore from "@/store/user-store";
 import useAuthStore from "@/store/auth-store";
+import { IUser } from "@/types/user-type";
 
 export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
   const { t } = useTranslation();
@@ -192,6 +193,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
             mode="edit"
             team={selectedTeam!}
             refetch={refetch}
+            isAdmin={isAdmin}
           />
 
           <DeleteConfirmationModal
@@ -210,6 +212,7 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         mode="create"
         team={selectedTeam!}
         refetch={refetch}
+        isAdmin={isAdmin}
       />
     </div>
   );

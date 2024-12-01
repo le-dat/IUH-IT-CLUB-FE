@@ -184,7 +184,7 @@ export default function MemberModal({
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className=" space-y-2">
                 <Label className="text-indigo-400" htmlFor={FORM_SIGN.email}>
                   Email
                 </Label>
@@ -195,7 +195,7 @@ export default function MemberModal({
                       <Link
                         href={`mailto:${member?.email}`}
                         target="_blank"
-                        className="text-sm hover:underline hover:italic"
+                        className="text-sm hover:underline hover:italic block w-fit"
                       >
                         {member?.email}
                       </Link>
@@ -233,7 +233,7 @@ export default function MemberModal({
                     <Input
                       id={FORM_USER.level}
                       {...register(FORM_USER.level)}
-                      placeholder="Nhập mã số sinh viên"
+                      placeholder="Khóa học là bắt buộc"
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
@@ -256,7 +256,7 @@ export default function MemberModal({
                       <Link
                         href={`https://zalo.me/${member?.phone}`}
                         target="_blank"
-                        className="text-sm hover:underline hover:italic"
+                        className="text-sm hover:underline hover:italic block w-fit"
                       >
                         {member?.phone}
                       </Link>
@@ -284,11 +284,11 @@ export default function MemberModal({
               </div>
             </div>
 
-            {isViewMode && member?.skills && (
+            {isViewMode && member?.forte && member?.forte?.length > 0 && (
               <div className="space-y-2">
                 <Label className="text-indigo-400">Kỹ Năng</Label>
                 <div className="flex gap-2 flex-wrap">
-                  {member.skills.map((skill: string, index: number) => (
+                  {member?.forte?.map((skill: string, index: number) => (
                     <Badge key={index} variant="secondary" className="shrink-0">
                       {skill}
                     </Badge>

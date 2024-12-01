@@ -103,6 +103,7 @@ export default function ProfilePage() {
         email: user?.email,
         level: user?.level,
         phone: user?.phone,
+        skills: user?.skills,
       });
       const resetSkillDetail = user?.forte?.map((skill) => skill.toString()) ?? [];
       setSkills(resetSkillDetail);
@@ -212,12 +213,12 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="space-y-4">
-                    <Label className="text-amber-800 font-semibold" htmlFor={FORM_USER.skills}>
+                    <Label className="text-amber-800 font-semibold" htmlFor={FORM_USER.forte}>
                       Sở trường
                     </Label>
                     <div className="space-y-4">
-                      <Controller
-                        name={FORM_USER.skills}
+                      {/* <Controller
+                        name={FORM_USER.forte}
                         control={control}
                         render={({ field }) => (
                           <Select {...field} onValueChange={(value) => field.onChange(value)}>
@@ -236,7 +237,7 @@ export default function ProfilePage() {
                             </SelectContent>
                           </Select>
                         )}
-                      />
+                      /> */}
 
                       <div className="flex flex-wrap gap-2">
                         {skills.map((skill) => (

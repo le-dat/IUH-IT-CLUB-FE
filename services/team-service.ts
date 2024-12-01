@@ -74,6 +74,14 @@ const teamService = {
       throw new Error("Failed to request leave team");
     }
   },
+  deleteMemberInTeamById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.delete<SuccessResponse<null>>(`/team/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to delete team");
+    }
+  },
   deleteTeamById: async ({ id }: { id: string }) => {
     try {
       const response = await axiosClient.delete<SuccessResponse<null>>(`/team/${id}`);

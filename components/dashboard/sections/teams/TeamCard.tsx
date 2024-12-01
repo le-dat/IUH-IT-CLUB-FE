@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { TEAM_STATUS } from "@/constants/team";
 import { ITeam } from "@/types/team-type";
 import { motion } from "framer-motion";
-import { Edit, Trash2, UserPlus, Users } from "lucide-react";
+import { Edit, Eye, Trash2, UserPlus, Users } from "lucide-react";
 
 interface TeamCardProps {
   team: ITeam;
@@ -68,9 +68,9 @@ export default function TeamCard({
               {hasJoinRequest ? "Đã tham gia nhóm" : "Tham gia nhóm"}
             </Button>
           )}
-          {/* <Button variant="ghost" size="sm" onClick={onView}>
+          <Button variant="ghost" size="sm" onClick={onView}>
             <Eye className="h-4 w-4" />
-          </Button> */}
+          </Button>
           {isAdmin && (
             <>
               <Button variant="ghost" size="sm" onClick={onEdit}>
