@@ -44,7 +44,7 @@ export default function EventModal({
   refetch,
 }: EventModalProps) {
   const today = new Date();
-  const [minDate, setMinDate] = useState(today);
+  const [minDate, setMinDate] = useState(format(addDays(today, 1), "yyyy-MM-dd"));
   const maxStartDate = format(addDays(today, 30), "yyyy-MM-dd");
 
   const { mutate: mutateCreateEvent, isPending: isPendingCreateEvent } = useMutation({
@@ -83,7 +83,6 @@ export default function EventModal({
       ...data,
       statusEvent: "upcoming",
     };
-    console.log("formatData: ", formatData);
     if (isSubmitDisabled) return;
 
     if (mode === "edit") {

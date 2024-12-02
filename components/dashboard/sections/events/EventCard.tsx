@@ -6,7 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { formatDate } from "@/lib/utils";
 import { IEvent } from "@/types/event-type";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Edit, MapPin, Trash2, Users } from "lucide-react";
+import { Calendar, Clock, Edit, Eye, MapPin, Trash2, Users } from "lucide-react";
 
 interface EventCardProps {
   event: IEvent;
@@ -17,6 +17,7 @@ interface EventCardProps {
   onRegister: () => void;
   isRegistered: boolean;
   index: number;
+  isLoading: boolean;
 }
 export default function EventCard({
   event,
@@ -27,6 +28,7 @@ export default function EventCard({
   onRegister,
   isRegistered,
   index,
+  isLoading,
 }: EventCardProps) {
   const { t } = useTranslation();
 
@@ -81,27 +83,20 @@ export default function EventCard({
         </div>
 
         <div className="mt-6 flex gap-2 justify-end">
-          {/* <Button
-            variant="ghost"
-            size="sm"
-            onClick={onView}
-          >
-            <Eye className="h-4 w-4" />
-          </Button> */}
           {isAdmin ? (
             <>
               {event.statusRequest === "pending" ? (
-                <Button onClick={onEdit} className="flex-1">
+                <Button onClick={onEdit} className="flex-1" disabled={isLoading}>
                   {t("events.reviewRequest")}
                 </Button>
               ) : (
                 <>
                   {event?.statusEvent !== "passed" && (
-                    <Button variant="ghost" size="sm" onClick={onEdit}>
+                    <Button variant="ghost" size="sm" onClick={onEdit} disabled={isLoading}>
                       <Edit className="h-4 w-4" />
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" onClick={onDelete}>
+                  <Button variant="ghost" size="sm" onClick={onDelete} disabled={isLoading}>
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </>
@@ -111,12 +106,15 @@ export default function EventCard({
             <Button
               variant={event.statusRequest === "approved" ? "default" : "outline"}
               className="flex-1"
-              disabled={event.statusRequest !== "approved" || isRegistered}
+              disabled={event.statusRequest !== "approved" || isRegistered || isLoading}
               onClick={onRegister}
             >
               {isRegistered ? t("events.registered") : t("events.register")}
             </Button>
           )}
+          <Button variant="ghost" size="sm" onClick={onView}>
+            <Eye className="h-4 w-4" />
+          </Button>
         </div>
       </Card>
     </motion.div>

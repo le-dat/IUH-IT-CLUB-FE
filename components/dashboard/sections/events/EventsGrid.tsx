@@ -57,8 +57,9 @@ export default function EventsGrid({
             onRegister={() => onRegister(event._id)}
             isRegistered={event?.registeredParticipants?.includes(user?._id as string)}
             index={index}
+            isLoading={isLoading}
           />
-        )
+        );
       })}
       {(isLoading || hasMore) && (
         <div ref={observerRef} className="col-span-full">

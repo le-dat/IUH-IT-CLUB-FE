@@ -35,7 +35,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading: isLoadingGetEvents, error, refetch } = useQuery({
     queryKey: [`event-manager-${debouncedSearchTerm}`],
     queryFn: () =>
       eventService.getEvents({
@@ -54,8 +54,10 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     mutationFn: eventService.registerEventById,
   });
 
+  const isLoading = isLoadingGetEvents || isPendingDelete || isRegisterDelete;
+
   const loadMore = async () => {
-    if (isLoading) return;
+    if (isLoadingGetEvents) return;
     setCurrentPage((prev) => prev + 1);
   };
 

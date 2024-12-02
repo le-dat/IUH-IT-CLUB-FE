@@ -1,24 +1,20 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
-import { motion } from "framer-motion"; // Import motion from framer-motion
+import { motion } from "framer-motion";
 
-type Props = {
-  className?: string;
-  onClick?: () => void;
-  children: React.ReactNode;
-  type?: "submit" | "button";
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   hasArrow?: boolean;
 };
 
-const ButtonGradient = (props: Props) => {
+const ButtonGradient: React.FC<Props> = ({ hasArrow, children, ...rest }) => {
   return (
-    <Button type={props.type} className="w-full group relative overflow-hidden">
+    <Button {...rest} className={`w-full group relative overflow-hidden ${rest.className}`}>
       <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-orange-400 via-red-500 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
       <div className="absolute -inset-1 bg-gradient-to-r from-orange-400 via-red-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-300" />
       <div className="relative flex items-center justify-center">
-        {props.children}
-        {props?.hasArrow && (
+        {children}
+        {hasArrow && (
           <>
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             <motion.div

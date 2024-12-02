@@ -75,7 +75,11 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex">
-      <Button onClick={handleBack} type="button" className="fixed top-5 left-10 z-10 flex items-center gap-2">
+      <Button
+        onClick={handleBack}
+        type="button"
+        className="fixed top-5 left-10 z-10 flex items-center gap-2"
+      >
         <ArrowLeft className="h-4 w-4" />
         Quay lại
       </Button>
@@ -258,8 +262,8 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              <ButtonGradient type="submit" hasArrow>
-                Tạo tài khoản
+              <ButtonGradient type="submit" disabled={isPending} hasArrow>
+                {isPending ? "Đang xử lý..." : "Tạo tài khoản"}
               </ButtonGradient>
             </form>
           </FormProvider>
