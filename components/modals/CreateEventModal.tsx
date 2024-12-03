@@ -24,6 +24,7 @@ import { FORM_EVENT } from "@/constants/event";
 import { IEvent } from "@/types/event-type";
 import useAuthStore from "@/store/auth-store";
 import { format, addDays, isBefore, isAfter } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface EventModalProps {
   isOpen: boolean;
@@ -129,7 +130,7 @@ export default function EventModal({
     if (event && mode === "edit") {
       reset({
         eventName: event?.eventName,
-        eventDate: new Date(event?.eventDate),
+        eventDate: new Date(formatDate(event?.eventDate)),
         startTime: event?.startTime,
         location: event?.location,
         description: event?.description,
@@ -174,7 +175,6 @@ export default function EventModal({
                   {...register(FORM_EVENT.eventDate)}
                   required
                   min={format(minDate, "yyyy-MM-dd")}
-                  max={maxStartDate}
                 />
                 {errors[FORM_EVENT.eventDate] && (
                   <div className="text-red-500 !mt-2">

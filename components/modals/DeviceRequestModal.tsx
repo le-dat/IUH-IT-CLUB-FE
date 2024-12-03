@@ -45,8 +45,8 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
   });
 
   // Tính toán giới hạn ngày
-  const today = new Date();
-  const maxStartDate = format(addDays(today, 2), "yyyy-MM-dd");
+  const tomorrow = format(addDays(new Date(), 1), "yyyy-MM-dd");
+  const maxStartDate = format(addDays(tomorrow, 2), "yyyy-MM-dd");
 
   useEffect(() => {
     if (formData.startDate) {
@@ -72,7 +72,7 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
       const start = new Date(startDate);
       const maxStart = new Date(maxStartDate);
 
-      if (isBefore(start, today)) {
+      if (isBefore(start, tomorrow)) {
         errors.startDate = "Ngày bắt đầu không thể là ngày trong quá khứ";
       } else if (isAfter(start, maxStart)) {
         errors.startDate = "Ngày bắt đầu phải trong vòng 2 ngày kể từ hôm nay";
@@ -157,7 +157,7 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => handleDateChange("startDate", e.target.value)}
-                  min={format(today, "yyyy-MM-dd")}
+                  min={format(tomorrow, "yyyy-MM-dd")}
                   max={maxStartDate}
                   className={`pl-8 ${dateErrors.startDate ? "border-red-500" : ""}`}
                   required
@@ -176,7 +176,7 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
                   type="date"
                   value={formData.endDate}
                   onChange={(e) => handleDateChange("endDate", e.target.value)}
-                  min={formData.startDate || format(today, "yyyy-MM-dd")}
+                  min={formData.startDate || format(tomorrow, "yyyy-MM-dd")}
                   max={
                     formData.startDate
                       ? format(addDays(new Date(formData.startDate), 14), "yyyy-MM-dd")
@@ -190,7 +190,7 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
               {dateErrors.endDate && <p className="text-sm text-red-500">{dateErrors.endDate}</p>}
             </div>
           </div>
-          {/* <div className="space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="purpose">Mục Đích Sử Dụng</Label>
             <Textarea
               id="purpose"
@@ -199,7 +199,7 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
               placeholder="Giải thích lý do bạn cần thiết bị này và cách bạn dự định sử dụng nó"
               required
             />
-          </div> */}
+          </div>
           <DialogFooter>
             <Button type="submit" disabled={!!dateErrors.startDate || !!dateErrors.endDate}>
               Gửi Yêu Cầu

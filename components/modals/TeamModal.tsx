@@ -64,8 +64,9 @@ export default function TeamModal({
     error,
     refetch: refetchTeamId,
   } = useQuery({
-    queryKey: [`team-${team._id}`],
+    queryKey: [`team-${team?._id}`],
     queryFn: () => teamService.getTeamById({ id: team?._id as string }),
+    enabled: !!team,
     refetchOnWindowFocus: false,
   });
 
@@ -94,10 +95,12 @@ export default function TeamModal({
 
   const handleDeleteMemberById = async (memberId: string) => {
     handleDeleteMember(
-      { id: team._id, userId: memberId },
+      { id: team?._id, userId: memberId },
       {
         onSuccess: (response) => {
           refetchTeamId && refetchTeamId();
+          refetch && refetch();
+          setDeleteModalOpen(false)
           toast.success(response?.message);
         },
         onError: (error) => {
@@ -114,6 +117,7 @@ export default function TeamModal({
       {
         onSuccess: (response) => {
           refetchTeamId && refetchTeamId();
+          refetch && refetch();
           toast.success(response?.message);
         },
         onError: (error) => {
@@ -130,6 +134,8 @@ export default function TeamModal({
       {
         onSuccess: (response) => {
           refetchTeamId && refetchTeamId();
+          refetch && refetch();
+          setDeleteModalOpen(false)
           toast.success(response?.message);
         },
         onError: (error) => {
@@ -145,7 +151,7 @@ export default function TeamModal({
     defaultValues: {
       [FORM_TEAM.teamName]: teamData?.teamName || "",
       [FORM_TEAM.description]: teamData?.description || "",
-      [FORM_TEAM.teamLeader]: teamData?.teamLeader?.username || "",
+      [FORM_TEAM.teamLeader]: teamData?.teamLeader?._id || "",
     },
   });
 
@@ -166,6 +172,7 @@ export default function TeamModal({
     if (isSubmitDisabled) return;
 
     if (isCreateMode) {
+      delete data[FORM_TEAM.teamLeader];
       handleCreate(data, {
         onSuccess: (response) => {
           console.log("response: ", response);
@@ -261,7 +268,6 @@ export default function TeamModal({
                   <Controller
                     name={FORM_TEAM.teamLeader}
                     control={control}
-                    defaultValue=""
                     rules={{ required: "Trưởng nhóm là bắt buộc" }}
                     render={({ field }) => (
                       <Select {...field} onValueChange={(value) => field.onChange(value)}>
@@ -269,9 +275,9 @@ export default function TeamModal({
                           <SelectValue placeholder="Chọn trưởng nhóm" />
                         </SelectTrigger>
                         <SelectContent>
-                          {teamData?.members.map((member) => (
+                          {teamData?.members?.map((member) => (
                             <SelectItem key={member._id} value={member._id}>
-                              {member.username}
+                              {member?.username}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -302,7 +308,7 @@ export default function TeamModal({
 
                     <TabsContent value="members">
                       <ul className="max-h-48 space-y-2 overflow-y-auto pl-3">
-                        {teamData?.members.map((member, index) => (
+                        {teamData?.members?.map((member, index) => (
                           <li
                             key={index}
                             className="flex justify-between transition-all items-center"

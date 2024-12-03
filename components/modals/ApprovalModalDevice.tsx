@@ -36,7 +36,7 @@ export default function ApprovalModalDevice({
   item,
   refetch,
 }: ApprovalModalDeviceProps) {
-  // const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState<string>("");
 
   const { mutate: mutateApproveDevice, isPending: isPendingApproveDevice } = useMutation({
     mutationFn: deviceService.approveDeviceById,
@@ -98,7 +98,7 @@ export default function ApprovalModalDevice({
                   <Laptop className="h-4 w-4" />
                   <h5 className="font-medium">{item.name}</h5>
                 </div>
-                {/* <p className="text-sm text-muted-foreground mt-1">{item.purpose}</p> */}
+                <p className="text-sm text-muted-foreground mt-1">{item.purpose}</p>
               </div>
               <div className="text-sm space-y-1">
                 <div>Ngày bắt đầu: {formatDate(item.borrowDate as string)}</div>
@@ -110,7 +110,7 @@ export default function ApprovalModalDevice({
             </div>
           </div>
 
-          {/* <div className="space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="notes">Ghi chú của quản trị viên</Label>
             <Textarea
               id="notes"
@@ -118,7 +118,7 @@ export default function ApprovalModalDevice({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Thêm bất kỳ ghi chú hoặc phản hồi nào về quyết định của bạn"
             />
-          </div> */}
+          </div>
         </div>
 
         <DialogFooter className="gap-2">

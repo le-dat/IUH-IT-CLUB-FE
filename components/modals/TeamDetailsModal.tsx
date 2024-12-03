@@ -81,7 +81,6 @@ export default function TeamDetailsModal({
                 ))}
               </ul>
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               {/* <div className="flex items-center gap-2">
               <FolderGit2 className="h-4 w-4 text-muted-foreground" />

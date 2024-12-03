@@ -36,8 +36,8 @@ export default function MemberTable({
         <TableRow>
           <TableHead>Thành viên</TableHead>
           <TableHead>Khóa học</TableHead>
-          {/* <TableHead>Sở trường</TableHead> */}
-          <TableHead>Ngày tham gia</TableHead>
+          <TableHead>Kĩ năng</TableHead>
+          {/* <TableHead>Ngày tham gia</TableHead> */}
           <TableHead>Thao tác</TableHead>
         </TableRow>
       </TableHeader>
@@ -51,17 +51,17 @@ export default function MemberTable({
               </div>
             </TableCell>
             <TableCell>{member.level}</TableCell>
-            {/* <TableCell className="gap-2 flex items-center flex-wrap">
+            <TableCell className="gap-2 flex items-center flex-wrap">
               {member?.forte?.map((item, index) => (
                 <Badge key={index} variant="secondary" className="mr-1">
                   {item}
                 </Badge>
               ))}
-            </TableCell> */}
+            </TableCell>
             {/* <TableCell>
               <Badge variant="secondary">{member.status}</Badge>
             </TableCell> */}
-            <TableCell>{formatDate(member.createdAt)}</TableCell>
+            {/* <TableCell>{formatDate(member.createdAt)}</TableCell> */}
             <TableCell>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" onClick={() => onView(member)}>
