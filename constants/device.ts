@@ -17,3 +17,13 @@ export const FORM_DEVICE = Object.freeze({
   status: "status",
   statusHealth: "statusHealth",
 } as const);
+
+
+export const deviceTypeMap = Object.freeze({
+  laptop: "Laptop",
+  desktop: "Máy tính để bàn",
+  "mobile-device": "Thiết bị di động",
+  projector: "Máy chiếu",
+  cable: "Dây cáp",
+  other: "Khác",
+});

@@ -6,7 +6,7 @@ export interface IDevice extends ICommonMongodb {
   lastCheck: Date;
   status: "available" | "in use" | "unavailable" | "pending";
   statusHealth?: "good" | "normal" | "poor";
-  type: string;
+  type: 'laptop' | 'desktop' | 'mobile-device' | 'projector' | 'cable' | 'other';
   requestBy: IUser | null;
   currentBorrower?: IUser | null;
   borrowDate: string | null;

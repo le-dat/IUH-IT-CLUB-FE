@@ -190,7 +190,7 @@ export default function LandingPage() {
               <Link
                 target="_blank"
                 href="https://ledat-portfolio.vercel.app"
-                className="text-sm hover:text-primary hover:underline hover:text-blue-600"
+                className="text-sm hover:underline text-cyan-600 font-semibold hover:text-blue-600"
               >
                 © 2024 Le Dat. All rights reserved.
               </Link>

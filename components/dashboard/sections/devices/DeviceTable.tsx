@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Eye, Edit, Trash2 } from "lucide-react";
-import { conditionsMap, statusMap } from "@/constants/device";
+import { conditionsMap, deviceTypeMap, statusMap } from "@/constants/device";
 import { IDevice } from "@/types/device-type";
 import { formatDate } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ export default function DeviceTable({
         {devices.map((device) => (
           <TableRow key={device._id}>
             <TableCell className="font-medium">{device.name}</TableCell>
-            <TableCell>{device.type}</TableCell>
+            <TableCell>{deviceTypeMap[device.type as keyof typeof deviceTypeMap]}</TableCell>
             <TableCell>
               <Badge
                 variant={

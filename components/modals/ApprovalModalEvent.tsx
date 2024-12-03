@@ -110,7 +110,9 @@ export default function ApprovalModalEvent({
                 <span>{item.location}</span>
               </div>
               <div className="pt-2 border-t">
-                <Badge variant="outline">Yêu cầu bởi {item?.host?.username}</Badge>
+                <Badge variant="outline">
+                  Yêu cầu bởi <span className="text-amber-500 ml-2">{item?.host?.username}</span>
+                </Badge>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { Calendar } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { IEvent } from "@/types/event-type";
 import useAuthStore from "@/store/auth-store";
+import { IUser } from "@/types/user-type";
 
 interface EventsGridProps {
   events: IEvent[] | [];
@@ -55,7 +56,7 @@ export default function EventsGrid({
             onEdit={() => onEdit(event)}
             onDelete={() => onDelete(event)}
             onRegister={() => onRegister(event._id)}
-            isRegistered={event?.registeredParticipants?.includes(user?._id as string)}
+            isRegistered={event?.registeredParticipants?.some((participant: IUser) => participant._id === user?._id)}
             index={index}
             isLoading={isLoading}
           />

@@ -62,11 +62,9 @@ export default function TeamDetailsModal({
               <h4 className="text-sm font-medium">Thành viên ({team?.members?.length})</h4>
               <ul className="max-h-48 space-y-2 overflow-y-auto">
                 {/* fake team data */}
-                {Array(10)
-                  .fill({})
-                  .map((member, index) => (
+                {team?.members?.map((member, index) => (
                     <li key={index} className="flex justify-between transition-all items-center">
-                      <span>Alex Johnson</span>
+                      <span>{member?.username}</span>
                       <div className="flex items-center gap-2">
                         <Button
                           onClick={() => handleAction(member, "view")}

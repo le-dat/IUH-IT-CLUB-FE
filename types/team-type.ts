@@ -5,6 +5,7 @@ export interface ITeam extends ICommonMongodb {
   teamName: string;
   teamLeader?: IUser;
   members: IUser[] | [];
+  joinRequests: IUser[] | [];
   description: string;
   status: "open" | "closed";
 }

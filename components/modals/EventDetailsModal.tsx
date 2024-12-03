@@ -57,7 +57,7 @@ export default function EventDetailsModal({
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-medium mb-2">Mô tả</h4>
-            <p className="text-sm text-muted-foreground">{event.description}</p>
+            <p className="text-sm text-muted-foreground pl-3">{event.description}</p>
           </div>
           <div className="space-y-2">
             <div className="flex items-center flex-wrap gap-8">
@@ -81,15 +81,18 @@ export default function EventDetailsModal({
             </div> */}
           </div>
           {event.host && (
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium ">Yêu cầu bởi</span>
-              <span className="text-sm text-amber-500">{event?.host?.username}</span>
+            <div className="space-y-2">
+              <p className="text-sm font-medium ">Yêu cầu bởi</p>
+              <p className="text-sm text-amber-500 pl-3">{event?.host?.username}</p>
             </div>
           )}
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium ">Người tham gia (10)</span>
-            <ul className="max-h-48 space-y-2 overflow-y-auto">
-              {event?.registeredParticipants?.map((member, index) => (
+          {event?.registeredParticipants?.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium ">
+                Người tham gia ({event?.registeredParticipants?.length})
+              </span>
+              <ul className="max-h-48 space-y-2 overflow-y-auto pl-3">
+                {event?.registeredParticipants?.map((member, index) => (
                   <li key={index} className="flex justify-between transition-all items-center">
                     <span>{member?.username}</span>
                     <div className="flex items-center gap-2">
@@ -104,8 +107,9 @@ export default function EventDetailsModal({
                     </div>
                   </li>
                 ))}
-            </ul>
-          </div>
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* <DialogFooter>

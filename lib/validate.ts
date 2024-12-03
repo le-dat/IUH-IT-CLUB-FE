@@ -61,7 +61,7 @@ export const validationUserSchema = yup.object().shape({
 
 export const validationTeamSchema = yup.object().shape({
   teamName: yup.string().trim().required("Tên là bắt buộc"),
-  teamLeader: yup.string().trim().required("Trưởng nhóm là bắt buộc"),
+  teamLeader: yup.string().trim(),
   description: yup.string().trim().required("Mô tả là bắt buộc"),
 });
 

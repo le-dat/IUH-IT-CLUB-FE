@@ -24,7 +24,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import deviceService from "@/services/device-service";
 import { Controller, FormProvider, useForm } from "react-hook-form";
-import { conditionsMap, FORM_DEVICE, statusMap } from "@/constants/device";
+import { conditionsMap, deviceTypeMap, FORM_DEVICE, statusMap } from "@/constants/device";
 import { toast } from "sonner";
 import { IDevice } from "@/types/device-type";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -167,11 +167,11 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                         <SelectValue placeholder="Chọn loại thiết bị" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Laptop">Laptop</SelectItem>
-                        <SelectItem value="Cable">Dây cáp</SelectItem>
-                        <SelectItem value="Projector">Máy chiếu</SelectItem>
-                        <SelectItem value="Mobile Device">Thiết Bị Di Động</SelectItem>
-                        <SelectItem value="Other">Khác</SelectItem>
+                        {Object.entries(deviceTypeMap).map(([value, name]) => (
+                          <SelectItem key={value} value={value}>
+                            {name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
@@ -188,8 +188,8 @@ export default function DeviceModal({ isOpen, onClose, mode, device, refetch }: 
                 <Controller
                   name={FORM_DEVICE.status}
                   control={control}
-                  defaultValue=""
-                  rules={{ required: "Tình trạng là bắt buộc" }}
+                  defaultValue={statusMap?.available}
+                  rules={{ required: "Trạng thái là bắt buộc" }}
                   render={({ field }) => (
                     <Select {...field} onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="w-full">

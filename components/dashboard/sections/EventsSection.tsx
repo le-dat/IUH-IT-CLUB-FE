@@ -35,7 +35,12 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
 
-  const { data, isLoading: isLoadingGetEvents, error, refetch } = useQuery({
+  const {
+    data,
+    isLoading: isLoadingGetEvents,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: [`event-manager-${debouncedSearchTerm}`],
     queryFn: () =>
       eventService.getEvents({
@@ -81,7 +86,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
       { id: eventId || "", data: selectedEvent as unknown as IEvent },
       {
         onSuccess: (response) => {
-          refetch()
+          refetch();
           toast.success(response?.message);
           setIsDeleteModalOpen(false);
         },
@@ -144,14 +149,11 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
         onView={handleOpenModalView}
         onEdit={(event) => {
           setSelectedEvent(event);
-          setIsApprovalModalOpen(true);
-
-          // if (event.statusRequest === "pending") {
-          //   handleApproval(event);
-          // } else {
-          //   setSelectedEvent(event);
-          //   setIsEditModalOpen(true);
-          // }
+          if (event.statusRequest === "pending") {
+            setIsApprovalModalOpen(true);
+          } else {
+            setIsEditModalOpen(true);
+          }
         }}
         onDelete={(event) => handleOpenModalDelete(event)}
         onRegister={handleRegister}

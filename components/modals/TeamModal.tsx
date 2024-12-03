@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogCloseButton,
@@ -14,6 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -21,21 +19,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import teamService from "@/services/team-service";
+import { Textarea } from "@/components/ui/textarea";
 import { FORM_TEAM } from "@/constants/team";
-import { toast } from "sonner";
-import { ITeam } from "@/types/team-type";
 import { validationTeamSchema } from "@/lib/validate";
-import { yupResolver } from "@hookform/resolvers/yup";
-import useTeamStore from "@/store/team-store";
-import { Check, Eye, Trash2 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import TeamsSection from "../dashboard/sections/TeamsSection";
+import teamService from "@/services/team-service";
+import { ITeam } from "@/types/team-type";
 import { IUser } from "@/types/user-type";
-import MemberModal from "./MemberModal";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Check, Eye, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import MemberModal from "./MemberModal";
 
 interface TeamModalProps {
   isOpen: boolean;
@@ -58,7 +56,20 @@ export default function TeamModal({
   const [selectedMember, setSelectedMember] = useState<IUser | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-  const [modeDelete, setModeDelete] = useState<'member'|'request'>('member');
+  const [modeDelete, setModeDelete] = useState<"member" | "request">("member");
+
+  const {
+    data,
+    isLoading,
+    error,
+    refetch: refetchTeamId,
+  } = useQuery({
+    queryKey: [`team-${team._id}`],
+    queryFn: () => teamService.getTeamById({ id: team?._id as string }),
+    refetchOnWindowFocus: false,
+  });
+
+  const teamData = data?.data || team;
 
   const { mutate: handleCreate, isPending: isPendingCreate } = useMutation({
     mutationFn: teamService.createTeam,
@@ -71,31 +82,70 @@ export default function TeamModal({
     mutationFn: teamService.deleteMemberInTeamById,
   });
 
+  const { mutate: handleAcceptMemberJoinTeam, isPending: isPendingAcceptMemberJoinTeam } =
+    useMutation({
+      mutationFn: teamService.acceptMemberJoinTeam,
+    });
+
+  const { mutate: handleRejectMemberJoinTeam, isPending: isPendingRejectMemberJoinTeam } =
+    useMutation({
+      mutationFn: teamService.rejectMemberJoinTeam,
+    });
+
   const handleDeleteMemberById = async (memberId: string) => {
-    // handleDeleteMember(
-    //   {
-    //     teamId: team._id,
-    //     members: team.members.filter((member) => member._id!== memberId),
-    //   },
-    //   {
-    //     onSuccess: (response) => {
-    //      refetch&& refetch()
-    //       toast.success(response?.message);
-    //       setIsDeleteModalOpen(false);
-    //     },
-    //     onError: (error) => {
-    //       console.error(error);
-    //       toast.error(error?.message || "An error occurred during login");
-    //     },
-    //   }
-    // );
+    handleDeleteMember(
+      { id: team._id, userId: memberId },
+      {
+        onSuccess: (response) => {
+          refetchTeamId && refetchTeamId();
+          toast.success(response?.message);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during deleteMemberInTeamById");
+        },
+      }
+    );
+  };
+
+  const handleAcceptMemberJoinTeamById = async (user: IUser) => {
+    handleAcceptMemberJoinTeam(
+      { id: teamData?._id as string, user },
+      {
+        onSuccess: (response) => {
+          refetchTeamId && refetchTeamId();
+          toast.success(response?.message);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during acceptMemberJoinTeam");
+        },
+      }
+    );
+  };
+
+  const handleRejectMemberJoinTeamById = async (user: IUser) => {
+    handleRejectMemberJoinTeam(
+      { id: teamData?._id as string, user },
+      {
+        onSuccess: (response) => {
+          refetchTeamId && refetchTeamId();
+          toast.success(response?.message);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "An error occurred during acceptMemberJoinTeam");
+        },
+      }
+    );
   };
 
   const methods = useForm({
     resolver: yupResolver(validationTeamSchema),
     defaultValues: {
-      [FORM_TEAM.teamName]: team?.teamName || "",
-      [FORM_TEAM.description]: team?.description || "",
+      [FORM_TEAM.teamName]: teamData?.teamName || "",
+      [FORM_TEAM.description]: teamData?.description || "",
+      [FORM_TEAM.teamLeader]: teamData?.teamLeader?.username || "",
     },
   });
 
@@ -153,7 +203,7 @@ export default function TeamModal({
     setModalOpen(true);
   };
 
-  const handleOpenModalDelete = (member: any, mode: 'member'|'request') => {
+  const handleOpenModalDelete = (member: any, mode: "member" | "request") => {
     setSelectedMember(member);
     setModeDelete(mode);
     setDeleteModalOpen(true);
@@ -205,7 +255,7 @@ export default function TeamModal({
                 )}
               </div>
 
-              {!isCreateMode && (
+              {!isCreateMode && Number(teamData?.members?.length) > 0 && (
                 <div className="space-y-2">
                   <Label htmlFor={FORM_TEAM.teamLeader}>Trưởng Nhóm</Label>
                   <Controller
@@ -214,14 +264,16 @@ export default function TeamModal({
                     defaultValue=""
                     rules={{ required: "Trưởng nhóm là bắt buộc" }}
                     render={({ field }) => (
-                      <Select {...field}>
+                      <Select {...field} onValueChange={(value) => field.onChange(value)}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Chọn trưởng nhóm" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Alex Johnson">Alex Johnson</SelectItem>
-                          <SelectItem value="Sarah Chen">Sarah Chen</SelectItem>
-                          <SelectItem value="Michael Rodriguez">Michael Rodriguez</SelectItem>
+                          {teamData?.members.map((member) => (
+                            <SelectItem key={member._id} value={member._id}>
+                              {member.username}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
@@ -235,31 +287,34 @@ export default function TeamModal({
               )}
 
               {/* List of Members */}
+              {!isCreateMode &&
+                (Number(teamData?.members?.length) > 0 ||
+                  Number(teamData?.joinRequests?.length) > 0) && (
+                  <Tabs defaultValue="members" className="space-y-6">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger className="lg:text-[14px]" value="members">
+                        Thành viên ({teamData?.members?.length})
+                      </TabsTrigger>
+                      <TabsTrigger className="lg:text-[14px]" value="request">
+                        Duyệt yêu cầu ({teamData?.joinRequests?.length})
+                      </TabsTrigger>
+                    </TabsList>
 
-              {!isCreateMode && (
-                <Tabs defaultValue="members" className="space-y-6">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger className="lg:text-[14px]" value="members">
-                      Thành viên
-                    </TabsTrigger>
-                    <TabsTrigger className="lg:text-[14px]" value="request">
-                      Duyệt yêu cầu
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="members">
-                    <ul className="max-h-48 space-y-2 overflow-y-auto">
-                      {/* fake team data */}
-                      {Array(10)
-                        .fill({})
-                        .map((member, index) => (
+                    <TabsContent value="members">
+                      <ul className="max-h-48 space-y-2 overflow-y-auto pl-3">
+                        {teamData?.members.map((member, index) => (
                           <li
                             key={index}
                             className="flex justify-between transition-all items-center"
                           >
-                            <span>Alex Johnson</span>
+                            <span>{member?.username}</span>
                             <div className="flex items-center gap-2">
-                              <Button onClick={() => handleOpenModalDelete(member, 'member')} type="button" variant="ghost" size="sm">
+                              <Button
+                                onClick={() => handleOpenModalDelete(member, "member")}
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                              >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
                               <Button
@@ -273,28 +328,32 @@ export default function TeamModal({
                             </div>
                           </li>
                         ))}
-                    </ul>
-                  </TabsContent>
+                      </ul>
+                    </TabsContent>
 
-                  <TabsContent value="request">
-                    <ul className="max-h-48 space-y-2 overflow-y-auto">
-                      {Array(10)
-                        .fill({
-                          username: "Alex Johnson",
-                          email: "",
-                          level: "Lập trình viên",
-                        })
-                        .map((member, index) => (
+                    <TabsContent value="request">
+                      <ul className="max-h-48 space-y-2 overflow-y-auto pl-3">
+                        {teamData?.joinRequests?.map((member, index) => (
                           <li
                             key={index}
                             className="flex justify-between transition-all items-center"
                           >
-                            <span>Alex Johnson</span>
+                            <span>{member?.username}</span>
                             <div className="flex items-center gap-2">
-                              <Button onClick={() => handleOpenModalDelete(member, 'request')} type="button" variant="ghost" size="sm">
+                              <Button
+                                onClick={() => handleRejectMemberJoinTeamById(member)}
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                              >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
-                              <Button type="button" variant="ghost" size="sm">
+                              <Button
+                                onClick={() => handleAcceptMemberJoinTeamById(member)}
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                              >
                                 <Check className="h-4 w-4 text-green-800" />
                               </Button>
                               <Button
@@ -308,10 +367,10 @@ export default function TeamModal({
                             </div>
                           </li>
                         ))}
-                    </ul>
-                  </TabsContent>
-                </Tabs>
-              )}
+                      </ul>
+                    </TabsContent>
+                  </Tabs>
+                )}
 
               {/* <div className="space-y-2">
               <Label htmlFor={FORM_TEAM.status}>Trạng Thái</Label>
@@ -321,7 +380,7 @@ export default function TeamModal({
                 defaultValue=""
                 rules={{ required: "Trạng thái là bắt buộc" }}
                 render={({ field }) => (
-                  <Select {...field}>
+                                        <Select {...field} onValueChange={(value) => field.onChange(value)}>
                       <SelectTrigger className="w-full">
                       <SelectValue placeholder="Chọn trạng thái" />
                     </SelectTrigger>
@@ -362,8 +421,10 @@ export default function TeamModal({
           isOpen={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}
           onConfirm={() => handleDeleteMemberById(selectedMember._id)}
-          title={modeDelete === 'member' ? "Xóa thành viên" : "Xóa yêu cầu tham gia"}
-          description={`Bạn có chắc chắn muốn xóa ${modeDelete === 'member'? 'thành viên': 'yêu cầu'} ${selectedMember.username} khỏi nhóm? Hành động này không thể hoàn tác.`}
+          title={modeDelete === "member" ? "Xóa thành viên" : "Xóa yêu cầu tham gia"}
+          description={`Bạn có chắc chắn muốn xóa ${
+            modeDelete === "member" ? "thành viên" : "yêu cầu"
+          } ${selectedMember.username} khỏi nhóm? Hành động này không thể hoàn tác.`}
         />
       )}
     </>

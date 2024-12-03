@@ -39,9 +39,11 @@ export default function TeamCard({
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold text-lg">{team.teamName}</h3>
-            {/* <p className="text-sm text-muted-foreground">
-              Trưởng nhóm: {team?.teamLeader?.username}
-            </p> */}
+            {team?.teamLeader && (
+              <p className="text-sm text-muted-foreground">
+                Trưởng nhóm: {team?.teamLeader?.username}
+              </p>
+            )}
             <p className="text-sm text-muted-foreground line-clamp-2">{team.description}</p>
           </div>
           <Badge variant="secondary" className="shrink-0">

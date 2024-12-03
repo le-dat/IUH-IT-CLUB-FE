@@ -206,14 +206,16 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
         </>
       )}
 
-      <TeamModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        mode="create"
-        team={selectedTeam!}
-        refetch={refetch}
-        isAdmin={isAdmin}
-      />
+      {isCreateModalOpen && (
+        <TeamModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          mode="create"
+          team={selectedTeam!}
+          refetch={refetch}
+          isAdmin={isAdmin}
+        />
+      )}
     </div>
   );
 }

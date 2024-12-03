@@ -196,7 +196,7 @@ export default function ProfilePage() {
                         )}
                       </div>
 
-                      <div className="space-y-2">
+                      {/* <div className="space-y-2">
                         <Label
                           className="text-amber-800 font-semibold"
                           htmlFor={FORM_USER.description}
@@ -208,7 +208,7 @@ export default function ProfilePage() {
                           {...register(FORM_USER.description)}
                           className="min-h-[100px] transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
@@ -258,6 +258,11 @@ export default function ProfilePage() {
                           onChange={(e) => setNewSkill(e.target.value)}
                           placeholder="Thêm kỹ năng"
                           className="max-w-[200px]"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                         <Button onClick={handleAddSkill} type="submit" size="icon">
                           <Plus className="h-4 w-4" />

@@ -25,7 +25,6 @@ import { IEvent } from "@/types/event-type";
 import useAuthStore from "@/store/auth-store";
 import { format, addDays, isBefore, isAfter } from "date-fns";
 
-
 interface EventModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -192,6 +191,8 @@ export default function EventModal({
                   id={FORM_EVENT.startTime}
                   {...register(FORM_EVENT.startTime)}
                   required
+                  min="07:00"
+                  max="21:00"
                 />
                 {errors[FORM_EVENT.startTime] && (
                   <div className="text-red-500 !mt-2">
