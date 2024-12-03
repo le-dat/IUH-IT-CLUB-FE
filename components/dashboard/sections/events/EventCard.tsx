@@ -44,7 +44,7 @@ export default function EventCard({
             <h3 className="font-semibold text-lg">{event.eventName}</h3>
             <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
           </div>
-          <Badge
+          {/* <Badge
             variant={
               event.statusEvent === "upcoming"
                 ? "secondary"
@@ -55,7 +55,7 @@ export default function EventCard({
             className="shrink-0"
           >
             {REQUEST_EVENT_TRANSLATE[event.statusEvent]}
-          </Badge>
+          </Badge> */}
         </div>
 
         <div className="mt-4 space-y-2">

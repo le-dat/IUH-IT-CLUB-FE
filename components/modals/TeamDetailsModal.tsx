@@ -53,30 +53,32 @@ export default function TeamDetailsModal({
             <DialogDescription>{team.description}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div>
-              <h4 className="text-sm font-medium mb-2">Trưởng Nhóm</h4>
-              <p className="text-sm">{team?.teamLeader?.username}</p>
-            </div>
+            {team?.teamLeader?.username && (
+              <div>
+                <h4 className="text-sm font-medium mb-2">Trưởng Nhóm</h4>
+                <p className="text-sm">{team?.teamLeader?.username}</p>
+              </div>
+            )}
 
             <div className="space-y-2">
               <h4 className="text-sm font-medium">Thành viên ({team?.members?.length})</h4>
               <ul className="max-h-48 space-y-2 overflow-y-auto">
                 {/* fake team data */}
                 {team?.members?.map((member, index) => (
-                    <li key={index} className="flex justify-between transition-all items-center">
-                      <span>{member?.username}</span>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          onClick={() => handleAction(member, "view")}
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </li>
-                  ))}
+                  <li key={index} className="flex justify-between transition-all items-center">
+                    <span>{member?.username}</span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        onClick={() => handleAction(member, "view")}
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
 
