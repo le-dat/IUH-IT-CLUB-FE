@@ -92,7 +92,7 @@ export default function EventDetailsModal({
               <span className="text-sm">{event.attendees} Người tham dự</span>
             </div> */}
             </div>
-            {event.host && (
+            {event?.host?.username && (
               <div className="space-y-2">
                 <p className="text-sm font-medium ">Yêu cầu bởi</p>
                 <p className="text-sm text-amber-500 pl-3">{event?.host?.username}</p>

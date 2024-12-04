@@ -70,19 +70,20 @@ export default function TeamCard({
               {hasJoinRequest ? "Đã tham gia nhóm" : "Tham gia nhóm"}
             </Button>
           )}
-          <Button variant="ghost" size="sm" onClick={onView}>
-            <Eye className="h-4 w-4" />
-          </Button>
+
           {isAdmin && (
             <>
-              <Button variant="ghost" size="sm" onClick={onEdit}>
-                <Edit className="h-4 w-4" />
-              </Button>
               <Button variant="ghost" size="sm" onClick={onDelete}>
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
+              <Button variant="ghost" size="sm" onClick={onEdit}>
+                <Edit className="h-4 w-4" />
+              </Button>
             </>
           )}
+          <Button variant="ghost" size="sm" onClick={onView}>
+            <Eye className="h-4 w-4" />
+          </Button>
         </div>
       </Card>
     </motion.div>

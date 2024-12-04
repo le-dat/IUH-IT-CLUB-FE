@@ -21,7 +21,7 @@ interface TeamDetailsModalProps {
   onClose: () => void;
   team: ITeam;
   isAdmin: boolean;
-  onEdit?: () => void;
+  onEdit?: (team:ITeam) => void;
   refetch?: () => void;
 }
 
@@ -56,13 +56,13 @@ export default function TeamDetailsModal({
             {team?.teamLeader?.username && (
               <div>
                 <h4 className="text-sm font-medium mb-2">Trưởng Nhóm</h4>
-                <p className="text-sm">{team?.teamLeader?.username}</p>
+                <p className="text-sm pl-3">{team?.teamLeader?.username}</p>
               </div>
             )}
 
             <div className="space-y-2">
               <h4 className="text-sm font-medium">Thành viên ({team?.members?.length})</h4>
-              <ul className="max-h-48 space-y-2 overflow-y-auto">
+              <ul className="max-h-48 space-y-2 overflow-y-auto pl-3">
                 {/* fake team data */}
                 {team?.members?.map((member, index) => (
                   <li key={index} className="flex justify-between transition-all items-center">
@@ -88,7 +88,7 @@ export default function TeamDetailsModal({
             </div> */}
             </div>
           </div>
-          <DialogFooter>{isAdmin && <Button onClick={onEdit}>Quản lý nhóm</Button>}</DialogFooter>
+          <DialogFooter>{isAdmin && onEdit && <Button onClick={() => onEdit(team)}>Quản lý nhóm</Button>}</DialogFooter>
         </DialogContent>
       </Dialog>
 

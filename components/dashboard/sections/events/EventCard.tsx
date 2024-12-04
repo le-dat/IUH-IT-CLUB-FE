@@ -91,14 +91,14 @@ export default function EventCard({
                 </Button>
               ) : (
                 <>
+                  <Button variant="ghost" size="sm" onClick={onDelete} disabled={isLoading}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
                   {event?.statusEvent !== "passed" && (
                     <Button variant="ghost" size="sm" onClick={onEdit} disabled={isLoading}>
                       <Edit className="h-4 w-4" />
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" onClick={onDelete} disabled={isLoading}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
                 </>
               )}
             </>

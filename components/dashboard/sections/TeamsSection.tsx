@@ -71,7 +71,8 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     setIsDetailsModalOpen(true);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (team: ITeam) => {
+    setSelectedTeam(team);
     setIsDetailsModalOpen(false);
     setIsEditModalOpen(true);
   };

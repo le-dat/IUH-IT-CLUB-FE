@@ -73,6 +73,10 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
     mutationFn: deviceService.deleteDeviceById,
   });
 
+  const { mutate: mutateReturnDevice, isPending: isPendingReturnDevice } = useMutation({
+    mutationFn: deviceService.confirmReturnDeviceById,
+  });
+
   const totalPages = Number(data?.data?.pagination?.totalPages) || 1;
 
   const handleOpenModalView = (device: any) => {
@@ -117,6 +121,8 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
     );
   };
 
+  const handleReturn = () => {};
+
   useEffect(() => {
     setDevices(data?.data?.equipment || []);
   }, [data, setDevices]);
@@ -153,10 +159,10 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             <SelectContent>
               <SelectItem value=" ">Tất cả trạng thái</SelectItem>
               {Object.entries(statusMap).map(([value, name]) => (
-                  <SelectItem key={value} value={value}>
-                    {name}
-                  </SelectItem>
-                ))}
+                <SelectItem key={value} value={value}>
+                  {name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -207,6 +213,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         onDelete={handleOpenModalDelete}
         onRequest={handleRequest}
         onApprove={handleApproval}
+        onReturn={handleReturn}
       />
 
       {selectedDevice && (

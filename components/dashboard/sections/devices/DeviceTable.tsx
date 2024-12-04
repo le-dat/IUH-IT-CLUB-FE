@@ -23,6 +23,7 @@ interface DeviceTableProps {
   onDelete: (device: IDevice) => void;
   onRequest: (device: IDevice) => void;
   onApprove: (device: IDevice) => void;
+  onReturn: (device: IDevice) => void;
 }
 
 export default function DeviceTable({
@@ -33,6 +34,7 @@ export default function DeviceTable({
   onDelete,
   onRequest,
   onApprove,
+  onReturn,
 }: DeviceTableProps) {
   return (
     <Table>
@@ -79,8 +81,22 @@ export default function DeviceTable({
                 {isAdmin ? (
                   <>
                     {device.status === "pending" ? (
-                      <Button variant="ghost" size="sm" onClick={() => onApprove(device)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="bg-sky-500 hover:bg-sky-600"
+                        onClick={() => onApprove(device)}
+                      >
                         Xem yêu cầu
+                      </Button>
+                    ) : device.status === "in use" ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="bg-yellow-500 hover:bg-yellow-600"
+                        onClick={() => onReturn(device)}
+                      >
+                        Xác nhận trả
                       </Button>
                     ) : (
                       <>

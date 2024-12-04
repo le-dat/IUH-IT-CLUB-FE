@@ -83,6 +83,7 @@ export const vi = {
     requestedBy: "Yêu cầu bởi",
     deleteTitle: "Xóa sự kiện",
     deleteConfirmation: "Bạn có chắc chắn muốn xóa sự kiện",
+    noEvents: "Không có sự kiện nào",
   },
 
   members: {

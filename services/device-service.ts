@@ -71,6 +71,17 @@ const deviceService = {
       throw new Error("Failed to reject device");
     }
   },
+  confirmReturnDeviceById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/approve-borrow`, {
+        equipmentId: id,
+        action: "reject",
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to reject device");
+    }
+  },
   updateDeviceById: async ({ id, data }: { id: string; data: IDevice }) => {
     try {
       const response = await axiosClient.put(`/equipment/${id}`, data);

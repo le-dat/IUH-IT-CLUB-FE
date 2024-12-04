@@ -22,14 +22,12 @@ import { formatDate } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import deviceService from "@/services/device-service";
 import { toast } from "sonner";
-
 interface ApprovalModalDeviceProps {
   isOpen: boolean;
   onClose: () => void;
   item: IDevice;
   refetch?: () => void;
 }
-
 export default function ApprovalModalDevice({
   isOpen,
   onClose,
@@ -100,10 +98,18 @@ export default function ApprovalModalDevice({
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">{item.purpose}</p>
               </div>
-              <div className="text-sm space-y-1">
+              <div className="text-sm flex items-center justify-between flex-wrap">
                 <div>Ngày bắt đầu: {formatDate(item.borrowDate as string)}</div>
                 <div>Ngày kết thúc: {formatDate(item.returnDate as string)}</div>
               </div>
+              {item?.purpose && (
+                <div className="text-sm ">
+                  <div>
+                    <span className="underline">Ghi chú: </span>
+                    {item?.purpose}
+                  </div>
+                </div>
+              )}
               <div className="pt-2 border-t">
                 <Badge variant="outline">Yêu cầu bởi {item?.currentBorrower?.username}</Badge>
               </div>
