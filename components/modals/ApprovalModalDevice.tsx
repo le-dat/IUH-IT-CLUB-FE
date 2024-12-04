@@ -96,20 +96,14 @@ export default function ApprovalModalDevice({
                   <Laptop className="h-4 w-4" />
                   <h5 className="font-medium">{item.name}</h5>
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">{item.purpose}</p>
+                {item.purpose && (
+                  <p className="text-sm text-muted-foreground mt-1">{item.purpose}</p>
+                )}
               </div>
               <div className="text-sm flex items-center justify-between flex-wrap">
                 <div>Ngày bắt đầu: {formatDate(item.borrowDate as string)}</div>
                 <div>Ngày kết thúc: {formatDate(item.returnDate as string)}</div>
               </div>
-              {item?.purpose && (
-                <div className="text-sm ">
-                  <div>
-                    <span className="underline">Ghi chú: </span>
-                    {item?.purpose}
-                  </div>
-                </div>
-              )}
               <div className="pt-2 border-t">
                 <Badge variant="outline">Yêu cầu bởi {item?.currentBorrower?.username}</Badge>
               </div>

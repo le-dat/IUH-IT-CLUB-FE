@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Laptop, CheckCircle2 } from "lucide-react";
 import { conditionsMap, deviceTypeMap, statusMap } from "@/constants/device";
 import { IDevice } from "@/types/device-type";
+import { formatDate } from "@/lib/utils";
 
 interface DeviceDetailsModalProps {
   isOpen: boolean;
@@ -78,7 +79,7 @@ export default function DeviceDetailsModal({
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-1 text-indigo-400">Người mượn hiện tại</h4>
+            <h4 className="text-sm font-medium mb-1 text-indigo-400">Người mượn </h4>
             <p className="text-sm">
               {device?.currentBorrower ? device?.currentBorrower?.username : "Chưa được phân công"}
             </p>
@@ -87,7 +88,7 @@ export default function DeviceDetailsModal({
           {device.returnDate && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span>Kiểm tra lần cuối: {device.returnDate}</span>
+              <span>Kiểm tra lần cuối: {formatDate(device.returnDate)}</span>
             </div>
           )}
 

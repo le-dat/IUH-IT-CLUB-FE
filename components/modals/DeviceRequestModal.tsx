@@ -29,7 +29,7 @@ interface DeviceRequestModalProps {
   device: IDevice;
 }
 
-export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRequestModalProps) {
+export default function DeviceRequestModal({ isOpen, onClose, refetch, device }: DeviceRequestModalProps) {
   const [formData, setFormData] = useState({
     startDate: "",
     endDate: "",
@@ -121,11 +121,14 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
           ...device,
           borrowDate: formData.startDate,
           returnDate: formData.endDate,
+          purpose: formData.purpose,
         },
       },
       {
         onSuccess: (response) => {
           toast.success(response?.message);
+          setFormData({ startDate: "", endDate: "", purpose: "" });
+          refetch && refetch();
           onClose();
         },
         onError: (error) => {
@@ -135,6 +138,9 @@ export default function DeviceRequestModal({ isOpen, onClose, device }: DeviceRe
       }
     );
   };
+
+  const onErrors = (errors: any) => console.error(errors);
+  
 
   return (
     <Dialog open={isOpen}>

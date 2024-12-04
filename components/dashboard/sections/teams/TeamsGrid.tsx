@@ -5,6 +5,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
 import { Users } from "lucide-react";
 import { ITeam } from "@/types/team-type";
+import useAuthStore from "@/store/auth-store";
 
 interface TeamsGridProps {
   teams: ITeam[];
@@ -31,6 +32,7 @@ export default function TeamsGrid({
   onJoin,
   onLeave,
 }: TeamsGridProps) {
+  const { user } = useAuthStore();
   const { observerRef } = useInfiniteScroll({
     onLoadMore,
     isLoading,
@@ -44,7 +46,10 @@ export default function TeamsGrid({
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {teams.map((team, index) => {
-        const hasJoinRequest = team?.members?.some((member) => member._id === team._id);
+        const hasJoin = team?.members?.some((member) => member._id === String(user?._id));
+        const hasJoinRequest = team?.joinRequests?.some(
+          (member) => member._id === String(user?._id)
+        );
 
         return (
           <TeamCard
@@ -56,6 +61,7 @@ export default function TeamsGrid({
             onDelete={() => onDelete(team)}
             onJoin={() => onJoin(team._id)}
             onLeave={() => onLeave(team._id)}
+            hasJoin={hasJoin}
             hasJoinRequest={hasJoinRequest}
             index={index}
           />

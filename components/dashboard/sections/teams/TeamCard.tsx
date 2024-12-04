@@ -14,6 +14,7 @@ interface TeamCardProps {
   onDelete: () => void;
   onJoin: () => void;
   onLeave: () => void;
+  hasJoin: boolean;
   hasJoinRequest: boolean;
   index: number;
 }
@@ -26,6 +27,7 @@ export default function TeamCard({
   onDelete,
   onJoin,
   onLeave,
+  hasJoin,
   hasJoinRequest,
   index,
 }: TeamCardProps) {
@@ -59,17 +61,50 @@ export default function TeamCard({
         </div>
 
         <div className="mt-6 flex gap-2">
-          {!isAdmin && (
+          {!isAdmin && !hasJoin && !hasJoinRequest && (
             <Button
               className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
-              variant={hasJoinRequest ? "secondary" : "outline"}
+              variant={"outline"}
+              onClick={onJoin}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Tham gia nhóm
+            </Button>
+          )}
+
+          {!isAdmin && !hasJoin && hasJoinRequest && (
+            <Button
+              className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+              variant={"secondary"}
+              disabled={hasJoinRequest}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Đã gửi yêu cầu
+            </Button>
+          )}
+
+          {!isAdmin && hasJoin && !hasJoinRequest && (
+            <Button
+              className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+              variant={"secondary"}
+              onClick={onLeave}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Đã tham gia
+            </Button>
+          )}
+
+          {/* {!isAdmin && !hasJoin && !hasJoinRequest && (
+            <Button
+              className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+              variant={hasJoinRequest ?  : "outline"}
               onClick={hasJoinRequest ? onLeave : onJoin}
               disabled={hasJoinRequest}
             >
               <UserPlus className="h-4 w-4 mr-2" />
               {hasJoinRequest ? "Đã tham gia nhóm" : "Tham gia nhóm"}
             </Button>
-          )}
+          )} */}
 
           {isAdmin && (
             <>

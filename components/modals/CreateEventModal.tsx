@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogCloseButton,
@@ -14,17 +10,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { FORM_EVENT } from "@/constants/event";
 import { validationEventSchema } from "@/lib/validate";
 import eventService from "@/services/event-service";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { FORM_EVENT } from "@/constants/event";
 import { IEvent } from "@/types/event-type";
-import useAuthStore from "@/store/auth-store";
-import { format, addDays, isBefore, isAfter } from "date-fns";
-import { formatDate } from "@/lib/utils";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import { addDays, format } from "date-fns";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface EventModalProps {
   isOpen: boolean;
@@ -130,7 +128,7 @@ export default function EventModal({
     if (event && mode === "edit") {
       reset({
         eventName: event?.eventName,
-        eventDate: new Date(formatDate(event?.eventDate)),
+        eventDate: format(event?.eventDate, "yyyy-MM-dd"),
         startTime: event?.startTime,
         location: event?.location,
         description: event?.description,

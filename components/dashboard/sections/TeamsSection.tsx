@@ -61,6 +61,11 @@ export default function TeamsSection({ isAdmin }: { isAdmin: boolean }) {
     mutationFn: teamService.requestLeaveTeam,
   });
 
+  const { mutate: handleRejectMemberJoinTeam, isPending: isPendingRejectMemberJoinTeam } =
+    useMutation({
+      mutationFn: teamService.rejectMemberJoinTeam,
+    });
+
   const loadMore = async () => {
     if (isLoading) return;
     setCurrentPage((prev) => prev + 1);

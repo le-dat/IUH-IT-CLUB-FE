@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DeviceTable from "./devices/DeviceTable";
 import { conditionsMap, statusMap } from "@/constants/device";
+import ReturnModalDevice from "@/components/modals/ReturnModalDevice";
 
 interface DevicesSectionProps {
   isAdmin: boolean;
@@ -50,6 +51,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState<boolean>(false);
   const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false);
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
@@ -71,10 +73,6 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
 
   const { mutate: handleDeleteById, isPending } = useMutation({
     mutationFn: deviceService.deleteDeviceById,
-  });
-
-  const { mutate: mutateReturnDevice, isPending: isPendingReturnDevice } = useMutation({
-    mutationFn: deviceService.confirmReturnDeviceById,
   });
 
   const totalPages = Number(data?.data?.pagination?.totalPages) || 1;
@@ -99,6 +97,11 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
     setIsDeleteModalOpen(true);
   };
 
+  const handleOpenModalReturn = (device: any) => {
+    setSelectedDevice(device);
+    setIsReturnModalOpen(true);
+  };
+
   const handleRequest = (device: any) => {
     setSelectedDevice(device);
     setIsRequestModalOpen(true);
@@ -120,8 +123,6 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
       }
     );
   };
-
-  const handleReturn = () => {};
 
   useEffect(() => {
     setDevices(data?.data?.equipment || []);
@@ -213,7 +214,7 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
         onDelete={handleOpenModalDelete}
         onRequest={handleRequest}
         onApprove={handleApproval}
-        onReturn={handleReturn}
+        onReturn={handleOpenModalReturn}
       />
 
       {selectedDevice && (
@@ -256,21 +257,12 @@ export default function DevicesSection({ isAdmin }: DevicesSectionProps) {
             refetch={refetch}
           />
 
-          {/* {selectedDevice.status === "pending approval" && (
-            <ApprovalModal
-              isOpen={isApprovalModalOpen}
-              onClose={() => setIsApprovalModalOpen(false)}
-              type="device"
-              item={{
-                id: selectedDevice._id,
-                deviceName: selectedDevice.name,
-                requester: selectedDevice.request?.requester,
-                startDate: selectedDevice.request?.startDate,
-                endDate: selectedDevice.request?.endDate,
-                purpose: selectedDevice.request?.purpose,
-              }}
-            />
-          )} */}
+          <ReturnModalDevice
+            isOpen={isReturnModalOpen}
+            onClose={() => setIsReturnModalOpen(false)}
+            item={selectedDevice!}
+            refetch={refetch}
+          />
         </>
       )}
 

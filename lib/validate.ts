@@ -69,7 +69,7 @@ export const validationEventSchema = yup.object().shape({
   eventName: yup.string().trim().required("Tiêu đề là bắt buộc"),
   description: yup.string().trim().required("Mô tả là bắt buộc"),
   location: yup.string().trim().required("Địa điểm là bắt buộc"),
-  eventDate: yup.date().required("Ngày là bắt buộc"),
+  eventDate: yup.string().required("Ngày là bắt buộc"),
   startTime: yup.string().required("Thời gian là bắt buộc"),
 });
 
@@ -77,5 +77,9 @@ export const validationDeviceSchema = yup.object().shape({
   name: yup.string().trim().required("Tên là bắt buộc"),
   type: yup.string().trim().required("Loại thiết bị là bắt buộc"),
   status: yup.string().required("Trạng thái là bắt buộc"),
+  statusHealth: yup.string().required("Tình trạng là bắt buộc"),
+});
+
+export const validationReturnDeviceSchema = yup.object().shape({
   statusHealth: yup.string().required("Tình trạng là bắt buộc"),
 });

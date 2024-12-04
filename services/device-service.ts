@@ -51,10 +51,13 @@ const deviceService = {
   },
   approveDeviceById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/approve-borrow`, {
-        equipmentId: id,
-        action: "approve",
-      });
+      const response = await axiosClient.post<SuccessResponse<IDevice>>(
+        `/equipment/approve-borrow`,
+        {
+          equipmentId: id,
+          action: "approve",
+        }
+      );
       return response.data;
     } catch (error) {
       throw new Error("Failed to approve device");
@@ -62,20 +65,22 @@ const deviceService = {
   },
   rejectDeviceById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/approve-borrow`, {
-        equipmentId: id,
-        action: "reject",
-      });
+      const response = await axiosClient.post<SuccessResponse<IDevice>>(
+        `/equipment/approve-borrow`,
+        {
+          equipmentId: id,
+          action: "reject",
+        }
+      );
       return response.data;
     } catch (error) {
       throw new Error("Failed to reject device");
     }
   },
-  confirmReturnDeviceById: async ({ id }: { id: string }) => {
+  confirmReturnDeviceById: async ({ id, data }: { id: string; data: string }) => {
     try {
-      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/approve-borrow`, {
-        equipmentId: id,
-        action: "reject",
+      const response = await axiosClient.post<SuccessResponse<IDevice>>(`/equipment/${id}/return`, {
+        statusHealth: data,
       });
       return response.data;
     } catch (error) {

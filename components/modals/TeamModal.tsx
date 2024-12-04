@@ -28,7 +28,7 @@ import { IUser } from "@/types/user-type";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Check, Eye, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -100,7 +100,7 @@ export default function TeamModal({
         onSuccess: (response) => {
           refetchTeamId && refetchTeamId();
           refetch && refetch();
-          setDeleteModalOpen(false)
+          setDeleteModalOpen(false);
           toast.success(response?.message);
         },
         onError: (error) => {
@@ -135,7 +135,7 @@ export default function TeamModal({
         onSuccess: (response) => {
           refetchTeamId && refetchTeamId();
           refetch && refetch();
-          setDeleteModalOpen(false)
+          setDeleteModalOpen(false);
           toast.success(response?.message);
         },
         onError: (error) => {
@@ -215,6 +215,16 @@ export default function TeamModal({
     setModeDelete(mode);
     setDeleteModalOpen(true);
   };
+
+  useEffect(() => {
+    if (teamData) {
+      reset({
+        [FORM_TEAM.teamName]: teamData?.teamName,
+        [FORM_TEAM.description]: teamData?.description,
+        [FORM_TEAM.teamLeader]: teamData?.teamLeader?._id,
+      });
+    }
+  }, [teamData, reset]);
 
   return (
     <>
