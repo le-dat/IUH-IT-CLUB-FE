@@ -54,7 +54,7 @@ const eventService = {
       );
       return response.data;
     } catch (error) {
-      throw new Error("Failed to update event");
+      throw new Error("Failed to register event");
     }
   },
   approveEventById: async ({ id }: { id: string }) => {
@@ -65,7 +65,7 @@ const eventService = {
       });
       return response.data;
     } catch (error) {
-      throw new Error("Failed to update event");
+      throw new Error("Failed to approve event");
     }
   },
   rejectEventById: async ({ id }: { id: string }) => {
@@ -76,7 +76,7 @@ const eventService = {
       });
       return response.data;
     } catch (error) {
-      throw new Error("Failed to update event");
+      throw new Error("Failed to reject event");
     }
   },
   deleteEventById: async ({ id }: { id: string }) => {

@@ -63,7 +63,7 @@ const teamService = {
       );
       return response.data;
     } catch (error) {
-      throw new Error("Failed to request join team");
+      throw new Error("Failed to accept join team");
     }
   },
   rejectMemberJoinTeam: async ({ id, user }: { id: string; user: IUser }) => {
@@ -74,7 +74,7 @@ const teamService = {
       );
       return response.data;
     } catch (error) {
-      throw new Error("Failed to request join team");
+      throw new Error("Failed to reject join team");
     }
   },
   requestLeaveTeam: async ({ id, userId }: { id: string; userId: string }) => {

@@ -6,6 +6,9 @@ import "./globals.css";
 const Config = dynamic(() => import("./config"), {
   ssr: false,
 });
+const ChatbotPopup = dynamic(() => import("../components/modals/ChatbotPopup"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +22,8 @@ export const metadata: Metadata = {
     title: "Câu lạc bộ lập trình IUH - Kết nối, Tạo ra, và Hợp tác",
     description:
       "Tham gia câu lạc bộ sôi động của chúng tôi gồm các nhà phát triển, nhà thiết kế và nhà đổi mới công nghệ.",
-
     url: process.env.NEXT_PUBLIC_APP_HOST || "https://iuh-it-club.vercel.app",
+    images: "/icons/logo.svg",
   },
 };
 
@@ -38,7 +41,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Config>{children}</Config>
+        <Config>
+          {children}
+          <ChatbotPopup />
+        </Config>
       </body>
     </html>
   );

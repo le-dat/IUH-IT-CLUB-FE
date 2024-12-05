@@ -42,6 +42,7 @@ The server side is built with Express.js and MongoDB. It handles API requests, a
 ## Installation
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/yourusername/ius-tse-club.git
    cd ius-tse-club
@@ -57,6 +58,21 @@ The server side is built with Express.js and MongoDB. It handles API requests, a
    npm start
    ```
 
+2. Create a new .env file
+   ```sh
+   NEXT_PUBLIC_APP_HOST=https://iuh-it-club.vercel.app
+   NEXT_PUBLIC_API_ENDPOINT=http://localhost:5000/api
+   NEXT_PUBLIC_OPENAI_API_KEY=
+   ```
+
 ## Contributing
+
 Contributions are welcome! Please open an issue or submit a pull request for any changes.
 
+## 📝 Version
+
+0.1.0
+
+## Author
+
+Le Quoc Dat. See the [Website Portfolio](https://ledat-portfolio.vercel.app/) for details.

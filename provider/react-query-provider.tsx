@@ -16,7 +16,7 @@ const ReactQueryDevtoolsProduction = React.lazy(() =>
 const queryClient = new QueryClient();
 
 const ReactQueryProvider = ({ children }: IProps) => {
-  const [showDevtools] = React.useState(false);
+  const [showDevtools] = React.useState<boolean>(false);
 
   return (
     <QueryClientProvider client={queryClient}>
