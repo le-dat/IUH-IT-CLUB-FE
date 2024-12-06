@@ -22,11 +22,7 @@ export const validationLoginSchema = yup.object().shape({
 export const validationRegisterSchema = yup.object().shape({
   ...validationLoginSchema.fields,
 
-  [FORM_SIGN.username]: yup
-    .string()
-    .trim()
-    .required("Tên là bắt buộc")
-    .matches(/^[A-Za-z\s]*$/, "Tên không được chứa ký tự đặc biệt"),
+  [FORM_SIGN.username]: yup.string().trim().required("Tên là bắt buộc"),
   [FORM_SIGN.level]: yup.string().required("Khóa học là bắt buộc"),
   [FORM_SIGN.phone]: yup
     .string()
