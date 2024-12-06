@@ -55,11 +55,15 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     mutationFn: eventService.deleteEventById,
   });
 
-  const { mutate: handleRegisterEventById, isPending: isRegisterDelete } = useMutation({
+  const { mutate: handleRegisterEventById, isPending: isPendingRegisterDelete } = useMutation({
     mutationFn: eventService.registerEventById,
   });
 
-  const isLoading = isLoadingGetEvents || isPendingDelete || isRegisterDelete;
+  const { mutate: handleExportExcelEventById, isPending: isPendingExportExcel } = useMutation({
+    mutationFn: eventService.exportExcelEventById,
+  });
+
+  const isLoading = isLoadingGetEvents || isPendingDelete || isPendingRegisterDelete;
 
   const loadMore = async () => {
     if (isLoadingGetEvents) return;
@@ -116,6 +120,21 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     );
   };
 
+  const handleExportExcel = (event: IEvent) => {
+    handleExportExcelEventById(
+      { id: event._id?.toString() || "" },
+      {
+        onSuccess: (response) => {
+          toast.success(response?.message);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error(error?.message || "Đã có lỗi xảy ra");
+        },
+      }
+    );
+  };
+
   const hasMore =
     Number(data?.data?.events?.length) > 0 &&
     Number(data?.data?.pagination?.totalPages) > currentPage &&
@@ -156,6 +175,7 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
           }
         }}
         onDelete={(event) => handleOpenModalDelete(event)}
+        onExportExcel={(event) => handleExportExcel(event)}
         onRegister={handleRegister}
       />
 

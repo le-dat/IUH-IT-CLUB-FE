@@ -13,7 +13,7 @@ import { AuthStorage } from "@/lib/local-storage";
 import userService from "@/services/user-service";
 import useAuthStore from "@/store/auth-store";
 import { useQuery } from "@tanstack/react-query";
-import { CircuitBoard, LogOut, Settings } from "lucide-react";
+import { CircleUserRound, CircuitBoard, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -69,13 +69,14 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
+                {/* <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
                   <img
                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=50&h=50&auto=format&fit=crop"
                     alt="Profile"
                     className="rounded-full absolute inset-0 w-full h-full object-cover"
                   />
-                </Button>
+                </Button> */}
+                <CircleUserRound className="h-11 w-11" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => handleClick("/profile")}>

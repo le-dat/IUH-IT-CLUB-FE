@@ -87,6 +87,14 @@ const eventService = {
       throw new Error("Failed to delete event");
     }
   },
+  exportExcelEventById: async ({ id }: { id: string }) => {
+    try {
+      const response = await axiosClient.get<SuccessResponse<null>>(`/events/export-event/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to delete event");
+    }
+  },
 };
 
 export default eventService;

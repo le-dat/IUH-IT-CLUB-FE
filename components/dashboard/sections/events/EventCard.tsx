@@ -6,7 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { formatDate } from "@/lib/utils";
 import { IEvent } from "@/types/event-type";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Edit, Eye, MapPin, Trash2, Users } from "lucide-react";
+import { Calendar, Clock, Edit, Eye, FileSpreadsheet, MapPin, Trash2, Users } from "lucide-react";
 
 interface EventCardProps {
   event: IEvent;
@@ -14,6 +14,7 @@ interface EventCardProps {
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onExportExcel: () => void;
   onRegister: () => void;
   isRegistered: boolean;
   index: number;
@@ -25,6 +26,7 @@ export default function EventCard({
   onView,
   onEdit,
   onDelete,
+  onExportExcel,
   onRegister,
   isRegistered,
   index,
@@ -99,6 +101,9 @@ export default function EventCard({
                       <Edit className="h-4 w-4" />
                     </Button>
                   )}
+                   <Button variant="ghost" size="sm" onClick={onExportExcel} disabled={isLoading}>
+                    <FileSpreadsheet className="h-4 w-4 text-green-800" />
+                  </Button>
                 </>
               )}
             </>

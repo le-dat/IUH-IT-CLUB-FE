@@ -18,6 +18,7 @@ interface EventsGridProps {
   onView: (event: any) => void;
   onEdit: (event: IEvent) => void;
   onDelete: (event: any) => void;
+  onExportExcel: (event: IEvent) => void;
   onRegister: (eventId: string) => void;
 }
 
@@ -30,6 +31,7 @@ export default function EventsGrid({
   onView,
   onEdit,
   onDelete,
+  onExportExcel,
   onRegister,
 }: EventsGridProps) {
   const { t } = useTranslation();
@@ -55,6 +57,7 @@ export default function EventsGrid({
             onView={() => onView(event)}
             onEdit={() => onEdit(event)}
             onDelete={() => onDelete(event)}
+            onExportExcel={() => onExportExcel(event)}
             onRegister={() => onRegister(event._id)}
             isRegistered={event?.registeredParticipants?.some((participant: IUser) => participant._id === user?._id)}
             index={index}
