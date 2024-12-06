@@ -89,7 +89,9 @@ const eventService = {
   },
   exportExcelEventById: async ({ id }: { id: string }) => {
     try {
-      const response = await axiosClient.get<SuccessResponse<null>>(`/events/export-event/${id}`);
+      const response = await axiosClient.get<SuccessResponse<any>>(`/events/export-event/${id}`, {
+        responseType: "arraybuffer",
+      });
       return response.data;
     } catch (error) {
       throw new Error("Failed to delete event");

@@ -124,8 +124,20 @@ export default function EventsSection({ isAdmin }: { isAdmin: boolean }) {
     handleExportExcelEventById(
       { id: event._id?.toString() || "" },
       {
-        onSuccess: (response) => {
-          toast.success(response?.message);
+        onSuccess: async (response: any) => {
+          const blob = new Blob([response], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const urlBlob = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = urlBlob;
+          a.download = "exported_event.xlsx";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(urlBlob);
+
+          toast.success("File exported successfully");
         },
         onError: (error) => {
           console.error(error);
