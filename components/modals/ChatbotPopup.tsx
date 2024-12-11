@@ -4,17 +4,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { Bot, MessageCircle, Send as SendIcon, User, X } from "lucide-react";
 import { motion } from "framer-motion";
 import useGeminiAi from "@/hooks/useGeminiAi";
+import ReactMarkdown from "react-markdown";
 
 const UserMessage: React.FC<{ text: string }> = ({ text }) => (
   <div className="my-2 p-2 w-fit rounded-lg flex items-center bg-blue-500 text-white self-end ml-auto">
-    <span className="break-words">{text}</span>
+    <span className="break-words">
+      <ReactMarkdown>{text}</ReactMarkdown>
+    </span>
   </div>
 );
 
 const BotMessage: React.FC<{ text: string }> = ({ text }) => (
   <div className="my-2 flex items-start text-black self-start">
     <Bot className="w-5 h-5 mr-2" />
-    <span className="bg-gray-200 p-2 w-fit rounded-lg break-words">{text}</span>
+    <span className="bg-gray-200 p-2 w-fit rounded-lg break-words">
+      <ReactMarkdown>{text}</ReactMarkdown>
+    </span>
   </div>
 );
 
@@ -63,14 +68,16 @@ const ChatbotPopup: React.FC = () => {
     <div className="fixed bottom-4 z-[50] right-4 flex flex-col items-end">
       {isOpen && (
         <motion.div
-          className="mb-2 w-96 h-full max-h-[600px] bg-white border border-gray-300 rounded-lg shadow-lg flex flex-col"
+          className="mb-2 w-96 h-full min-h-[100px] max-h-[600px] bg-white border border-gray-300 rounded-lg shadow-2xl flex flex-col"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
           <div className="flex-1 px-3 py-4 overflow-y-scroll">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500 h-full flex items-center justify-center">Bắt đầu cuộc trò chuyện với bot ai</div>
+              <div className="text-center text-gray-500 flex items-center h-full justify-center">
+                Bắt đầu cuộc trò chuyện với bot ai
+              </div>
             ) : (
               <>
                 {messages.map((message, index) =>
@@ -100,7 +107,11 @@ const ChatbotPopup: React.FC = () => {
               disabled={loading}
               ref={inputRef}
             />
-            <button onClick={handleSend} className="p-2 bg-blue-500 text-white rounded-r-lg" disabled={loading}>
+            <button
+              onClick={handleSend}
+              className="p-2 bg-blue-500 text-white rounded-r-lg"
+              disabled={loading}
+            >
               <SendIcon className="w-5 h-5" />
             </button>
           </div>
