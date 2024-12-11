@@ -14,6 +14,7 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 import { ITeam } from "@/types/team-type";
 import { IUser } from "@/types/user-type";
 import { formatDate } from "@/lib/utils";
+import useAuthStore from "@/store/auth-store";
 
 interface MemberTableProps {
   members: IUser[];
@@ -30,6 +31,8 @@ export default function MemberTable({
   onEdit,
   onDelete,
 }: MemberTableProps) {
+  const { user } = useAuthStore();
+
   return (
     <Table>
       <TableHeader>
@@ -42,7 +45,7 @@ export default function MemberTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {members.map((member) => (
+        {members?.map((member) => (
           <TableRow key={member._id}>
             <TableCell>
               <div className="flex items-center gap-3">
@@ -72,9 +75,12 @@ export default function MemberTable({
                     <Button variant="ghost" size="sm" onClick={() => onEdit(member)}>
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => onDelete(member)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+
+                    {user?._id !== member?._id && (
+                      <Button variant="ghost" size="sm" onClick={() => onDelete(member)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    )}
                   </>
                 )}
               </div>

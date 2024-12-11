@@ -52,10 +52,11 @@ export default function RegisterPage() {
   const isSubmitDisabled = isPending || !isFormValid;
 
   const onSubmit = async (data: any) => {
-    delete data?.confirmPassword;
+    const formatData = { ...data };
+    delete formatData?.confirmPassword;
     if (isSubmitDisabled) return;
 
-    mutate(data, {
+    mutate(formatData, {
       onSuccess: (response) => {
         router.push(ROUTES.LOGIN);
         toast.success(response?.message);
@@ -64,6 +65,9 @@ export default function RegisterPage() {
       onError: (error) => {
         console.error(error);
         toast.error(error?.message || "Đã có lỗi xảy ra");
+      },
+      onSettled: () => {
+        reset({ confirmPassword: data.confirmPassword });
       },
     });
   };

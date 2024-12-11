@@ -76,7 +76,7 @@ export default function DashboardHeader({ isAdmin }: DashboardHeaderProps) {
                     className="rounded-full absolute inset-0 w-full h-full object-cover"
                   />
                 </Button> */}
-                <CircleUserRound className="h-11 w-11" />
+                <CircleUserRound className={`${isAdmin ? "h-11 w-11" : "h-6 w-6"} `} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => handleClick("/profile")}>
