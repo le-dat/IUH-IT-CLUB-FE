@@ -3,18 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { CircuitBoard, Code2, Users, Laptop, ArrowRight, Github } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import ButtonGradient from "../common/ButtonGradient";
 import ParticleBackground from "../common/ParticleBackground";
 
 export default function LandingPage() {
-  const router = useRouter();
-
   return (
     <div className="min-h-screen bg-background">
-      <ParticleBackground/>
+      <ParticleBackground />
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/0 pointer-events-none">
@@ -153,6 +150,20 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </div>
+
+      {/* Event Section */}
+      {/* <div className="container mx-auto px-6 py-24">
+        <div className="flex items-center gap-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
+          >
+          </motion.div>
+        </div>
+      </div> */}
 
       {/* CTA Section */}
       <div className="container mx-auto px-6 py-24">

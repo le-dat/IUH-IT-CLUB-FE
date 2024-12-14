@@ -23,7 +23,7 @@ import { toast } from "sonner";
 
 export default function LoginPage() {
   const { login: loginStore } = useAuthStore();
-  const [isAdmin, setIsAdmin] = useState(false);
+  // const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
   const { mutate, isPending } = useMutation({ mutationFn: authService.login });
 
@@ -47,11 +47,8 @@ export default function LoginPage() {
 
     mutate(data, {
       onSuccess: (response) => {
-        if (response?.data?.user?.role !== "admin" && isAdmin) {
+        if (response?.data?.user?.role !== "admin") {
           toast.error("Tài khoản của bạn không có quyền truy cập Admin");
-          return;
-        } else if (response?.data?.user?.role === "admin" && !isAdmin) {
-          toast.error("Vui lòng chuyển sang quyền truy cập Admin để tiếp tục");
           return;
         }
         loginStore(response?.data?.user!);
@@ -189,15 +186,15 @@ export default function LoginPage() {
                   </div>
                 )}
               </div>
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Switch id="admin-mode" checked={isAdmin} onCheckedChange={setIsAdmin} />
                   <Label htmlFor="admin-mode">Quyền truy cập Admin</Label>
                 </div>
-                {/* <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
                 Quên mật khẩu?
-              </Link> */}
-              </div>
+              </Link>
+              </div> */}
 
               <ButtonGradient type="submit" disabled={isPending} hasArrow>
                 {isPending ? "Đang xử lý..." : "Đăng nhập"}

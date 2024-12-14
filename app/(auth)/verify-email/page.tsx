@@ -37,7 +37,7 @@ const VerifySuccessPage: React.FC = () => {
         <h1 className="text-2xl font-bold mb-2">Xác Minh Thành Công</h1>
         <p className="text-gray-700 mb-4">Email của bạn đã được xác minh thành công.</p>
         <Button asChild>
-          <Link href={ROUTES.LOGIN}>Về Trang Đăng Nhập</Link>
+          <Link href={ROUTES.LOGIN} className='cursor-pointer'>Về Trang Đăng Nhập</Link>
         </Button>
       </motion.div>
     </div>
