@@ -19,7 +19,6 @@ const useAuthStore = create<AuthState>((set: (partial: Partial<AuthState>) => vo
       isAuthenticated: true,
       user,
       isAdmin: user?.role === "admin",
-      // true,
     }),
   logout: () => set({ isAuthenticated: false, user: null }),
 }));

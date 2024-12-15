@@ -47,10 +47,6 @@ export default function LoginPage() {
 
     mutate(data, {
       onSuccess: (response) => {
-        if (response?.data?.user?.role !== "admin") {
-          toast.error("Tài khoản của bạn không có quyền truy cập Admin");
-          return;
-        }
         loginStore(response?.data?.user!);
         AuthStorage.setAccessToken(response?.data?.token?.accessToken!);
         AuthStorage.setRefreshToken(response?.data?.token?.refreshToken!);
