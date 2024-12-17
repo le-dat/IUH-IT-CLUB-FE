@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,8 +16,7 @@ export function getCourseNumber(index: number): string {
   return `k${parseInt(lastTwoDigits) - 4 - index}`;
 }
 
-export function hashPassword(password: string): boolean {
+export function hashPassword(password: string): string {
   const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-  return bcrypt.compareSync(password, hash);
+  return bcrypt.hashSync(password, salt);
 }
