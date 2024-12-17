@@ -53,7 +53,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: any) => {
     if (isSubmitDisabled) return;
-    const formatData = { ...data, password: hashPassword(data.password) };
+    const formatData = { ...data, password: (data.password) };
     delete formatData?.confirmPassword;
 
     mutate(formatData, {
