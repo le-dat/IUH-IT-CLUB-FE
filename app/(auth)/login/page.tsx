@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { FORM_LOGIN } from "@/constants/auth";
 import { ROUTES } from "@/constants/route";
 import { AuthStorage } from "@/lib/local-storage";
+import { hashPassword } from "@/lib/utils";
 import { validationLoginSchema } from "@/lib/validate";
 import authService from "@/services/auth-service";
 import useAuthStore from "@/store/auth-store";
@@ -44,8 +45,9 @@ export default function LoginPage() {
 
   const onSubmit = async (data: any) => {
     if (isSubmitDisabled) return;
+    const formatData = { ...data, password: hashPassword(data.password) };
 
-    mutate(data, {
+    mutate(formatData, {
       onSuccess: (response) => {
         loginStore(response?.data?.user!);
         AuthStorage.setAccessToken(response?.data?.token?.accessToken!);

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { FORM_SIGN } from "@/constants/auth";
 import { ROUTES } from "@/constants/route";
-import { getCourseNumber } from "@/lib/utils";
+import { getCourseNumber, hashPassword } from "@/lib/utils";
 import { validationRegisterSchema } from "@/lib/validate";
 import authService from "@/services/auth-service";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -52,9 +52,9 @@ export default function RegisterPage() {
   const isSubmitDisabled = isPending || !isFormValid;
 
   const onSubmit = async (data: any) => {
-    const formatData = { ...data };
-    delete formatData?.confirmPassword;
     if (isSubmitDisabled) return;
+    const formatData = { ...data, password: hashPassword(data.password) };
+    delete formatData?.confirmPassword;
 
     mutate(formatData, {
       onSuccess: (response) => {
