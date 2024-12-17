@@ -45,7 +45,7 @@ export default function LoginPage() {
 
   const onSubmit = async (data: any) => {
     if (isSubmitDisabled) return;
-    const formatData = { ...data, password: hashPassword(data.password) };
+    const formatData = { ...data };
 
     mutate(formatData, {
       onSuccess: (response) => {
